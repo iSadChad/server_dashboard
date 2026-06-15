@@ -17,23 +17,7 @@ const navItems = [
   { label: "Databases", href: "/databases", icon: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" },
 ];
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ▌ FAKE_DATA — remove this entire block when real data is ready
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const USE_FAKE_DATA = true;
 
-const FAKE_FILES = [
-  { name: "server-config.yml", path: "server-config.yml", type: "File", size: 4200 },
-  { name: "database-backups", path: "database-backups", type: "Folder", size: 0 },
-  { name: "incident-report-2024.pdf", path: "incident-report-2024.pdf", type: "PDF", size: 2450000 },
-  { name: "schema.sql", path: "schema.sql", type: "SQL", size: 18400 },
-  { name: "quarterly-metrics.docx", path: "quarterly-metrics.docx", type: "Word", size: 120000 },
-  { name: "banner-hero.png", path: "banner-hero.png", type: "Image", size: 890000 },
-  { name: "demo-reel.mp4", path: "demo-reel.mp4", type: "Video", size: 52400000 },
-];
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ▌ END FAKE_DATA
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function FileIcon({ type }) {
   const config = {
@@ -57,17 +41,17 @@ function FileIcon({ type }) {
 }
 
 export default function FilesPage() {
-  const [files, setFiles] = useState(USE_FAKE_DATA ? FAKE_FILES : []);
-  const [loading, setLoading] = useState(USE_FAKE_DATA ? false : true);
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (USE_FAKE_DATA) return;
     async function fetchFiles() {
       try {
         const res = await fetch("/api/files");
         const data = await res.json();
         setFiles(data);
-      } catch {
+      } catch (e) {
+        console.error("Failed to fetch files:", e);
         setFiles([]);
       } finally {
         setLoading(false);

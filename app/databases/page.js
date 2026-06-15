@@ -17,19 +17,7 @@ const navItems = [
   { label: "Databases", href: "/databases", icon: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" },
 ];
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ▌ FAKE_DATA — remove this entire block when real data is ready
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const USE_FAKE_DATA = true;
 
-const FAKE_DATABASES = [
-  { name: "PostgreSQL", type: "PostgreSQL", version: "16.2", status: "running", port: 5432, size: 0 },
-  { name: "Redis", type: "Redis", version: "7.2", status: "running", port: 6379, size: 0 },
-  { name: "MongoDB", type: "MongoDB", version: "7.0", status: "stopped", port: null, size: 0 },
-];
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ▌ END FAKE_DATA
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function StatusDot({ status }) {
   if (status === "running") {
@@ -42,17 +30,17 @@ function StatusDot({ status }) {
 }
 
 export default function DatabasesPage() {
-  const [databases, setDatabases] = useState(USE_FAKE_DATA ? FAKE_DATABASES : []);
-  const [loading, setLoading] = useState(USE_FAKE_DATA ? false : true);
+  const [databases, setDatabases] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (USE_FAKE_DATA) return;
     async function fetchDatabases() {
       try {
         const res = await fetch("/api/databases");
         const data = await res.json();
         setDatabases(data);
-      } catch {
+      } catch (e) {
+        console.error("Failed to fetch databases:", e);
         setDatabases([]);
       } finally {
         setLoading(false);
