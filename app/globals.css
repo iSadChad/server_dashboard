@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0f;
-  --foreground: #f0f0f5;
+  --background: #0c0a1d;
+  --foreground: #e8e0f7;
 }
 
 @theme inline {
@@ -23,17 +23,36 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 4px rgba(139, 92, 246, 0.2); }
+  50% { box-shadow: 0 0 12px rgba(139, 92, 246, 0.4); }
+}
+
 .animate-fade-in {
-  animation: fade-in 0.5s ease-out forwards;
+  animation: fade-in 0.4s ease-out forwards;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.glass-hover:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.1);
+::-webkit-scrollbar-track {
+  background: #0c0a1d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d2655;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3d3575;
+}
+
+.recharts-default-tooltip {
+  background: rgba(17, 14, 40, 0.95) !important;
+  border: 1px solid rgba(139, 92, 246, 0.2) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
 }
