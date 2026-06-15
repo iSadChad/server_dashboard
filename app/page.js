@@ -29,70 +29,7 @@ const navItems = [
   { label: "Databases", href: "/databases", icon: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" },
 ];
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ▌ FAKE_DATA — remove this entire block when real data is ready
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const USE_FAKE_DATA = true;
-
-const FAKE_STATS = {
-  cpu: 34.2,
-  memory: { used: 12 * 1024 * 1024 * 1024, total: 16 * 1024 * 1024 * 1024 },
-  disk: { used: 256 * 1024 * 1024 * 1024, total: 512 * 1024 * 1024 * 1024 },
-  uptime: 172847,
-};
-
-const FAKE_WEEK_DATA = [
-  { day: "Mon", cpu: 32, mem: 55 },
-  { day: "Tue", cpu: 45, mem: 62 },
-  { day: "Wed", cpu: 28, mem: 58 },
-  { day: "Thu", cpu: 67, mem: 71 },
-  { day: "Fri", cpu: 55, mem: 65 },
-  { day: "Sat", cpu: 22, mem: 48 },
-  { day: "Sun", cpu: 18, mem: 42 },
-];
-
-const FAKE_MONTH_DATA = [
-  { month: "Jan", inbound: 400, outbound: 240 },
-  { month: "Feb", inbound: 300, outbound: 138 },
-  { month: "Mar", inbound: 200, outbound: 180 },
-  { month: "Apr", inbound: 278, outbound: 308 },
-  { month: "May", inbound: 189, outbound: 280 },
-  { month: "Jun", inbound: 239, outbound: 220 },
-  { month: "Jul", inbound: 349, outbound: 290 },
-  { month: "Aug", inbound: 310, outbound: 260 },
-  { month: "Sep", inbound: 280, outbound: 340 },
-  { month: "Oct", inbound: 370, outbound: 310 },
-  { month: "Nov", inbound: 250, outbound: 200 },
-  { month: "Dec", inbound: 320, outbound: 270 },
-];
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ▌ END FAKE_DATA
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const weekData = USE_FAKE_DATA ? FAKE_WEEK_DATA : [
-  { day: "Mon", cpu: 32, mem: 55 },
-  { day: "Tue", cpu: 45, mem: 62 },
-  { day: "Wed", cpu: 28, mem: 58 },
-  { day: "Thu", cpu: 67, mem: 71 },
-  { day: "Fri", cpu: 55, mem: 65 },
-  { day: "Sat", cpu: 22, mem: 48 },
-  { day: "Sun", cpu: 18, mem: 42 },
-];
-
-const monthData = USE_FAKE_DATA ? FAKE_MONTH_DATA : [
-  { month: "Jan", inbound: 400, outbound: 240 },
-  { month: "Feb", inbound: 300, outbound: 138 },
-  { month: "Mar", inbound: 200, outbound: 180 },
-  { month: "Apr", inbound: 278, outbound: 308 },
-  { month: "May", inbound: 189, outbound: 280 },
-  { month: "Jun", inbound: 239, outbound: 220 },
-  { month: "Jul", inbound: 349, outbound: 290 },
-  { month: "Aug", inbound: 310, outbound: 260 },
-  { month: "Sep", inbound: 280, outbound: 340 },
-  { month: "Oct", inbound: 370, outbound: 310 },
-  { month: "Nov", inbound: 250, outbound: 200 },
-  { month: "Dec", inbound: 320, outbound: 270 },
-];
+const defaultStats = { cpu: 0, memory: { used: 0, total: 0 }, disk: { used: 0, total: 0 }, uptime: 0 };
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -128,10 +65,10 @@ function Clock() {
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
-  const [stats, setStats] = useState(
-    USE_FAKE_DATA ? FAKE_STATS : { cpu: 0, memory: { used: 0, total: 0 }, disk: { used: 0, total: 0 }, uptime: 0 }
-  );
-  const [loading, setLoading] = useState(USE_FAKE_DATA ? false : true);
+  const [stats, setStats] = useState(defaultStats);
+  const [loading, setLoading] = useState(true);
+  const [weekData, setWeekData] = useState([]);
+  const [monthData, setMonthData] = useState([]);
 
   const [chartWidths, setChartWidths] = useState({ network: 600, memoryPie: 280, cpuBar: 280, memBar: 280, diskPie: 280 });
   const networkRef = useRef(null);
@@ -158,21 +95,35 @@ export default function Home() {
   }, [measure]);
 
   useEffect(() => {
-    if (USE_FAKE_DATA) return;
     async function fetchStats() {
       try {
         const res = await fetch("/api/stats");
         const data = await res.json();
         setStats(data);
       } catch {
-        setStats({ cpu: 0, memory: { used: 0, total: 0 }, disk: { used: 0, total: 0 }, uptime: 0 });
+        setStats(defaultStats);
       } finally {
         setLoading(false);
       }
     }
+    async function fetchCharts() {
+      try {
+        const res = await fetch("/api/charts");
+        const data = await res.json();
+        if (data.week) setWeekData(data.week);
+        if (data.month) setMonthData(data.month);
+      } catch (e) {
+        console.error("Failed to fetch charts:", e);
+      }
+    }
     fetchStats();
-    const interval = setInterval(fetchStats, 5000);
-    return () => clearInterval(interval);
+    fetchCharts();
+    const statsInterval = setInterval(fetchStats, 5000);
+    const chartsInterval = setInterval(fetchCharts, 60000);
+    return () => {
+      clearInterval(statsInterval);
+      clearInterval(chartsInterval);
+    };
   }, []);
 
   const memPercent =
