@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import {
   AreaChart,
@@ -117,9 +117,29 @@ export default function Home() {
   );
   const [loading, setLoading] = useState(USE_FAKE_DATA ? false : true);
 
+  const [chartWidths, setChartWidths] = useState({ network: 600, memoryPie: 280, cpuBar: 280, memBar: 280, diskPie: 280 });
+  const networkRef = useRef(null);
+  const memPieRef = useRef(null);
+  const cpuBarRef = useRef(null);
+  const memBarRef = useRef(null);
+  const diskPieRef = useRef(null);
+
+  const measure = useCallback(() => {
+    setChartWidths({
+      network: (networkRef.current?.clientWidth || 648) - 48,
+      memoryPie: (memPieRef.current?.clientWidth || 328) - 48,
+      cpuBar: (cpuBarRef.current?.clientWidth || 328) - 48,
+      memBar: (memBarRef.current?.clientWidth || 328) - 48,
+      diskPie: (diskPieRef.current?.clientWidth || 328) - 48,
+    });
+  }, []);
+
   useEffect(() => {
     setMounted(true);
-  }, []);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure]);
 
   useEffect(() => {
     if (USE_FAKE_DATA) return;
@@ -256,11 +276,11 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="col-span-2 rounded-2xl bg-[#110e28] border border-purple-500/10 p-6 min-w-0">
+            <div className="col-span-2 rounded-2xl bg-[#110e28] border border-purple-500/10 p-6 min-w-0" ref={networkRef}>
               <h3 className="text-sm font-semibold text-purple-200/70 mb-1">Network Activity</h3>
               <p className="text-[11px] text-purple-300/30 mb-4">Inbound vs Outbound over 12 months</p>
               {mounted ? (
-              <AreaChart width={700} height={260} data={monthData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+              <AreaChart width={chartWidths.network} height={260} data={monthData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <defs>
                   <linearGradient id="gradInbound" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
@@ -280,11 +300,11 @@ export default function Home() {
               ) : <div className="w-full h-[260px] animate-pulse rounded-lg bg-purple-500/5" />}
             </div>
 
-            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-6 min-w-0">
+            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-6 min-w-0" ref={memPieRef}>
               <h3 className="text-sm font-semibold text-purple-200/70 mb-1">Memory Split</h3>
               <p className="text-[11px] text-purple-300/30 mb-4">Used vs Free</p>
               {mounted ? (
-              <PieChart width={300} height={180}>
+              <PieChart width={chartWidths.memoryPie} height={180}>
                 <Pie data={memPieData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={4} dataKey="value" stroke="none">
                   {memPieData.map((entry, i) => (
                     <Cell key={i} fill={entry.color} />
@@ -306,11 +326,11 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-6 min-w-0">
+            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-6 min-w-0" ref={cpuBarRef}>
               <h3 className="text-sm font-semibold text-purple-200/70 mb-1">Weekly CPU</h3>
               <p className="text-[11px] text-purple-300/30 mb-4">Avg usage by day</p>
               {mounted ? (
-              <BarChart width={300} height={160} data={weekData} barCategoryMaxWidth={16}>
+              <BarChart width={chartWidths.cpuBar} height={160} data={weekData} barCategoryMaxWidth={16}>
                 <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#6b5fb5", fontSize: 10 }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b5fb5", fontSize: 10 }} width={30} />
                 <Tooltip content={<CustomTooltip />} />
@@ -319,11 +339,11 @@ export default function Home() {
               ) : <div className="w-full h-[160px] animate-pulse rounded-lg bg-purple-500/5" />}
             </div>
 
-            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-6 min-w-0">
+            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-6 min-w-0" ref={memBarRef}>
               <h3 className="text-sm font-semibold text-purple-200/70 mb-1">Weekly Memory</h3>
               <p className="text-[11px] text-purple-300/30 mb-4">Avg usage by day</p>
               {mounted ? (
-              <BarChart width={300} height={160} data={weekData} barCategoryMaxWidth={16}>
+              <BarChart width={chartWidths.memBar} height={160} data={weekData} barCategoryMaxWidth={16}>
                 <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#6b5fb5", fontSize: 10 }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b5fb5", fontSize: 10 }} width={30} />
                 <Tooltip content={<CustomTooltip />} />
@@ -332,11 +352,11 @@ export default function Home() {
               ) : <div className="w-full h-[160px] animate-pulse rounded-lg bg-purple-500/5" />}
             </div>
 
-            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-6 min-w-0">
+            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-6 min-w-0" ref={diskPieRef}>
               <h3 className="text-sm font-semibold text-purple-200/70 mb-1">Disk Usage</h3>
               <p className="text-[11px] text-purple-300/30 mb-4">Used vs Free</p>
               {mounted ? (
-              <PieChart width={300} height={180}>
+              <PieChart width={chartWidths.diskPie} height={180}>
                 <Pie data={diskPieData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={4} dataKey="value" stroke="none">
                   {diskPieData.map((entry, i) => (
                     <Cell key={i} fill={entry.color} />
