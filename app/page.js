@@ -110,6 +110,22 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+function Clock() {
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    function update() {
+      const now = new Date();
+      setTime(now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }) + " · " + now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
+    }
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return <>{time}</>;
+}
+
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [stats, setStats] = useState(
@@ -238,9 +254,14 @@ export default function Home() {
               <h2 className="text-2xl font-bold">Dashboard</h2>
               <p className="text-purple-200/40 text-sm mt-1">System overview and analytics</p>
             </div>
-            <div className="flex items-center gap-2 text-xs text-purple-200/40 font-mono bg-[#110e28] rounded-lg px-3 py-2 border border-purple-500/10">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="flex items-center gap-3">
+              <div className="text-xs text-purple-200/40 font-mono bg-[#110e28] rounded-lg px-3 py-2 border border-purple-500/10">
+                <Clock />
+              </div>
+              <div className="flex items-center gap-2 text-xs text-purple-200/40 font-mono bg-[#110e28] rounded-lg px-3 py-2 border border-purple-500/10">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               Live · {loading ? "..." : `${stats.cpu.toFixed(0)}% CPU`}
+              </div>
             </div>
           </div>
 
