@@ -70,7 +70,7 @@ export default function Home() {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center font-bold text-xs tracking-wide">
             TC
           </div>
-          <span className="font-semibold text-sm">Tset Cloud</span>
+          <span className="font-semibold text-sm">Chad's Goon Cave</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="hidden sm:block text-xs text-neutral-500 font-mono">
