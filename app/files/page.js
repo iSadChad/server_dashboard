@@ -61,7 +61,7 @@ export default function FilesPage() {
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-[#0c0a1d] text-white">
+    <div className="flex flex-col md:flex-row min-h-screen bg-[#0c0a1d] text-white">
       <aside className="w-64 bg-[#110e28] border-r border-purple-500/10 flex flex-col shrink-0">
         <div className="p-6 border-b border-purple-500/10">
           <div className="flex items-center gap-3">

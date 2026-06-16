@@ -54,6 +54,7 @@ function StatusDot({ status }) {
 export default function DatabasesPage() {
   const [databases, setDatabases] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     async function fetchDatabases() {
@@ -84,7 +85,10 @@ export default function DatabasesPage() {
 
   return (
     <div className="flex min-h-screen bg-[#0c0a1d] text-white">
-      <aside className="w-64 bg-[#110e28] border-r border-purple-500/10 flex flex-col shrink-0">
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-black/60 md:hidden" onClick={() => setMobileMenuOpen(false)} />
+      )}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#110e28] border-r border-purple-500/10 flex flex-col shrink-0 transform transition-transform duration-200 md:relative md:translate-x-0 ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="p-6 border-b border-purple-500/10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-violet-500/30">
@@ -109,6 +113,7 @@ export default function DatabasesPage() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => setMobileMenuOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
                 item.href === "/databases"
                   ? "bg-violet-500/15 text-white font-medium shadow-sm shadow-violet-500/10"
@@ -135,13 +140,20 @@ export default function DatabasesPage() {
       </aside>
 
       <main className="flex-1 overflow-auto">
-        <div className="p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-2xl font-bold">Databases</h2>
-              <p className="text-purple-200/40 text-sm mt-1">
-                Connected PostgreSQL databases
-              </p>
+        <div className="p-4 md:p-8">
+          <div className="flex items-center justify-between mb-6 md:mb-8">
+            <div className="flex items-center gap-3">
+              <button className="md:hidden p-2 rounded-lg bg-[#110e28] border border-purple-500/10 text-purple-200/60" onClick={() => setMobileMenuOpen(true)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <div>
+                <h2 className="text-xl md:text-2xl font-bold">Databases</h2>
+                <p className="text-purple-200/40 text-sm mt-1">
+                  Connected PostgreSQL databases
+                </p>
+              </div>
             </div>
 
             {databases.length > 0 && (
@@ -191,7 +203,7 @@ export default function DatabasesPage() {
               {databases.map((db) => (
                 <div
                   key={db.name}
-                  className="group rounded-xl bg-[#110e28] border border-purple-500/10 p-5 flex items-center justify-between hover:border-purple-500/25 hover:bg-[#13102a] transition-all"
+                  className="group rounded-xl bg-[#110e28] border border-purple-500/10 p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:border-purple-500/25 hover:bg-[#13102a] transition-all"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-lg bg-purple-500/15 border border-purple-500/20 flex items-center justify-center">
