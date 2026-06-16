@@ -53,7 +53,7 @@ function getFiles(dir, base = dir) {
 }
 
 export async function GET() {
-  const filesDir = path.join(process.cwd(), "files");
+  const filesDir = process.env.STORAGE_DIR || path.join(process.cwd(), "files");
 
   try {
     statSync(filesDir);
