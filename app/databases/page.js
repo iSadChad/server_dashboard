@@ -397,10 +397,10 @@ function DatabasesContent() {
                                             return (
                                               <th
                                                 key={column}
-                                                className={`py-2 pr-4 font-medium align-top whitespace-nowrap ${
+                                                className={`py-2 pr-4 font-medium align-top ${
                                                   longText
                                                     ? "min-w-[380px]"
-                                                    : "min-w-[130px]"
+                                                    : "whitespace-nowrap"
                                                 }`}
                                               >
                                                 {column}
@@ -430,7 +430,7 @@ function DatabasesContent() {
                                                       className={`py-2 pr-4 align-top whitespace-normal break-words ${
                                                         longText
                                                           ? "min-w-[380px] max-w-[620px]"
-                                                          : "min-w-[130px] max-w-[260px]"
+                                                          : "max-w-[260px]"
                                                       }`}
                                                     >
                                                       {row[column] ===
