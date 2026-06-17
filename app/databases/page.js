@@ -52,16 +52,42 @@ function StatusDot({ status }) {
 }
 
 export default function DatabasesPage() {
- const [databases, setDatabases] = useState([]);
- const [loading, setLoading] = useState(true);
- const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [databases, setDatabases] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
- const [expandedDb, setExpandedDb] = useState(null);
- const [tablesByDb, setTablesByDb] = useState({});
- const [tablesLoading, setTablesLoading] = useState({});
+  const [expandedDb, setExpandedDb] = useState(null);
+  const [tablesByDb, setTablesByDb] = useState({});
+  const [tablesLoading, setTablesLoading] = useState({});
 
   useEffect(() => {
-    async function toggleTables(dbName) {
+  async function fetchDatabases() {
+    try {
+      const res = await fetch("/api/databases");
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch databases");
+      }
+
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setDatabases(data);
+      } else {
+        setDatabases([]);
+      }
+    } catch (e) {
+      console.error("Failed to fetch databases:", e);
+      setDatabases([]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  fetchDatabases();
+}, []);
+
+async function toggleTables(dbName) {
   if (expandedDb === dbName) {
     setExpandedDb(null);
     return;
@@ -107,9 +133,6 @@ export default function DatabasesPage() {
     }));
   }
 }
-
-    fetchDatabases();
-  }, []);
 
   return (
     <div className="flex min-h-screen bg-[#0c0a1d] text-white">
