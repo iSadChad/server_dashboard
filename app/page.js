@@ -24,12 +24,29 @@ function formatBytes(bytes) {
 }
 
 const navItems = [
-  { label: "Dashboard", href: "/", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
-  { label: "Files", href: "/files", icon: "M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" },
-  { label: "Databases", href: "/databases", icon: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" },
+  {
+    label: "Dashboard",
+    href: "/",
+    icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
+  },
+  {
+    label: "Files",
+    href: "/files",
+    icon: "M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z",
+  },
+  {
+    label: "Databases",
+    href: "/databases",
+    icon: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4",
+  },
 ];
 
-const defaultStats = { cpu: 0, memory: { used: 0, total: 0 }, disk: { used: 0, total: 0 }, uptime: 0 };
+const defaultStats = {
+  cpu: 0,
+  memory: { used: 0, total: 0 },
+  disk: { used: 0, total: 0 },
+  uptime: 0,
+};
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -44,6 +61,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       </div>
     );
   }
+
   return null;
 };
 
@@ -53,8 +71,21 @@ function Clock() {
   useEffect(() => {
     function update() {
       const now = new Date();
-      setTime(now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }) + " · " + now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
+      setTime(
+        now.toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        }) +
+          " · " +
+          now.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          })
+      );
     }
+
     update();
     const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
@@ -70,8 +101,16 @@ export default function Home() {
   const [weekData, setWeekData] = useState([]);
   const [monthData, setMonthData] = useState([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  const [chartWidths, setChartWidths] = useState({ network: 600, memoryPie: 280, cpuBar: 280, memBar: 280, diskPie: 280 });
+  const [chartWidths, setChartWidths] = useState({
+    network: 600,
+    memoryPie: 280,
+    cpuBar: 280,
+    memBar: 280,
+    diskPie: 280,
+  });
+
   const networkRef = useRef(null);
   const memPieRef = useRef(null);
   const cpuBarRef = useRef(null);
@@ -79,12 +118,16 @@ export default function Home() {
   const diskPieRef = useRef(null);
 
   const measure = useCallback(() => {
+    function getWidth(ref, fallback, padding = 48, min = 220) {
+      return Math.max(min, (ref.current?.clientWidth || fallback) - padding);
+    }
+
     setChartWidths({
-      network: (networkRef.current?.clientWidth || 648) - 48,
-      memoryPie: (memPieRef.current?.clientWidth || 328) - 48,
-      cpuBar: (cpuBarRef.current?.clientWidth || 328) - 48,
-      memBar: (memBarRef.current?.clientWidth || 328) - 48,
-      diskPie: (diskPieRef.current?.clientWidth || 328) - 48,
+      network: getWidth(networkRef, 648),
+      memoryPie: getWidth(memPieRef, 328),
+      cpuBar: getWidth(cpuBarRef, 328),
+      memBar: getWidth(memBarRef, 328),
+      diskPie: getWidth(diskPieRef, 328),
     });
   }, []);
 
@@ -94,6 +137,11 @@ export default function Home() {
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
   }, [measure]);
+
+  useEffect(() => {
+    const timeout = setTimeout(measure, 250);
+    return () => clearTimeout(timeout);
+  }, [sidebarCollapsed, measure]);
 
   useEffect(() => {
     async function fetchStats() {
@@ -107,20 +155,25 @@ export default function Home() {
         setLoading(false);
       }
     }
+
     async function fetchCharts() {
       try {
         const res = await fetch("/api/charts");
         const data = await res.json();
+
         if (data.week) setWeekData(data.week);
         if (data.month) setMonthData(data.month);
       } catch (e) {
         console.error("Failed to fetch charts:", e);
       }
     }
+
     fetchStats();
     fetchCharts();
+
     const statsInterval = setInterval(fetchStats, 5000);
     const chartsInterval = setInterval(fetchCharts, 60000);
+
     return () => {
       clearInterval(statsInterval);
       clearInterval(chartsInterval);
@@ -131,14 +184,18 @@ export default function Home() {
     stats.memory.total > 0
       ? ((stats.memory.used / stats.memory.total) * 100).toFixed(1)
       : 0;
+
   const diskPercent =
     stats.disk.total > 0
       ? ((stats.disk.used / stats.disk.total) * 100).toFixed(1)
       : 0;
+
   const uptimeHours = Math.floor(stats.uptime / 3600);
   const uptimeMinutes = Math.floor((stats.uptime % 3600) / 60);
   const memPercentNum = parseFloat(memPercent) || 0;
   const diskPercentNum = parseFloat(diskPercent) || 0;
+
+  const showSidebarText = !sidebarCollapsed || mobileMenuOpen;
 
   const memPieData = [
     { name: "Used", value: memPercentNum || 1, color: "#8b5cf6" },
@@ -153,53 +210,137 @@ export default function Home() {
   return (
     <div className="flex min-h-screen bg-[#0c0a1d] text-white">
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-black/60 md:hidden" onClick={() => setMobileMenuOpen(false)} />
+        <div
+          className="fixed inset-0 z-40 bg-black/60 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
       )}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#110e28] border-r border-purple-500/10 flex flex-col shrink-0 transform transition-transform duration-200 md:relative md:translate-x-0 ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="p-6 border-b border-purple-500/10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-violet-500/30">
-              CG
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 bg-[#110e28] border-r border-purple-500/10 flex flex-col shrink-0 transform transition-all duration-200 md:relative md:translate-x-0 w-64 ${
+          sidebarCollapsed ? "md:w-20" : "md:w-64"
+        } ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        <div className="p-4 border-b border-purple-500/10">
+          <div
+            className={`flex items-center ${
+              sidebarCollapsed && !mobileMenuOpen
+                ? "justify-center"
+                : "justify-between gap-3"
+            }`}
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-violet-500/30 shrink-0">
+                CG
+              </div>
+
+              {showSidebarText && (
+                <div className="min-w-0">
+                  <h1 className="font-bold text-sm truncate">
+                    Chad&apos;s Goon Cave
+                  </h1>
+                  <p className="text-[11px] text-purple-300/50 truncate">
+                    Server Dashboard
+                  </p>
+                </div>
+              )}
             </div>
-            <div>
-              <h1 className="font-bold text-sm">Chad&apos;s Goon Cave</h1>
-              <p className="text-[11px] text-purple-300/50">Server Dashboard</p>
-            </div>
+
+            <button
+              type="button"
+              onClick={() => setSidebarCollapsed((prev) => !prev)}
+              className="hidden md:flex w-8 h-8 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 items-center justify-center transition-all shrink-0"
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`transition-transform ${
+                  sidebarCollapsed ? "rotate-180" : ""
+                }`}
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
           </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-purple-400/40 px-3 mb-2">Menu</p>
+        <nav className="flex-1 p-3 space-y-1">
+          {showSidebarText && (
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-purple-400/40 px-3 mb-2">
+              Menu
+            </p>
+          )}
+
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
+              title={item.label}
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
+              className={`flex items-center ${
+                sidebarCollapsed && !mobileMenuOpen
+                  ? "justify-center px-2"
+                  : "gap-3 px-3"
+              } py-2.5 rounded-lg text-sm transition-all ${
                 item.href === "/"
                   ? "bg-violet-500/15 text-white font-medium shadow-sm shadow-violet-500/10"
                   : "text-purple-200/50 hover:text-white hover:bg-purple-500/10"
               }`}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="shrink-0"
+              >
                 <path d={item.icon} />
               </svg>
-              {item.label}
+
+              {showSidebarText && item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="p-4 border-t border-purple-500/10">
-          <div className="rounded-xl bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border border-purple-500/15 p-4">
-            <p className="text-xs font-medium text-purple-200/70">System Status</p>
-            <div className="flex items-center gap-2 mt-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
-              <span className="text-xs text-emerald-400">Online</span>
+        <div className="p-3 border-t border-purple-500/10">
+          {showSidebarText ? (
+            <div className="rounded-xl bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border border-purple-500/15 p-4">
+              <p className="text-xs font-medium text-purple-200/70">
+                System Status
+              </p>
+
+              <div className="flex items-center gap-2 mt-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
+                <span className="text-xs text-emerald-400">Online</span>
+              </div>
+
+              <p className="text-[10px] text-purple-300/30 mt-2 font-mono">
+                {loading ? "Loading..." : `Uptime: ${uptimeHours}h ${uptimeMinutes}m`}
+              </p>
             </div>
-            <p className="text-[10px] text-purple-300/30 mt-2 font-mono">
-              {loading ? "Loading..." : `Uptime: ${uptimeHours}h ${uptimeMinutes}m`}
-            </p>
-          </div>
+          ) : (
+            <div
+              title={
+                loading
+                  ? "System status loading"
+                  : `Online · Uptime: ${uptimeHours}h ${uptimeMinutes}m`
+              }
+              className="hidden md:flex w-10 h-10 mx-auto rounded-xl bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border border-purple-500/15 items-center justify-center"
+            >
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+            </div>
+          )}
         </div>
       </aside>
 
@@ -207,23 +348,40 @@ export default function Home() {
         <div className="p-4 md:p-8">
           <div className="flex items-center justify-between mb-6 md:mb-8">
             <div className="flex items-center gap-3">
-              <button className="md:hidden p-2 rounded-lg bg-[#110e28] border border-purple-500/10 text-purple-200/60" onClick={() => setMobileMenuOpen(true)}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <button
+                className="md:hidden p-2 rounded-lg bg-[#110e28] border border-purple-500/10 text-purple-200/60"
+                onClick={() => setMobileMenuOpen(true)}
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
+
               <div>
                 <h2 className="text-xl md:text-2xl font-bold">Dashboard</h2>
-                <p className="text-purple-200/40 text-sm mt-1">System overview and analytics</p>
+                <p className="text-purple-200/40 text-sm mt-1">
+                  System overview and analytics
+                </p>
               </div>
             </div>
+
             <div className="hidden sm:flex items-center gap-3">
               <div className="text-xs text-purple-200/40 font-mono bg-[#110e28] rounded-lg px-3 py-2 border border-purple-500/10">
                 <Clock />
               </div>
+
               <div className="flex items-center gap-2 text-xs text-purple-200/40 font-mono bg-[#110e28] rounded-lg px-3 py-2 border border-purple-500/10">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Live · {loading ? "..." : `${stats.cpu.toFixed(0)}% CPU`}
+                Live · {loading ? "..." : `${stats.cpu.toFixed(0)}% CPU`}
               </div>
             </div>
           </div>
@@ -236,20 +394,35 @@ export default function Home() {
               color="from-violet-500 to-purple-600"
               icon="M9 3v2m6-2v2M9 19v2m6-2v2M5.8 5.8l1.4 1.4M16.2 16.8l1.4 1.4M3 9h2m14 0h2M3 15h2m14 0h2M5.8 18.2l1.4-1.4M16.2 7.2l1.4-1.4M9 9h6v6H9z"
             />
+
             <StatCard
               label="Memory"
               value={loading ? "—" : `${memPercent}%`}
-              sub={loading ? "" : `${formatBytes(stats.memory.used)} / ${formatBytes(stats.memory.total)}`}
+              sub={
+                loading
+                  ? ""
+                  : `${formatBytes(stats.memory.used)} / ${formatBytes(
+                      stats.memory.total
+                    )}`
+              }
               color="from-indigo-500 to-blue-600"
               icon="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
             />
+
             <StatCard
               label="Disk"
               value={loading ? "—" : `${diskPercent}%`}
-              sub={loading ? "" : `${formatBytes(stats.disk.used)} / ${formatBytes(stats.disk.total)}`}
+              sub={
+                loading
+                  ? ""
+                  : `${formatBytes(stats.disk.used)} / ${formatBytes(
+                      stats.disk.total
+                    )}`
+              }
               color="from-purple-500 to-pink-600"
               icon="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
             />
+
             <StatCard
               label="Uptime"
               value={loading ? "—" : `${uptimeHours}h ${uptimeMinutes}m`}
@@ -260,47 +433,142 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
-            <div className="lg:col-span-2 rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0" ref={networkRef}>
-              <h3 className="text-sm font-semibold text-purple-200/70 mb-1">Network Activity</h3>
-              <p className="text-[11px] text-purple-300/30 mb-4">Inbound vs Outbound over 12 months</p>
+            <div
+              className="lg:col-span-2 rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0"
+              ref={networkRef}
+            >
+              <h3 className="text-sm font-semibold text-purple-200/70 mb-1">
+                Network Activity
+              </h3>
+              <p className="text-[11px] text-purple-300/30 mb-4">
+                Inbound vs Outbound over 12 months
+              </p>
+
               {mounted ? (
-              <AreaChart width={chartWidths.network} height={260} data={monthData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
-                <defs>
-                  <linearGradient id="gradInbound" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="gradOutbound" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#6b5fb5", fontSize: 11 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b5fb5", fontSize: 11 }} />
-                <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="inbound" stroke="#8b5cf6" fill="url(#gradInbound)" strokeWidth={2} name="Inbound" />
-                <Area type="monotone" dataKey="outbound" stroke="#6366f1" fill="url(#gradOutbound)" strokeWidth={2} name="Outbound" />
-              </AreaChart>
-              ) : <div className="w-full h-[260px] animate-pulse rounded-lg bg-purple-500/5" />}
+                <AreaChart
+                  width={chartWidths.network}
+                  height={260}
+                  data={monthData}
+                  margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
+                >
+                  <defs>
+                    <linearGradient
+                      id="gradInbound"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="5%"
+                        stopColor="#8b5cf6"
+                        stopOpacity={0.3}
+                      />
+                      <stop
+                        offset="95%"
+                        stopColor="#8b5cf6"
+                        stopOpacity={0}
+                      />
+                    </linearGradient>
+
+                    <linearGradient
+                      id="gradOutbound"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="5%"
+                        stopColor="#6366f1"
+                        stopOpacity={0.3}
+                      />
+                      <stop
+                        offset="95%"
+                        stopColor="#6366f1"
+                        stopOpacity={0}
+                      />
+                    </linearGradient>
+                  </defs>
+
+                  <XAxis
+                    dataKey="month"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#6b5fb5", fontSize: 11 }}
+                  />
+
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#6b5fb5", fontSize: 11 }}
+                  />
+
+                  <Tooltip content={<CustomTooltip />} />
+
+                  <Area
+                    type="monotone"
+                    dataKey="inbound"
+                    stroke="#8b5cf6"
+                    fill="url(#gradInbound)"
+                    strokeWidth={2}
+                    name="Inbound"
+                  />
+
+                  <Area
+                    type="monotone"
+                    dataKey="outbound"
+                    stroke="#6366f1"
+                    fill="url(#gradOutbound)"
+                    strokeWidth={2}
+                    name="Outbound"
+                  />
+                </AreaChart>
+              ) : (
+                <div className="w-full h-[260px] animate-pulse rounded-lg bg-purple-500/5" />
+              )}
             </div>
 
-            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0" ref={memPieRef}>
-              <h3 className="text-sm font-semibold text-purple-200/70 mb-1">Memory Split</h3>
-              <p className="text-[11px] text-purple-300/30 mb-4">Used vs Free</p>
+            <div
+              className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0"
+              ref={memPieRef}
+            >
+              <h3 className="text-sm font-semibold text-purple-200/70 mb-1">
+                Memory Split
+              </h3>
+              <p className="text-[11px] text-purple-300/30 mb-4">
+                Used vs Free
+              </p>
+
               {mounted ? (
-              <PieChart width={chartWidths.memoryPie} height={180}>
-                <Pie data={memPieData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={4} dataKey="value" stroke="none">
-                  {memPieData.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-              ) : <div className="w-full h-[180px] animate-pulse rounded-lg bg-purple-500/5" />}
+                <PieChart width={chartWidths.memoryPie} height={180}>
+                  <Pie
+                    data={memPieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={75}
+                    paddingAngle={4}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {memPieData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              ) : (
+                <div className="w-full h-[180px] animate-pulse rounded-lg bg-purple-500/5" />
+              )}
+
               <div className="flex justify-center gap-4 mt-2">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-violet-500" />
-                  <span className="text-[11px] text-purple-200/50">Used {memPercent}%</span>
+                  <span className="text-[11px] text-purple-200/50">
+                    Used {memPercent}%
+                  </span>
                 </div>
+
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-[#1e1b4b]" />
                   <span className="text-[11px] text-purple-200/50">Free</span>
@@ -310,49 +578,138 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0" ref={cpuBarRef}>
-              <h3 className="text-sm font-semibold text-purple-200/70 mb-1">Weekly CPU</h3>
-              <p className="text-[11px] text-purple-300/30 mb-4">Avg usage by day</p>
+            <div
+              className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0"
+              ref={cpuBarRef}
+            >
+              <h3 className="text-sm font-semibold text-purple-200/70 mb-1">
+                Weekly CPU
+              </h3>
+              <p className="text-[11px] text-purple-300/30 mb-4">
+                Avg usage by day
+              </p>
+
               {mounted ? (
-              <BarChart width={chartWidths.cpuBar} height={160} data={weekData} barCategoryMaxWidth={16}>
-                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#6b5fb5", fontSize: 10 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b5fb5", fontSize: 10 }} width={30} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="cpu" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="CPU" />
-              </BarChart>
-              ) : <div className="w-full h-[160px] animate-pulse rounded-lg bg-purple-500/5" />}
+                <BarChart
+                  width={chartWidths.cpuBar}
+                  height={160}
+                  data={weekData}
+                  barCategoryMaxWidth={16}
+                >
+                  <XAxis
+                    dataKey="day"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#6b5fb5", fontSize: 10 }}
+                  />
+
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#6b5fb5", fontSize: 10 }}
+                    width={30}
+                  />
+
+                  <Tooltip content={<CustomTooltip />} />
+
+                  <Bar
+                    dataKey="cpu"
+                    fill="#8b5cf6"
+                    radius={[4, 4, 0, 0]}
+                    name="CPU"
+                  />
+                </BarChart>
+              ) : (
+                <div className="w-full h-[160px] animate-pulse rounded-lg bg-purple-500/5" />
+              )}
             </div>
 
-            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0" ref={memBarRef}>
-              <h3 className="text-sm font-semibold text-purple-200/70 mb-1">Weekly Memory</h3>
-              <p className="text-[11px] text-purple-300/30 mb-4">Avg usage by day</p>
+            <div
+              className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0"
+              ref={memBarRef}
+            >
+              <h3 className="text-sm font-semibold text-purple-200/70 mb-1">
+                Weekly Memory
+              </h3>
+              <p className="text-[11px] text-purple-300/30 mb-4">
+                Avg usage by day
+              </p>
+
               {mounted ? (
-              <BarChart width={chartWidths.memBar} height={160} data={weekData} barCategoryMaxWidth={16}>
-                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#6b5fb5", fontSize: 10 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b5fb5", fontSize: 10 }} width={30} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="mem" fill="#6366f1" radius={[4, 4, 0, 0]} name="Memory" />
-              </BarChart>
-              ) : <div className="w-full h-[160px] animate-pulse rounded-lg bg-purple-500/5" />}
+                <BarChart
+                  width={chartWidths.memBar}
+                  height={160}
+                  data={weekData}
+                  barCategoryMaxWidth={16}
+                >
+                  <XAxis
+                    dataKey="day"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#6b5fb5", fontSize: 10 }}
+                  />
+
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#6b5fb5", fontSize: 10 }}
+                    width={30}
+                  />
+
+                  <Tooltip content={<CustomTooltip />} />
+
+                  <Bar
+                    dataKey="mem"
+                    fill="#6366f1"
+                    radius={[4, 4, 0, 0]}
+                    name="Memory"
+                  />
+                </BarChart>
+              ) : (
+                <div className="w-full h-[160px] animate-pulse rounded-lg bg-purple-500/5" />
+              )}
             </div>
 
-            <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0" ref={diskPieRef}>
-              <h3 className="text-sm font-semibold text-purple-200/70 mb-1">Disk Usage</h3>
-              <p className="text-[11px] text-purple-300/30 mb-4">Used vs Free</p>
+            <div
+              className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0"
+              ref={diskPieRef}
+            >
+              <h3 className="text-sm font-semibold text-purple-200/70 mb-1">
+                Disk Usage
+              </h3>
+              <p className="text-[11px] text-purple-300/30 mb-4">
+                Used vs Free
+              </p>
+
               {mounted ? (
-              <PieChart width={chartWidths.diskPie} height={180}>
-                <Pie data={diskPieData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={4} dataKey="value" stroke="none">
-                  {diskPieData.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-              ) : <div className="w-full h-[180px] animate-pulse rounded-lg bg-purple-500/5" />}
+                <PieChart width={chartWidths.diskPie} height={180}>
+                  <Pie
+                    data={diskPieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={75}
+                    paddingAngle={4}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {diskPieData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              ) : (
+                <div className="w-full h-[180px] animate-pulse rounded-lg bg-purple-500/5" />
+              )}
+
               <div className="flex justify-center gap-4 mt-2">
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-                  <span className="text-[11px] text-purple-200/50">Used {diskPercent}%</span>
+                  <span className="text-[11px] text-purple-200/50">
+                    Used {diskPercent}%
+                  </span>
                 </div>
+
                 <div className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full bg-[#1e1b4b]" />
                   <span className="text-[11px] text-purple-200/50">Free</span>
@@ -371,14 +728,30 @@ function StatCard({ label, value, sub, color, icon }) {
     <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-5 group hover:border-purple-500/25 transition-all">
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs font-medium text-purple-200/50">{label}</span>
-        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg shadow-purple-500/10`}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+
+        <div
+          className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg shadow-purple-500/10`}
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d={icon} />
           </svg>
         </div>
       </div>
+
       <p className="text-2xl font-bold">{value}</p>
-      {sub && <p className="text-[11px] text-purple-200/30 mt-1 font-mono">{sub}</p>}
+
+      {sub && (
+        <p className="text-[11px] text-purple-200/30 mt-1 font-mono">{sub}</p>
+      )}
     </div>
   );
 }
