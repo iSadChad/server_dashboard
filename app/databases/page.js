@@ -32,7 +32,6 @@ function isLongTextColumn(column) {
     "command",
     "file_path",
     "url",
-    "title",
   ].includes(column);
 }
 
