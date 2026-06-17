@@ -59,6 +59,9 @@ export default function DatabasesPage() {
   const [expandedDb, setExpandedDb] = useState(null);
   const [tablesByDb, setTablesByDb] = useState({});
   const [tablesLoading, setTablesLoading] = useState({});
+  const [expandedTable, setExpandedTable] = useState(null);
+  const [rowsByTable, setRowsByTable] = useState({});
+  const [rowsLoading, setRowsLoading] = useState({});
 
   useEffect(() => {
   async function fetchDatabases() {
@@ -130,6 +133,61 @@ async function toggleTables(dbName) {
     setTablesLoading((prev) => ({
       ...prev,
       [dbName]: false,
+    }));
+  }
+}
+
+async function toggleRows(dbName, schemaName, tableName) {
+  const key = `${dbName}.${schemaName}.${tableName}`;
+
+  if (expandedTable === key) {
+    setExpandedTable(null);
+    return;
+  }
+
+  setExpandedTable(key);
+
+  if (rowsByTable[key]) {
+    return;
+  }
+
+  setRowsLoading((prev) => ({
+    ...prev,
+    [key]: true,
+  }));
+
+  try {
+    const res = await fetch(
+      `/api/database_rows?db=${encodeURIComponent(dbName)}&schema=${encodeURIComponent(schemaName)}&table=${encodeURIComponent(tableName)}`
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch rows");
+    }
+
+    const data = await res.json();
+
+    setRowsByTable((prev) => ({
+      ...prev,
+      [key]: {
+        columns: Array.isArray(data.columns) ? data.columns : [],
+        rows: Array.isArray(data.rows) ? data.rows : [],
+      },
+    }));
+  } catch (error) {
+    console.error("Failed to fetch rows:", error);
+
+    setRowsByTable((prev) => ({
+      ...prev,
+      [key]: {
+        columns: [],
+        rows: [],
+      },
+    }));
+  } finally {
+    setRowsLoading((prev) => ({
+      ...prev,
+      [key]: false,
     }));
   }
 }
@@ -353,22 +411,85 @@ async function toggleTables(dbName) {
                 Tables
               </p>
 
-              {tables.map((table) => (
-                <div
-                  key={`${table.table_schema}.${table.table_name}`}
-                  className="rounded-lg bg-[#110e28] border border-purple-500/10 px-3 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"
-                >
-                  <span className="text-sm text-purple-100 font-medium">
-                    {table.table_name}
-                  </span>
+              {tables.map((table) => {
+  const rowKey = `${db.name}.${table.table_schema}.${table.table_name}`;
+  const isRowsExpanded = expandedTable === rowKey;
+  const isRowsLoading = rowsLoading[rowKey];
+  const rowData = rowsByTable[rowKey] || { columns: [], rows: [] };
 
-                  <div className="flex items-center gap-2 text-xs font-mono text-purple-200/30">
-                    <span>{table.table_schema}</span>
-                    <span>·</span>
-                    <span>{table.table_type}</span>
-                  </div>
-                </div>
-              ))}
+  return (
+    <div
+      key={`${table.table_schema}.${table.table_name}`}
+      className="rounded-lg bg-[#110e28] border border-purple-500/10 overflow-hidden"
+    >
+      <div className="px-3 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <span className="text-sm text-purple-100 font-medium">
+            {table.table_name}
+          </span>
+
+          <div className="flex items-center gap-2 text-xs font-mono text-purple-200/30 mt-0.5">
+            <span>{table.table_schema}</span>
+            <span>·</span>
+            <span>{table.table_type}</span>
+          </div>
+        </div>
+
+        <button
+          onClick={() =>
+            toggleRows(db.name, table.table_schema, table.table_name)
+          }
+          className="rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 px-3 py-1.5 text-xs font-medium transition-all"
+        >
+          {isRowsExpanded ? "Hide Rows" : "Show Rows"}
+        </button>
+      </div>
+
+      {isRowsExpanded && (
+        <div className="border-t border-purple-500/10 p-3 overflow-x-auto">
+          {isRowsLoading ? (
+            <p className="text-xs text-purple-200/40 font-mono">
+              Loading rows...
+            </p>
+          ) : rowData.rows.length === 0 ? (
+            <p className="text-xs text-purple-200/40 font-mono">
+              No rows found.
+            </p>
+          ) : (
+            <table className="w-full text-left text-xs font-mono">
+              <thead>
+                <tr className="text-purple-300/50 border-b border-purple-500/10">
+                  {rowData.columns.map((column) => (
+                    <th key={column} className="py-2 pr-4 font-medium">
+                      {column}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+
+              <tbody>
+                {rowData.rows.map((row, rowIndex) => (
+                  <tr
+                    key={rowIndex}
+                    className="border-b border-purple-500/5 text-purple-100/70"
+                  >
+                    {rowData.columns.map((column) => (
+                      <td key={column} className="py-2 pr-4 max-w-[220px] truncate">
+                        {row[column] === null || row[column] === undefined
+                          ? "NULL"
+                          : String(row[column])}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+    </div>
+  );
+})}
             </div>
           )}
         </div>
