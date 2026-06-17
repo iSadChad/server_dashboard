@@ -1,37 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-
-function formatBytes(bytes) {
-  const number = Number(bytes);
-
-  if (!number || number === 0) return "0 B";
-
-  const k = 1024;
-  const sizes = ["B", "KB", "MB", "GB", "TB"];
-  const i = Math.floor(Math.log(number) / Math.log(k));
-
-  return parseFloat((number / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
-}
-
-const navItems = [
-  {
-    label: "Dashboard",
-    href: "/",
-    icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
-  },
-  {
-    label: "Files",
-    href: "/files",
-    icon: "M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z",
-  },
-  {
-    label: "Databases",
-    href: "/databases",
-    icon: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4",
-  },
-];
+import PageLayout from "../../components/PageLayout";
+import { formatBytes } from "../../utils/formatBytes";
 
 function StatusDot({ status }) {
   if (status === "running") {
@@ -65,10 +36,9 @@ function isLongTextColumn(column) {
   ].includes(column);
 }
 
-export default function DatabasesPage() {
+function DatabasesContent() {
   const [databases, setDatabases] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const [expandedDb, setExpandedDb] = useState(null);
   const [tablesByDb, setTablesByDb] = useState({});
@@ -211,377 +181,299 @@ export default function DatabasesPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#0c0a1d] text-white">
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/60 md:hidden"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
-
-      <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#110e28] border-r border-purple-500/10 flex flex-col shrink-0 transform transition-transform duration-200 md:relative md:translate-x-0 ${
-          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="p-6 border-b border-purple-500/10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-violet-500/30">
-              CG
-            </div>
-
-            <div>
-              <h1 className="font-bold text-sm">Chad&apos;s Goon Cave</h1>
-              <p className="text-[11px] text-purple-300/50">
-                Server Dashboard
-              </p>
-            </div>
-          </div>
+    <div className="p-4 md:p-8">
+      <div className="flex items-center justify-between mb-6 md:mb-8">
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold">Databases</h2>
+          <p className="text-purple-200/40 text-sm mt-1">
+            Connected PostgreSQL databases
+          </p>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-purple-400/40 px-3 mb-2">
-            Menu
-          </p>
+        {databases.length > 0 && (
+          <span className="text-xs text-purple-200/30 font-mono bg-[#110e28] rounded-lg px-3 py-2 border border-purple-500/10">
+            {databases.length} db{databases.length !== 1 ? "s" : ""}
+          </span>
+        )}
+      </div>
 
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
-                item.href === "/databases"
-                  ? "bg-violet-500/15 text-white font-medium shadow-sm shadow-violet-500/10"
-                  : "text-purple-200/50 hover:text-white hover:bg-purple-500/10"
-              }`}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d={item.icon} />
-              </svg>
-
-              {item.label}
-            </Link>
+      {loading ? (
+        <div className="space-y-3">
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="rounded-xl bg-[#110e28] border border-purple-500/10 h-20 animate-pulse"
+            />
           ))}
-        </nav>
-      </aside>
-
-      <main className="flex-1 overflow-auto">
-        <div className="p-4 md:p-8">
-          <div className="flex items-center justify-between mb-6 md:mb-8">
-            <div className="flex items-center gap-3">
-              <button
-                className="md:hidden p-2 rounded-lg bg-[#110e28] border border-purple-500/10 text-purple-200/60"
-                onClick={() => setMobileMenuOpen(true)}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-
-              <div>
-                <h2 className="text-xl md:text-2xl font-bold">Databases</h2>
-                <p className="text-purple-200/40 text-sm mt-1">
-                  Connected PostgreSQL databases
-                </p>
-              </div>
-            </div>
-
-            {databases.length > 0 && (
-              <span className="text-xs text-purple-200/30 font-mono bg-[#110e28] rounded-lg px-3 py-2 border border-purple-500/10">
-                {databases.length} db{databases.length !== 1 ? "s" : ""}
-              </span>
-            )}
+        </div>
+      ) : databases.length === 0 ? (
+        <div className="text-center py-20">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#110e28] border border-purple-500/10 flex items-center justify-center">
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              className="text-purple-400/30"
+            >
+              <ellipse cx="12" cy="5" rx="9" ry="3" />
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+            </svg>
           </div>
 
-          {loading ? (
-            <div className="space-y-3">
-              {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="rounded-xl bg-[#110e28] border border-purple-500/10 h-20 animate-pulse"
-                />
-              ))}
-            </div>
-          ) : databases.length === 0 ? (
-            <div className="text-center py-20">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#110e28] border border-purple-500/10 flex items-center justify-center">
-                <svg
-                  width="28"
-                  height="28"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  className="text-purple-400/30"
-                >
-                  <ellipse cx="12" cy="5" rx="9" ry="3" />
-                  <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-                  <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-                </svg>
-              </div>
+          <p className="text-purple-200/40 text-sm">
+            No databases detected
+          </p>
 
-              <p className="text-purple-200/40 text-sm">
-                No databases detected
-              </p>
+          <p className="text-purple-300/20 text-xs mt-1">
+            Check your PostgreSQL connection in .env.local
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {databases.map((db) => {
+            const tables = tablesByDb[db.name] || [];
+            const isExpanded = expandedDb === db.name;
+            const isLoadingTables = tablesLoading[db.name];
 
-              <p className="text-purple-300/20 text-xs mt-1">
-                Check your PostgreSQL connection in .env.local
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {databases.map((db) => {
-                const tables = tablesByDb[db.name] || [];
-                const isExpanded = expandedDb === db.name;
-                const isLoadingTables = tablesLoading[db.name];
-
-                return (
-                  <div
-                    key={db.name}
-                    className="group rounded-xl bg-[#110e28] border border-purple-500/10 hover:border-purple-500/25 hover:bg-[#13102a] transition-all overflow-hidden"
-                  >
-                    <div className="p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <div className="flex items-center gap-4 min-w-0">
-                        <div className="w-10 h-10 rounded-lg bg-purple-500/15 border border-purple-500/20 flex items-center justify-center shrink-0">
-                          <svg
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#a78bfa"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <ellipse cx="12" cy="5" rx="9" ry="3" />
-                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-                          </svg>
-                        </div>
-
-                        <div className="min-w-0">
-                          <h3 className="font-medium text-purple-100 truncate">
-                            {db.name}
-                          </h3>
-
-                          <div className="flex flex-wrap items-center gap-3 mt-0.5">
-                            <span className="text-xs text-purple-200/40 font-mono">
-                              {db.type}
-                            </span>
-
-                            {db.version && (
-                              <span className="text-xs text-purple-200/25 font-mono">
-                                v{db.version}
-                              </span>
-                            )}
-
-                            {db.size !== undefined && Number(db.size) > 0 && (
-                              <span className="text-xs text-purple-200/25 font-mono">
-                                {formatBytes(Number(db.size))}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3 flex-wrap sm:justify-end">
-                        {db.port && (
-                          <span className="text-xs font-mono text-purple-300/50 bg-purple-500/10 border border-purple-500/15 px-2 py-1 rounded">
-                            :{db.port}
-                          </span>
-                        )}
-
-                        <div className="flex items-center gap-2 text-xs font-mono">
-                          <StatusDot status={db.status} />
-
-                          <span
-                            className={
-                              db.status === "running"
-                                ? "text-emerald-400"
-                                : db.status === "stopped"
-                                ? "text-rose-400"
-                                : "text-amber-400"
-                            }
-                          >
-                            {db.status.toUpperCase()}
-                          </span>
-                        </div>
-
-                        <button
-                          onClick={() => toggleTables(db.name)}
-                          className="rounded-lg bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 text-violet-300 px-4 py-2 text-xs font-medium transition-all"
-                        >
-                          {isExpanded ? "Hide Tables" : "Show Tables"}
-                        </button>
-                      </div>
+            return (
+              <div
+                key={db.name}
+                className="group rounded-xl bg-[#110e28] border border-purple-500/10 hover:border-purple-500/25 hover:bg-[#13102a] transition-all overflow-hidden"
+              >
+                <div className="p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="w-10 h-10 rounded-lg bg-purple-500/15 border border-purple-500/20 flex items-center justify-center shrink-0">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#a78bfa"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <ellipse cx="12" cy="5" rx="9" ry="3" />
+                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                      </svg>
                     </div>
 
-                    {isExpanded && (
-                      <div className="border-t border-purple-500/10 px-4 md:px-5 py-4 bg-[#0c0a1d]/40">
-                        {isLoadingTables ? (
-                          <p className="text-xs text-purple-200/40 font-mono">
-                            Loading tables...
-                          </p>
-                        ) : tables.length === 0 ? (
-                          <p className="text-xs text-purple-200/40 font-mono">
-                            No tables found.
-                          </p>
-                        ) : (
-                          <div className="space-y-2">
-                            <p className="text-[10px] font-semibold uppercase tracking-widest text-purple-400/40 mb-2">
-                              Tables
-                            </p>
+                    <div className="min-w-0">
+                      <h3 className="font-medium text-purple-100 truncate">
+                        {db.name}
+                      </h3>
 
-                            {tables.map((table) => {
-                              const rowKey = `${db.name}.${table.table_schema}.${table.table_name}`;
-                              const isRowsExpanded = expandedTable === rowKey;
-                              const isRowsLoading = rowsLoading[rowKey];
-                              const rowData = rowsByTable[rowKey] || {
-                                columns: [],
-                                rows: [],
-                              };
+                      <div className="flex flex-wrap items-center gap-3 mt-0.5">
+                        <span className="text-xs text-purple-200/40 font-mono">
+                          {db.type}
+                        </span>
 
-                              return (
-                                <div
-                                  key={`${table.table_schema}.${table.table_name}`}
-                                  className="rounded-lg bg-[#110e28] border border-purple-500/10 overflow-hidden"
-                                >
-                                  <div className="px-3 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                                    <div>
-                                      <span className="text-sm text-purple-100 font-medium">
-                                        {table.table_name}
-                                      </span>
+                        {db.version && (
+                          <span className="text-xs text-purple-200/25 font-mono">
+                            v{db.version}
+                          </span>
+                        )}
 
-                                      <div className="flex items-center gap-2 text-xs font-mono text-purple-200/30 mt-0.5">
-                                        <span>{table.table_schema}</span>
-                                        <span>·</span>
-                                        <span>{table.table_type}</span>
-                                      </div>
-                                    </div>
+                        {db.size !== undefined && Number(db.size) > 0 && (
+                          <span className="text-xs text-purple-200/25 font-mono">
+                            {formatBytes(Number(db.size))}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
 
-                                    <button
-                                      onClick={() =>
-                                        toggleRows(
-                                          db.name,
-                                          table.table_schema,
-                                          table.table_name
-                                        )
-                                      }
-                                      className="rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 px-3 py-1.5 text-xs font-medium transition-all"
-                                    >
-                                      {isRowsExpanded ? "Hide Rows" : "Show Rows"}
-                                    </button>
+                  <div className="flex items-center gap-3 flex-wrap sm:justify-end">
+                    {db.port && (
+                      <span className="text-xs font-mono text-purple-300/50 bg-purple-500/10 border border-purple-500/15 px-2 py-1 rounded">
+                        :{db.port}
+                      </span>
+                    )}
+
+                    <div className="flex items-center gap-2 text-xs font-mono">
+                      <StatusDot status={db.status} />
+
+                      <span
+                        className={
+                          db.status === "running"
+                            ? "text-emerald-400"
+                            : db.status === "stopped"
+                            ? "text-rose-400"
+                            : "text-amber-400"
+                        }
+                      >
+                        {db.status.toUpperCase()}
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={() => toggleTables(db.name)}
+                      className="rounded-lg bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 text-violet-300 px-4 py-2 text-xs font-medium transition-all"
+                    >
+                      {isExpanded ? "Hide Tables" : "Show Tables"}
+                    </button>
+                  </div>
+                </div>
+
+                {isExpanded && (
+                  <div className="border-t border-purple-500/10 px-4 md:px-5 py-4 bg-[#0c0a1d]/40">
+                    {isLoadingTables ? (
+                      <p className="text-xs text-purple-200/40 font-mono">
+                        Loading tables...
+                      </p>
+                    ) : tables.length === 0 ? (
+                      <p className="text-xs text-purple-200/40 font-mono">
+                        No tables found.
+                      </p>
+                    ) : (
+                      <div className="space-y-2">
+                        <p className="text-[10px] font-semibold uppercase tracking-widest text-purple-400/40 mb-2">
+                          Tables
+                        </p>
+
+                        {tables.map((table) => {
+                          const rowKey = `${db.name}.${table.table_schema}.${table.table_name}`;
+                          const isRowsExpanded = expandedTable === rowKey;
+                          const isRowsLoading = rowsLoading[rowKey];
+                          const rowData = rowsByTable[rowKey] || {
+                            columns: [],
+                            rows: [],
+                          };
+
+                          return (
+                            <div
+                              key={`${table.table_schema}.${table.table_name}`}
+                              className="rounded-lg bg-[#110e28] border border-purple-500/10 overflow-hidden"
+                            >
+                              <div className="px-3 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                <div>
+                                  <span className="text-sm text-purple-100 font-medium">
+                                    {table.table_name}
+                                  </span>
+
+                                  <div className="flex items-center gap-2 text-xs font-mono text-purple-200/30 mt-0.5">
+                                    <span>{table.table_schema}</span>
+                                    <span>·</span>
+                                    <span>{table.table_type}</span>
                                   </div>
+                                </div>
 
-                                  {isRowsExpanded && (
-                                    <div className="border-t border-purple-500/10 p-3 overflow-x-auto">
-                                      {isRowsLoading ? (
-                                        <p className="text-xs text-purple-200/40 font-mono">
-                                          Loading rows...
-                                        </p>
-                                      ) : rowData.rows.length === 0 ? (
-                                        <p className="text-xs text-purple-200/40 font-mono">
-                                          No rows found.
-                                        </p>
-                                      ) : (
-                                        <table className="min-w-[1200px] w-full table-auto text-left text-xs font-mono">
-                                          <thead>
-                                            <tr className="text-purple-300/50 border-b border-purple-500/10">
-                                              {rowData.columns.map((column) => {
-                                                const longText =
-                                                  isLongTextColumn(column);
+                                <button
+                                  onClick={() =>
+                                    toggleRows(
+                                      db.name,
+                                      table.table_schema,
+                                      table.table_name
+                                    )
+                                  }
+                                  className="rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 px-3 py-1.5 text-xs font-medium transition-all"
+                                >
+                                  {isRowsExpanded ? "Hide Rows" : "Show Rows"}
+                                </button>
+                              </div>
 
-                                                return (
-                                                  <th
-                                                    key={column}
-                                                    className={`py-2 pr-4 font-medium align-top whitespace-nowrap ${
-                                                      longText
-                                                        ? "min-w-[380px]"
-                                                        : "min-w-[130px]"
-                                                    }`}
-                                                  >
-                                                    {column}
-                                                  </th>
-                                                );
-                                              })}
+                              {isRowsExpanded && (
+                                <div className="border-t border-purple-500/10 p-3 overflow-x-auto">
+                                  {isRowsLoading ? (
+                                    <p className="text-xs text-purple-200/40 font-mono">
+                                      Loading rows...
+                                    </p>
+                                  ) : rowData.rows.length === 0 ? (
+                                    <p className="text-xs text-purple-200/40 font-mono">
+                                      No rows found.
+                                    </p>
+                                  ) : (
+                                    <table className="min-w-[1200px] w-full table-auto text-left text-xs font-mono">
+                                      <thead>
+                                        <tr className="text-purple-300/50 border-b border-purple-500/10">
+                                          {rowData.columns.map((column) => {
+                                            const longText =
+                                              isLongTextColumn(column);
+
+                                            return (
+                                              <th
+                                                key={column}
+                                                className={`py-2 pr-4 font-medium align-top whitespace-nowrap ${
+                                                  longText
+                                                    ? "min-w-[380px]"
+                                                    : "min-w-[130px]"
+                                                }`}
+                                              >
+                                                {column}
+                                              </th>
+                                            );
+                                          })}
+                                        </tr>
+                                      </thead>
+
+                                      <tbody>
+                                        {rowData.rows.map(
+                                          (row, rowIndex) => (
+                                            <tr
+                                              key={rowIndex}
+                                              className="border-b border-purple-500/5 text-purple-100/70"
+                                            >
+                                              {rowData.columns.map(
+                                                (column) => {
+                                                  const longText =
+                                                    isLongTextColumn(
+                                                      column
+                                                    );
+
+                                                  return (
+                                                    <td
+                                                      key={column}
+                                                      className={`py-2 pr-4 align-top whitespace-normal break-words ${
+                                                        longText
+                                                          ? "min-w-[380px] max-w-[620px]"
+                                                          : "min-w-[130px] max-w-[260px]"
+                                                      }`}
+                                                    >
+                                                      {row[column] ===
+                                                        null ||
+                                                      row[column] ===
+                                                        undefined
+                                                        ? "NULL"
+                                                        : String(
+                                                            row[column]
+                                                          )}
+                                                    </td>
+                                                  );
+                                                }
+                                              )}
                                             </tr>
-                                          </thead>
-
-                                          <tbody>
-                                            {rowData.rows.map(
-                                              (row, rowIndex) => (
-                                                <tr
-                                                  key={rowIndex}
-                                                  className="border-b border-purple-500/5 text-purple-100/70"
-                                                >
-                                                  {rowData.columns.map(
-                                                    (column) => {
-                                                      const longText =
-                                                        isLongTextColumn(
-                                                          column
-                                                        );
-
-                                                      return (
-                                                        <td
-                                                          key={column}
-                                                          className={`py-2 pr-4 align-top whitespace-normal break-words ${
-                                                            longText
-                                                              ? "min-w-[380px] max-w-[620px]"
-                                                              : "min-w-[130px] max-w-[260px]"
-                                                          }`}
-                                                        >
-                                                          {row[column] ===
-                                                            null ||
-                                                          row[column] ===
-                                                            undefined
-                                                            ? "NULL"
-                                                            : String(
-                                                                row[column]
-                                                              )}
-                                                        </td>
-                                                      );
-                                                    }
-                                                  )}
-                                                </tr>
-                                              )
-                                            )}
-                                          </tbody>
-                                        </table>
-                                      )}
-                                    </div>
+                                          )
+                                        )}
+                                      </tbody>
+                                    </table>
                                   )}
                                 </div>
-                              );
-                            })}
-                          </div>
-                        )}
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
-                );
-              })}
-            </div>
-          )}
+                )}
+              </div>
+            );
+          })}
         </div>
-      </main>
+      )}
     </div>
+  );
+}
+
+export default function DatabasesPage() {
+  return (
+    <PageLayout>
+      <DatabasesContent />
+    </PageLayout>
   );
 }
