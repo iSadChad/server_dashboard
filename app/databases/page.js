@@ -52,33 +52,61 @@ function StatusDot({ status }) {
 }
 
 export default function DatabasesPage() {
-  const [databases, setDatabases] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+ const [databases, setDatabases] = useState([]);
+ const [loading, setLoading] = useState(true);
+ const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+ const [expandedDb, setExpandedDb] = useState(null);
+ const [tablesByDb, setTablesByDb] = useState({});
+ const [tablesLoading, setTablesLoading] = useState({});
 
   useEffect(() => {
-    async function fetchDatabases() {
-      try {
-        const res = await fetch("/api/databases");
+    async function toggleTables(dbName) {
+  if (expandedDb === dbName) {
+    setExpandedDb(null);
+    return;
+  }
 
-        if (!res.ok) {
-          throw new Error("Failed to fetch databases");
-        }
+  setExpandedDb(dbName);
 
-        const data = await res.json();
+  if (tablesByDb[dbName]) {
+    return;
+  }
 
-        if (Array.isArray(data)) {
-          setDatabases(data);
-        } else {
-          setDatabases([]);
-        }
-      } catch (e) {
-        console.error("Failed to fetch databases:", e);
-        setDatabases([]);
-      } finally {
-        setLoading(false);
-      }
+  setTablesLoading((prev) => ({
+    ...prev,
+    [dbName]: true,
+  }));
+
+  try {
+    const res = await fetch(
+      `/api/databases_tables?db=${encodeURIComponent(dbName)}`
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch tables");
     }
+
+    const data = await res.json();
+
+    setTablesByDb((prev) => ({
+      ...prev,
+      [dbName]: Array.isArray(data.tables) ? data.tables : [],
+    }));
+  } catch (error) {
+    console.error("Failed to fetch tables:", error);
+
+    setTablesByDb((prev) => ({
+      ...prev,
+      [dbName]: [],
+    }));
+  } finally {
+    setTablesLoading((prev) => ({
+      ...prev,
+      [dbName]: false,
+    }));
+  }
+}
 
     fetchDatabases();
   }, []);
@@ -200,83 +228,135 @@ export default function DatabasesPage() {
             </div>
           ) : (
             <div className="space-y-3">
-              {databases.map((db) => (
+              {databases.map((db) => {
+  const tables = tablesByDb[db.name] || [];
+  const isExpanded = expandedDb === db.name;
+  const isLoadingTables = tablesLoading[db.name];
+
+  return (
+    <div
+      key={db.name}
+      className="group rounded-xl bg-[#110e28] border border-purple-500/10 hover:border-purple-500/25 hover:bg-[#13102a] transition-all overflow-hidden"
+    >
+      <div className="p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="w-10 h-10 rounded-lg bg-purple-500/15 border border-purple-500/20 flex items-center justify-center shrink-0">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#a78bfa"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <ellipse cx="12" cy="5" rx="9" ry="3" />
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+            </svg>
+          </div>
+
+          <div className="min-w-0">
+            <h3 className="font-medium text-purple-100 truncate">
+              {db.name}
+            </h3>
+
+            <div className="flex flex-wrap items-center gap-3 mt-0.5">
+              <span className="text-xs text-purple-200/40 font-mono">
+                {db.type}
+              </span>
+
+              {db.version && (
+                <span className="text-xs text-purple-200/25 font-mono">
+                  v{db.version}
+                </span>
+              )}
+
+              {db.size !== undefined && Number(db.size) > 0 && (
+                <span className="text-xs text-purple-200/25 font-mono">
+                  {formatBytes(Number(db.size))}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 flex-wrap sm:justify-end">
+          {db.port && (
+            <span className="text-xs font-mono text-purple-300/50 bg-purple-500/10 border border-purple-500/15 px-2 py-1 rounded">
+              :{db.port}
+            </span>
+          )}
+
+          <div className="flex items-center gap-2 text-xs font-mono">
+            <StatusDot status={db.status} />
+
+            <span
+              className={
+                db.status === "running"
+                  ? "text-emerald-400"
+                  : db.status === "stopped"
+                  ? "text-rose-400"
+                  : "text-amber-400"
+              }
+            >
+              {db.status.toUpperCase()}
+            </span>
+          </div>
+
+          <button
+            onClick={() => toggleTables(db.name)}
+            className="rounded-lg bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 text-violet-300 px-4 py-2 text-xs font-medium transition-all"
+          >
+            {isExpanded ? "Hide Tables" : "Show Tables"}
+          </button>
+        </div>
+      </div>
+
+      {isExpanded && (
+        <div className="border-t border-purple-500/10 px-4 md:px-5 py-4 bg-[#0c0a1d]/40">
+          {isLoadingTables ? (
+            <p className="text-xs text-purple-200/40 font-mono">
+              Loading tables...
+            </p>
+          ) : tables.length === 0 ? (
+            <p className="text-xs text-purple-200/40 font-mono">
+              No tables found.
+            </p>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-purple-400/40 mb-2">
+                Tables
+              </p>
+
+              {tables.map((table) => (
                 <div
-                  key={db.name}
-                  className="group rounded-xl bg-[#110e28] border border-purple-500/10 p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:border-purple-500/25 hover:bg-[#13102a] transition-all"
+                  key={`${table.table_schema}.${table.table_name}`}
+                  className="rounded-lg bg-[#110e28] border border-purple-500/10 px-3 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-purple-500/15 border border-purple-500/20 flex items-center justify-center">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#a78bfa"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <ellipse cx="12" cy="5" rx="9" ry="3" />
-                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-                      </svg>
-                    </div>
+                  <span className="text-sm text-purple-100 font-medium">
+                    {table.table_name}
+                  </span>
 
-                    <div>
-                      <h3 className="font-medium text-purple-100">
-                        {db.name}
-                      </h3>
-
-                      <div className="flex items-center gap-3 mt-0.5">
-                        <span className="text-xs text-purple-200/40 font-mono">
-                          {db.type}
-                        </span>
-
-                        {db.version && (
-                          <span className="text-xs text-purple-200/25 font-mono">
-                            v{db.version}
-                          </span>
-                        )}
-
-                        {db.size !== undefined && Number(db.size) > 0 && (
-                          <span className="text-xs text-purple-200/25 font-mono">
-                            {formatBytes(Number(db.size))}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    {db.port && (
-                      <span className="text-xs font-mono text-purple-300/50 bg-purple-500/10 border border-purple-500/15 px-2 py-1 rounded">
-                        :{db.port}
-                      </span>
-                    )}
-
-                    <div className="flex items-center gap-2 text-xs font-mono">
-                      <StatusDot status={db.status} />
-
-                      <span
-                        className={
-                          db.status === "running"
-                            ? "text-emerald-400"
-                            : db.status === "stopped"
-                            ? "text-rose-400"
-                            : "text-amber-400"
-                        }
-                      >
-                        {db.status.toUpperCase()}
-                      </span>
-                    </div>
+                  <div className="flex items-center gap-2 text-xs font-mono text-purple-200/30">
+                    <span>{table.table_schema}</span>
+                    <span>·</span>
+                    <span>{table.table_type}</span>
                   </div>
                 </div>
               ))}
             </div>
           )}
         </div>
-      </main>
+      )}
     </div>
+  );
+}) }
+            </div>
+          )}  
+      </div>
+    </main>
+  </div>
   );
 }
