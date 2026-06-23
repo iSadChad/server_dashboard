@@ -27,7 +27,7 @@ const defaultStats = {
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#1a1444]/90 backdrop-blur border border-purple-500/20 rounded-lg px-3 py-2 text-xs shadow-lg">
+      <div className="bg-[#1a1a1a]/90 backdrop-blur border border-red-500/20 rounded-lg px-3 py-2 text-xs shadow-lg">
         <p className="text-white/70 mb-1">{label}</p>
         {payload.map((p, i) => (
           <p key={i} style={{ color: p.color }} className="font-medium">
@@ -142,13 +142,13 @@ function DashboardContent() {
   const diskPercentNum = parseFloat(diskPercent) || 0;
 
   const memPieData = [
-    { name: "Used", value: memPercentNum || 1, color: "#8b5cf6" },
-    { name: "Free", value: 100 - (memPercentNum || 1), color: "#1e1b4b" },
+    { name: "Used", value: memPercentNum || 1, color: "#ef4444" },
+    { name: "Free", value: 100 - (memPercentNum || 1), color: "#1a0a0a" },
   ];
 
   const diskPieData = [
-    { name: "Used", value: diskPercentNum || 1, color: "#6366f1" },
-    { name: "Free", value: 100 - (diskPercentNum || 1), color: "#1e1b4b" },
+    { name: "Used", value: diskPercentNum || 1, color: "#f43f5e" },
+    { name: "Free", value: 100 - (diskPercentNum || 1), color: "#1a0a0a" },
   ];
 
   return (
@@ -156,13 +156,13 @@ function DashboardContent() {
       <div className="flex items-center justify-between mb-6 md:mb-8">
         <div>
           <h2 className="text-xl md:text-2xl font-bold">Dashboard</h2>
-          <p className="text-purple-200/40 text-sm mt-1">
+          <p className="text-red-200/40 text-sm mt-1">
             System overview and analytics
           </p>
         </div>
 
         <div className="hidden sm:flex items-center gap-3">
-          <div className="flex items-center gap-2 text-xs text-purple-200/40 font-mono bg-[#110e28] rounded-lg px-3 py-2 border border-purple-500/10">
+          <div className="flex items-center gap-2 text-xs text-red-200/40 font-mono bg-[#111111] rounded-lg px-3 py-2 border border-red-500/10">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Live · {loading ? "..." : `${stats.cpu.toFixed(0)}% CPU`}
           </div>
@@ -174,7 +174,7 @@ function DashboardContent() {
           label="CPU Usage"
           value={loading ? "—" : `${stats.cpu.toFixed(1)}%`}
           sub={loading ? "" : "Current load"}
-          color="from-violet-500 to-purple-600"
+          color="from-red-500 to-red-700"
           icon="M9 3v2m6-2v2M9 19v2m6-2v2M5.8 5.8l1.4 1.4M16.2 16.8l1.4 1.4M3 9h2m14 0h2M3 15h2m14 0h2M5.8 18.2l1.4-1.4M16.2 7.2l1.4-1.4M9 9h6v6H9z"
         />
 
@@ -188,7 +188,7 @@ function DashboardContent() {
                   stats.memory.total
                 )}`
           }
-          color="from-indigo-500 to-blue-600"
+          color="from-rose-500 to-red-600"
           icon="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
         />
 
@@ -202,7 +202,7 @@ function DashboardContent() {
                   stats.disk.total
                 )}`
           }
-          color="from-purple-500 to-pink-600"
+          color="from-red-600 to-rose-600"
           icon="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
         />
 
@@ -210,20 +210,20 @@ function DashboardContent() {
           label="Uptime"
           value={loading ? "—" : `${uptimeHours}h ${uptimeMinutes}m`}
           sub="Since last boot"
-          color="from-fuchsia-500 to-purple-600"
+          color="from-rose-500 to-red-700"
           icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
         <div
-          className="lg:col-span-2 rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0"
+          className="lg:col-span-2 rounded-2xl bg-[#111111] border border-red-500/10 p-4 md:p-6 min-w-0"
           ref={networkRef}
         >
-          <h3 className="text-sm font-semibold text-purple-200/70 mb-1">
+          <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Network Activity
           </h3>
-          <p className="text-[11px] text-purple-300/30 mb-4">
+          <p className="text-[11px] text-red-300/30 mb-4">
             Inbound vs Outbound over 12 months
           </p>
 
@@ -243,12 +243,12 @@ function DashboardContent() {
                 >
                   <stop
                     offset="5%"
-                    stopColor="#8b5cf6"
+                    stopColor="#ef4444"
                     stopOpacity={0.3}
                   />
                   <stop
                     offset="95%"
-                    stopColor="#8b5cf6"
+                    stopColor="#ef4444"
                     stopOpacity={0}
                   />
                 </linearGradient>
@@ -262,12 +262,12 @@ function DashboardContent() {
                 >
                   <stop
                     offset="5%"
-                    stopColor="#6366f1"
+                    stopColor="#f43f5e"
                     stopOpacity={0.3}
                   />
                   <stop
                     offset="95%"
-                    stopColor="#6366f1"
+                    stopColor="#f43f5e"
                     stopOpacity={0}
                   />
                 </linearGradient>
@@ -277,13 +277,13 @@ function DashboardContent() {
                 dataKey="month"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#6b5fb5", fontSize: 11 }}
+                tick={{ fill: "#a35050", fontSize: 11 }}
               />
 
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#6b5fb5", fontSize: 11 }}
+                tick={{ fill: "#a35050", fontSize: 11 }}
               />
 
               <Tooltip content={<CustomTooltip />} />
@@ -291,7 +291,7 @@ function DashboardContent() {
               <Area
                 type="monotone"
                 dataKey="inbound"
-                stroke="#8b5cf6"
+                stroke="#ef4444"
                 fill="url(#gradInbound)"
                 strokeWidth={2}
                 name="Inbound"
@@ -300,7 +300,7 @@ function DashboardContent() {
               <Area
                 type="monotone"
                 dataKey="outbound"
-                stroke="#6366f1"
+                stroke="#f43f5e"
                 fill="url(#gradOutbound)"
                 strokeWidth={2}
                 name="Outbound"
@@ -308,18 +308,18 @@ function DashboardContent() {
               </AreaChart>
               </ResponsiveContainer>
           ) : (
-            <div className="w-full h-[260px] animate-pulse rounded-lg bg-purple-500/5" />
+            <div className="w-full h-[260px] animate-pulse rounded-lg bg-red-500/5" />
           )}
         </div>
 
         <div
-          className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0"
+          className="rounded-2xl bg-[#111111] border border-red-500/10 p-4 md:p-6 min-w-0"
           ref={memPieRef}
         >
-          <h3 className="text-sm font-semibold text-purple-200/70 mb-1">
+          <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Memory Split
           </h3>
-          <p className="text-[11px] text-purple-300/30 mb-4">
+          <p className="text-[11px] text-red-300/30 mb-4">
             Used vs Free
           </p>
 
@@ -341,20 +341,20 @@ function DashboardContent() {
               </Pie>
             </PieChart>
           ) : (
-            <div className="w-full h-[180px] animate-pulse rounded-lg bg-purple-500/5" />
+            <div className="w-full h-[180px] animate-pulse rounded-lg bg-red-500/5" />
           )}
 
           <div className="flex justify-center gap-4 mt-2">
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-violet-500" />
-              <span className="text-[11px] text-purple-200/50">
+              <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+              <span className="text-[11px] text-red-200/50">
                 Used {memPercent}%
               </span>
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#1e1b4b]" />
-              <span className="text-[11px] text-purple-200/50">Free</span>
+              <div className="w-2.5 h-2.5 rounded-full bg-[#1a0a0a]" />
+              <span className="text-[11px] text-red-200/50">Free</span>
             </div>
           </div>
         </div>
@@ -362,13 +362,13 @@ function DashboardContent() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         <div
-          className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0"
+          className="rounded-2xl bg-[#111111] border border-red-500/10 p-4 md:p-6 min-w-0"
           ref={cpuBarRef}
         >
-          <h3 className="text-sm font-semibold text-purple-200/70 mb-1">
+          <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Weekly CPU
           </h3>
-          <p className="text-[11px] text-purple-300/30 mb-4">
+          <p className="text-[11px] text-red-300/30 mb-4">
             Avg usage by day
           </p>
 
@@ -382,13 +382,13 @@ function DashboardContent() {
                 dataKey="day"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#6b5fb5", fontSize: 10 }}
+                tick={{ fill: "#a35050", fontSize: 10 }}
               />
 
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#6b5fb5", fontSize: 10 }}
+                tick={{ fill: "#a35050", fontSize: 10 }}
                 width={30}
               />
 
@@ -396,25 +396,25 @@ function DashboardContent() {
 
               <Bar
                 dataKey="cpu"
-                fill="#8b5cf6"
+                fill="#ef4444"
                 radius={[4, 4, 0, 0]}
                 name="CPU"
               />
             </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="w-full h-[160px] animate-pulse rounded-lg bg-purple-500/5" />
+            <div className="w-full h-[160px] animate-pulse rounded-lg bg-red-500/5" />
           )}
         </div>
 
         <div
-          className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0"
+          className="rounded-2xl bg-[#111111] border border-red-500/10 p-4 md:p-6 min-w-0"
           ref={memBarRef}
         >
-          <h3 className="text-sm font-semibold text-purple-200/70 mb-1">
+          <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Weekly Memory
           </h3>
-          <p className="text-[11px] text-purple-300/30 mb-4">
+          <p className="text-[11px] text-red-300/30 mb-4">
             Avg usage by day
           </p>
 
@@ -428,13 +428,13 @@ function DashboardContent() {
                 dataKey="day"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#6b5fb5", fontSize: 10 }}
+                tick={{ fill: "#a35050", fontSize: 10 }}
               />
 
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#6b5fb5", fontSize: 10 }}
+                tick={{ fill: "#a35050", fontSize: 10 }}
                 width={30}
               />
 
@@ -442,25 +442,25 @@ function DashboardContent() {
 
               <Bar
                 dataKey="mem"
-                fill="#6366f1"
+                fill="#f43f5e"
                 radius={[4, 4, 0, 0]}
                 name="Memory"
               />
             </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="w-full h-[160px] animate-pulse rounded-lg bg-purple-500/5" />
+            <div className="w-full h-[160px] animate-pulse rounded-lg bg-red-500/5" />
           )}
         </div>
 
         <div
-          className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-4 md:p-6 min-w-0"
+          className="rounded-2xl bg-[#111111] border border-red-500/10 p-4 md:p-6 min-w-0"
           ref={diskPieRef}
         >
-          <h3 className="text-sm font-semibold text-purple-200/70 mb-1">
+          <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Disk Usage
           </h3>
-          <p className="text-[11px] text-purple-300/30 mb-4">
+          <p className="text-[11px] text-red-300/30 mb-4">
             Used vs Free
           </p>
 
@@ -482,20 +482,20 @@ function DashboardContent() {
               </Pie>
             </PieChart>
           ) : (
-            <div className="w-full h-[180px] animate-pulse rounded-lg bg-purple-500/5" />
+            <div className="w-full h-[180px] animate-pulse rounded-lg bg-red-500/5" />
           )}
 
           <div className="flex justify-center gap-4 mt-2">
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-              <span className="text-[11px] text-purple-200/50">
+              <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+              <span className="text-[11px] text-red-200/50">
                 Used {diskPercent}%
               </span>
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#1e1b4b]" />
-              <span className="text-[11px] text-purple-200/50">Free</span>
+              <div className="w-2.5 h-2.5 rounded-full bg-[#1a0a0a]" />
+              <span className="text-[11px] text-red-200/50">Free</span>
             </div>
           </div>
         </div>
@@ -514,12 +514,12 @@ export default function Home() {
 
 function StatCard({ label, value, sub, color, icon }) {
   return (
-    <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-5 group hover:border-purple-500/25 transition-all">
+    <div className="rounded-2xl bg-[#111111] border border-red-500/10 p-5 group hover:border-red-500/25 transition-all">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium text-purple-200/50">{label}</span>
+        <span className="text-xs font-medium text-red-200/50">{label}</span>
 
         <div
-          className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg shadow-purple-500/10`}
+          className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg shadow-red-500/10`}
         >
           <svg
             width="18"
@@ -539,7 +539,7 @@ function StatCard({ label, value, sub, color, icon }) {
       <p className="text-2xl font-bold">{value}</p>
 
       {sub && (
-        <p className="text-[11px] text-purple-200/30 mt-1 font-mono">{sub}</p>
+        <p className="text-[11px] text-red-200/30 mt-1 font-mono">{sub}</p>
       )}
     </div>
   );

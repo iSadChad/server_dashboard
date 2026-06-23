@@ -35,10 +35,10 @@ function StatusDot({ online, maintenance }) {
 
 function StorageCard({ title, value, sub }) {
   return (
-    <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-5">
-      <p className="text-xs text-purple-200/40 font-medium mb-2">{title}</p>
+    <div className="rounded-2xl bg-[#111111] border border-red-500/10 p-5">
+      <p className="text-xs text-red-200/40 font-medium mb-2">{title}</p>
       <p className="text-2xl font-bold text-white">{value}</p>
-      {sub && <p className="text-[11px] text-purple-300/30 font-mono mt-1">{sub}</p>}
+      {sub && <p className="text-[11px] text-red-300/30 font-mono mt-1">{sub}</p>}
     </div>
   );
 }
@@ -133,7 +133,7 @@ export default function FilesPage() {
               <h2 className="text-xl md:text-2xl font-bold">
                 Cloud Control
               </h2>
-              <p className="text-purple-200/40 text-sm mt-1">
+              <p className="text-red-200/40 text-sm mt-1">
                 Nextcloud status, storage and quick access
               </p>
             </div>
@@ -141,14 +141,14 @@ export default function FilesPage() {
 
             <button
               onClick={loadData}
-              className="rounded-lg bg-[#110e28] hover:bg-[#171239] border border-purple-500/10 text-purple-200/60 px-3 py-2 text-xs font-mono transition-all"
+              className="rounded-lg bg-[#111111] hover:bg-[#1a1a1a] border border-red-500/10 text-red-200/60 px-3 py-2 text-xs font-mono transition-all"
             >
               {refreshing ? "Refreshing..." : "Refresh"}
             </button>
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-4 mb-6">
-            <section className="rounded-3xl bg-[#110e28] border border-purple-500/10 p-5 md:p-6">
+            <section className="rounded-3xl bg-[#111111] border border-red-500/10 p-5 md:p-6">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
@@ -165,13 +165,13 @@ export default function FilesPage() {
                     {nextcloudStatus.productName || "Nextcloud"}
                   </h3>
 
-                  <p className="text-sm text-purple-200/40 mt-1">
+                  <p className="text-sm text-red-200/40 mt-1">
                     {nextcloudStatus.version
                       ? `Version ${nextcloudStatus.version}`
                       : "Version unavailable"}
                   </p>
 
-                  <p className="text-xs text-purple-300/30 font-mono mt-3 break-all">
+                  <p className="text-xs text-red-300/30 font-mono mt-3 break-all">
                     {nextcloudUrl}
                   </p>
                 </div>
@@ -181,7 +181,7 @@ export default function FilesPage() {
                     href={filesUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center justify-center rounded-xl bg-violet-500 hover:bg-violet-400 text-white px-5 py-3 text-sm font-semibold transition-all shadow-lg shadow-violet-500/20"
+                    className="inline-flex items-center justify-center rounded-xl bg-red-500 hover:bg-red-400 text-white px-5 py-3 text-sm font-semibold transition-all shadow-lg shadow-red-500/20"
                   >
                     Open Files
                   </a>
@@ -190,7 +190,7 @@ export default function FilesPage() {
                     href={nextcloudUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center justify-center rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-200 px-5 py-3 text-sm font-semibold transition-all"
+                    className="inline-flex items-center justify-center rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-200 px-5 py-3 text-sm font-semibold transition-all"
                   >
                     Open Nextcloud
                   </a>
@@ -198,8 +198,8 @@ export default function FilesPage() {
               </div>
             </section>
 
-            <section className="rounded-3xl bg-[#110e28] border border-purple-500/10 p-5 md:p-6">
-              <p className="text-xs text-purple-200/40 font-medium mb-3">
+            <section className="rounded-3xl bg-[#111111] border border-red-500/10 p-5 md:p-6">
+              <p className="text-xs text-red-200/40 font-medium mb-3">
                 Storage usage
               </p>
 
@@ -208,7 +208,7 @@ export default function FilesPage() {
                   <p className="text-3xl font-bold">
                     {loading ? "—" : `${diskPercent}%`}
                   </p>
-                  <p className="text-xs text-purple-300/30 font-mono mt-1">
+                  <p className="text-xs text-red-300/30 font-mono mt-1">
                     {loading
                       ? "Loading..."
                       : `${formatBytes(diskUsed)} used of ${formatBytes(
@@ -217,14 +217,14 @@ export default function FilesPage() {
                   </p>
                 </div>
 
-                <p className="text-xs text-purple-200/35 font-mono">
+                <p className="text-xs text-red-200/35 font-mono">
                   {formatBytes(diskFree)} free
                 </p>
               </div>
 
-              <div className="h-3 rounded-full bg-[#0c0a1d] border border-purple-500/10 overflow-hidden">
+              <div className="h-3 rounded-full bg-[#0a0a0a] border border-red-500/10 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 transition-all"
+                  className="h-full rounded-full bg-gradient-to-r from-red-500 to-rose-500 transition-all"
                   style={{ width: `${Math.min(Number(diskPercent), 100)}%` }}
                 />
               </div>
@@ -252,13 +252,13 @@ export default function FilesPage() {
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-            <section className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-5">
+            <section className="rounded-2xl bg-[#111111] border border-red-500/10 p-5">
               <div className="flex items-center justify-between gap-4 mb-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-purple-200/70">
+                  <h3 className="text-sm font-semibold text-red-200/70">
                     WebDAV address
                   </h3>
-                  <p className="text-xs text-purple-300/30 mt-1">
+                  <p className="text-xs text-red-300/30 mt-1">
                     Useful for clients, network drives and later dashboard
                     integrations.
                   </p>
@@ -266,21 +266,21 @@ export default function FilesPage() {
 
                 <button
                   onClick={copyWebdavUrl}
-                  className="rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 px-3 py-2 text-xs font-medium transition-all shrink-0"
+                  className="rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 px-3 py-2 text-xs font-medium transition-all shrink-0"
                 >
                   {copied ? "Copied" : "Copy"}
                 </button>
               </div>
 
-              <div className="rounded-xl bg-[#0c0a1d] border border-purple-500/10 p-3">
-                <p className="text-xs text-purple-100/60 font-mono break-all">
+              <div className="rounded-xl bg-[#0a0a0a] border border-red-500/10 p-3">
+                <p className="text-xs text-red-100/60 font-mono break-all">
                   {webdavUrl}
                 </p>
               </div>
             </section>
 
-            <section className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-5">
-              <h3 className="text-sm font-semibold text-purple-200/70 mb-4">
+            <section className="rounded-2xl bg-[#111111] border border-red-500/10 p-5">
+              <h3 className="text-sm font-semibold text-red-200/70 mb-4">
                 Quick actions
               </h3>
 
@@ -289,12 +289,12 @@ export default function FilesPage() {
                   href={filesUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl bg-[#0c0a1d] hover:bg-[#171239] border border-purple-500/10 p-4 transition-all"
+                  className="rounded-xl bg-[#0a0a0a] hover:bg-[#1a1a1a] border border-red-500/10 p-4 transition-all"
                 >
-                  <p className="text-sm font-medium text-purple-100">
+                  <p className="text-sm font-medium text-red-100">
                     Manage files
                   </p>
-                  <p className="text-xs text-purple-300/30 mt-1">
+                  <p className="text-xs text-red-300/30 mt-1">
                     Upload, delete and organize
                   </p>
                 </a>
@@ -303,12 +303,12 @@ export default function FilesPage() {
                   href={`${nextcloudUrl}/index.php/settings/user/sync-clients`}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl bg-[#0c0a1d] hover:bg-[#171239] border border-purple-500/10 p-4 transition-all"
+                  className="rounded-xl bg-[#0a0a0a] hover:bg-[#1a1a1a] border border-red-500/10 p-4 transition-all"
                 >
-                  <p className="text-sm font-medium text-purple-100">
+                  <p className="text-sm font-medium text-red-100">
                     Sync clients
                   </p>
-                  <p className="text-xs text-purple-300/30 mt-1">
+                  <p className="text-xs text-red-300/30 mt-1">
                     Desktop and mobile setup
                   </p>
                 </a>
@@ -317,12 +317,12 @@ export default function FilesPage() {
                   href={`${nextcloudUrl}/index.php/settings/user`}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl bg-[#0c0a1d] hover:bg-[#171239] border border-purple-500/10 p-4 transition-all"
+                  className="rounded-xl bg-[#0a0a0a] hover:bg-[#1a1a1a] border border-red-500/10 p-4 transition-all"
                 >
-                  <p className="text-sm font-medium text-purple-100">
+                  <p className="text-sm font-medium text-red-100">
                     Account settings
                   </p>
-                  <p className="text-xs text-purple-300/30 mt-1">
+                  <p className="text-xs text-red-300/30 mt-1">
                     Profile and preferences
                   </p>
                 </a>
@@ -331,12 +331,12 @@ export default function FilesPage() {
                   href={`${nextcloudUrl}/index.php/apps/files/trashbin`}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl bg-[#0c0a1d] hover:bg-[#171239] border border-purple-500/10 p-4 transition-all"
+                  className="rounded-xl bg-[#0a0a0a] hover:bg-[#1a1a1a] border border-red-500/10 p-4 transition-all"
                 >
-                  <p className="text-sm font-medium text-purple-100">
+                  <p className="text-sm font-medium text-red-100">
                     Deleted files
                   </p>
-                  <p className="text-xs text-purple-300/30 mt-1">
+                  <p className="text-xs text-red-300/30 mt-1">
                     Recover removed files
                   </p>
                 </a>

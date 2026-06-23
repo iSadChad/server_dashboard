@@ -184,13 +184,13 @@ function DatabasesContent() {
       <div className="flex items-center justify-between mb-6 md:mb-8">
         <div>
           <h2 className="text-xl md:text-2xl font-bold">Databases</h2>
-          <p className="text-purple-200/40 text-sm mt-1">
+          <p className="text-red-200/40 text-sm mt-1">
             Connected PostgreSQL databases
           </p>
         </div>
 
         {databases.length > 0 && (
-          <span className="text-xs text-purple-200/30 font-mono bg-[#110e28] rounded-lg px-3 py-2 border border-purple-500/10">
+          <span className="text-xs text-red-200/30 font-mono bg-[#111111] rounded-lg px-3 py-2 border border-red-500/10">
             {databases.length} db{databases.length !== 1 ? "s" : ""}
           </span>
         )}
@@ -201,13 +201,13 @@ function DatabasesContent() {
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="rounded-xl bg-[#110e28] border border-purple-500/10 h-20 animate-pulse"
+              className="rounded-xl bg-[#111111] border border-red-500/10 h-20 animate-pulse"
             />
           ))}
         </div>
       ) : databases.length === 0 ? (
         <div className="text-center py-20">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#110e28] border border-purple-500/10 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#111111] border border-red-500/10 flex items-center justify-center">
             <svg
               width="28"
               height="28"
@@ -215,7 +215,7 @@ function DatabasesContent() {
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
-              className="text-purple-400/30"
+              className="text-red-400/30"
             >
               <ellipse cx="12" cy="5" rx="9" ry="3" />
               <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
@@ -223,11 +223,11 @@ function DatabasesContent() {
             </svg>
           </div>
 
-          <p className="text-purple-200/40 text-sm">
+          <p className="text-red-200/40 text-sm">
             No databases detected
           </p>
 
-          <p className="text-purple-300/20 text-xs mt-1">
+          <p className="text-red-300/20 text-xs mt-1">
             Check your PostgreSQL connection in .env.local
           </p>
         </div>
@@ -241,17 +241,17 @@ function DatabasesContent() {
             return (
               <div
                 key={db.name}
-                className="group rounded-xl bg-[#110e28] border border-purple-500/10 hover:border-purple-500/25 hover:bg-[#13102a] transition-all overflow-hidden"
+                className="group rounded-xl bg-[#111111] border border-red-500/10 hover:border-red-500/25 hover:bg-[#1a1a1a] transition-all overflow-hidden"
               >
                 <div className="p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex items-center gap-4 min-w-0">
-                    <div className="w-10 h-10 rounded-lg bg-purple-500/15 border border-purple-500/20 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-red-500/15 border border-red-500/20 flex items-center justify-center shrink-0">
                       <svg
                         width="18"
                         height="18"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="#a78bfa"
+                        stroke="#f87171"
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -263,23 +263,23 @@ function DatabasesContent() {
                     </div>
 
                     <div className="min-w-0">
-                      <h3 className="font-medium text-purple-100 truncate">
+                      <h3 className="font-medium text-red-100 truncate">
                         {db.name}
                       </h3>
 
                       <div className="flex flex-wrap items-center gap-3 mt-0.5">
-                        <span className="text-xs text-purple-200/40 font-mono">
+                        <span className="text-xs text-red-200/40 font-mono">
                           {db.type}
                         </span>
 
                         {db.version && (
-                          <span className="text-xs text-purple-200/25 font-mono">
+                          <span className="text-xs text-red-200/25 font-mono">
                             v{db.version}
                           </span>
                         )}
 
                         {db.size !== undefined && Number(db.size) > 0 && (
-                          <span className="text-xs text-purple-200/25 font-mono">
+                          <span className="text-xs text-red-200/25 font-mono">
                             {formatBytes(Number(db.size))}
                           </span>
                         )}
@@ -289,7 +289,7 @@ function DatabasesContent() {
 
                   <div className="flex items-center gap-3 flex-wrap sm:justify-end">
                     {db.port && (
-                      <span className="text-xs font-mono text-purple-300/50 bg-purple-500/10 border border-purple-500/15 px-2 py-1 rounded">
+                      <span className="text-xs font-mono text-red-300/50 bg-red-500/10 border border-red-500/15 px-2 py-1 rounded">
                         :{db.port}
                       </span>
                     )}
@@ -312,7 +312,7 @@ function DatabasesContent() {
 
                     <button
                       onClick={() => toggleTables(db.name)}
-                      className="rounded-lg bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 text-violet-300 px-4 py-2 text-xs font-medium transition-all"
+                      className="rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 px-4 py-2 text-xs font-medium transition-all"
                     >
                       {isExpanded ? "Hide Tables" : "Show Tables"}
                     </button>
@@ -320,18 +320,18 @@ function DatabasesContent() {
                 </div>
 
                 {isExpanded && (
-                  <div className="border-t border-purple-500/10 px-4 md:px-5 py-4 bg-[#0c0a1d]/40">
+                  <div className="border-t border-red-500/10 px-4 md:px-5 py-4 bg-[#0a0a0a]/40">
                     {isLoadingTables ? (
-                      <p className="text-xs text-purple-200/40 font-mono">
+                      <p className="text-xs text-red-200/40 font-mono">
                         Loading tables...
                       </p>
                     ) : tables.length === 0 ? (
-                      <p className="text-xs text-purple-200/40 font-mono">
+                      <p className="text-xs text-red-200/40 font-mono">
                         No tables found.
                       </p>
                     ) : (
                       <div className="space-y-2">
-                        <p className="text-[10px] font-semibold uppercase tracking-widest text-purple-400/40 mb-2">
+                        <p className="text-[10px] font-semibold uppercase tracking-widest text-red-400/40 mb-2">
                           Tables
                         </p>
 
@@ -347,15 +347,15 @@ function DatabasesContent() {
                           return (
                             <div
                               key={`${table.table_schema}.${table.table_name}`}
-                              className="rounded-lg bg-[#110e28] border border-purple-500/10 overflow-hidden"
+                              className="rounded-lg bg-[#111111] border border-red-500/10 overflow-hidden"
                             >
                               <div className="px-3 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                                 <div>
-                                  <span className="text-sm text-purple-100 font-medium">
+                                  <span className="text-sm text-red-100 font-medium">
                                     {table.table_name}
                                   </span>
 
-                                  <div className="flex items-center gap-2 text-xs font-mono text-purple-200/30 mt-0.5">
+                                  <div className="flex items-center gap-2 text-xs font-mono text-red-200/30 mt-0.5">
                                     <span>{table.table_schema}</span>
                                     <span>·</span>
                                     <span>{table.table_type}</span>
@@ -370,26 +370,26 @@ function DatabasesContent() {
                                       table.table_name
                                     )
                                   }
-                                  className="rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 px-3 py-1.5 text-xs font-medium transition-all"
+                                  className="rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 px-3 py-1.5 text-xs font-medium transition-all"
                                 >
                                   {isRowsExpanded ? "Hide Rows" : "Show Rows"}
                                 </button>
                               </div>
 
                               {isRowsExpanded && (
-                                <div className="border-t border-purple-500/10 p-3 overflow-x-auto">
+                                <div className="border-t border-red-500/10 p-3 overflow-x-auto">
                                   {isRowsLoading ? (
-                                    <p className="text-xs text-purple-200/40 font-mono">
+                                    <p className="text-xs text-red-200/40 font-mono">
                                       Loading rows...
                                     </p>
                                   ) : rowData.rows.length === 0 ? (
-                                    <p className="text-xs text-purple-200/40 font-mono">
+                                    <p className="text-xs text-red-200/40 font-mono">
                                       No rows found.
                                     </p>
                                   ) : (
                                     <table className="min-w-[1200px] w-full table-auto text-left text-xs font-mono">
                                       <thead>
-                                        <tr className="text-purple-300/50 border-b border-purple-500/10">
+                                        <tr className="text-red-300/50 border-b border-red-500/10">
                                           {rowData.columns.map((column) => {
                                             const longText =
                                               isLongTextColumn(column);
@@ -415,7 +415,7 @@ function DatabasesContent() {
                                           (row, rowIndex) => (
                                             <tr
                                               key={rowIndex}
-                                              className="border-b border-purple-500/5 text-purple-100/70"
+                                              className="border-b border-red-500/5 text-red-100/70"
                                             >
                                               {rowData.columns.map(
                                                 (column) => {

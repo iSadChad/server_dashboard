@@ -71,7 +71,7 @@ export default function PageLayout({ children }) {
 
   return (
     <PageLayoutContext.Provider value={contextValue}>
-      <div className="flex min-h-screen bg-[#0c0a1d] text-white">
+      <div className="flex min-h-screen bg-[#0a0a0a] text-white">
         {mobileMenuOpen && (
           <div
             className="fixed inset-0 z-40 bg-black/60 md:hidden"
@@ -80,11 +80,11 @@ export default function PageLayout({ children }) {
         )}
 
         <aside
-          className={`fixed inset-y-0 left-0 z-50 bg-[#110e28] border-r border-purple-500/10 flex flex-col shrink-0 transform transition-all duration-200 md:relative md:translate-x-0 w-64 ${
+          className={`fixed inset-y-0 left-0 z-50 bg-[#111111] border-r border-red-500/10 flex flex-col shrink-0 transform transition-all duration-200 md:relative md:translate-x-0 w-64 ${
             sidebarCollapsed ? "md:w-20" : "md:w-64"
           } ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
         >
-          <div className="p-4 border-b border-purple-500/10">
+          <div className="p-4 border-b border-red-500/10">
             <div
               className={`flex items-center ${
                 sidebarCollapsed && !mobileMenuOpen
@@ -102,7 +102,7 @@ export default function PageLayout({ children }) {
                     : undefined
                 }
               >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-violet-500/30 shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-red-500/30 shrink-0">
                   CG
                 </div>
 
@@ -111,7 +111,7 @@ export default function PageLayout({ children }) {
                     <h1 className="font-bold text-sm truncate">
                       Chad&apos;s Goon Cave
                     </h1>
-                    <p className="text-[11px] text-purple-300/50 truncate">
+                    <p className="text-[11px] text-red-300/50 truncate">
                       Server Dashboard
                     </p>
                   </div>
@@ -121,7 +121,7 @@ export default function PageLayout({ children }) {
               <button
                 type="button"
                 onClick={() => setSidebarCollapsed((prev) => !prev)}
-                className={`w-8 h-8 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 items-center justify-center transition-all shrink-0 ${
+                className={`w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 items-center justify-center transition-all shrink-0 ${
                   sidebarCollapsed ? "hidden" : "hidden md:flex"
                 }`}
                 title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -147,7 +147,7 @@ export default function PageLayout({ children }) {
 
           <nav className="flex-1 p-3 space-y-1">
             {showSidebarText && (
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-purple-400/40 px-3 mb-2">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-red-400/40 px-3 mb-2">
                 Menu
               </p>
             )}
@@ -164,8 +164,8 @@ export default function PageLayout({ children }) {
                     : "gap-3 px-3"
                 } py-2.5 rounded-lg text-sm transition-all ${
                   item.href === pathname
-                    ? "bg-violet-500/15 text-white font-medium shadow-sm shadow-violet-500/10"
-                    : "text-purple-200/50 hover:text-white hover:bg-purple-500/10"
+                    ? "bg-red-500/15 text-white font-medium shadow-sm shadow-red-500/10"
+                    : "text-red-200/50 hover:text-white hover:bg-red-500/10"
                 }`}
               >
                 <svg
@@ -187,10 +187,10 @@ export default function PageLayout({ children }) {
             ))}
           </nav>
 
-          <div className="p-3 border-t border-purple-500/10">
+          <div className="p-3 border-t border-red-500/10">
             {showSidebarText ? (
-              <div className="rounded-xl bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border border-purple-500/15 p-4">
-                <p className="text-xs font-medium text-purple-200/70">
+              <div className="rounded-xl bg-gradient-to-br from-red-500/10 to-rose-500/10 border border-red-500/15 p-4">
+                <p className="text-xs font-medium text-red-200/70">
                   System Status
                 </p>
 
@@ -199,14 +199,14 @@ export default function PageLayout({ children }) {
                   <span className="text-xs text-emerald-400">Online</span>
                 </div>
 
-                <div className="flex items-center gap-2 mt-2 text-[10px] text-purple-300/30 font-mono">
+                <div className="flex items-center gap-2 mt-2 text-[10px] text-red-300/30 font-mono">
                   <Clock />
                 </div>
               </div>
             ) : (
               <div
                 title="System status · Online"
-                className="hidden md:flex w-10 h-10 mx-auto rounded-xl bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border border-purple-500/15 items-center justify-center"
+                className="hidden md:flex w-10 h-10 mx-auto rounded-xl bg-gradient-to-br from-red-500/10 to-rose-500/10 border border-red-500/15 items-center justify-center"
               >
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
               </div>
@@ -216,7 +216,7 @@ export default function PageLayout({ children }) {
 
         <main className="flex-1 overflow-auto">
           <button
-            className="md:hidden fixed top-4 left-4 z-30 p-2 rounded-lg bg-[#110e28] border border-purple-500/10 text-purple-200/60"
+            className="md:hidden fixed top-4 left-4 z-30 p-2 rounded-lg bg-[#111111] border border-red-500/10 text-red-200/60"
             onClick={() => setMobileMenuOpen(true)}
           >
             <svg
