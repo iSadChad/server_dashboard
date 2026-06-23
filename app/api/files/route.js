@@ -57,14 +57,28 @@ export async function GET() {
 
   try {
     statSync(filesDir);
-  } catch {
-    return Response.json([]);
+  } catch (error) {
+    return Response.json(
+      {
+        error: "Storage folder not found or not readable",
+        filesDir,
+        details: error.message,
+      },
+      { status: 500 }
+    );
   }
 
   try {
     const files = getFiles(filesDir);
     return Response.json(files);
-  } catch {
-    return Response.json([]);
+  } catch (error) {
+    return Response.json(
+      {
+        error: "Could not read files",
+        filesDir,
+        details: error.message,
+      },
+      { status: 500 }
+    );
   }
 }
