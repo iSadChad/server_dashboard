@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import PageLayout from "../../components/PageLayout";
 
 function formatBytes(bytes) {
   const number = Number(bytes);
@@ -18,24 +18,6 @@ function formatBytes(bytes) {
 function cleanUrl(url) {
   return url.replace(/\/+$/, "");
 }
-
-const navItems = [
-  {
-    label: "Dashboard",
-    href: "/",
-    icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
-  },
-  {
-    label: "Files",
-    href: "/files",
-    icon: "M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z",
-  },
-  {
-    label: "Databases",
-    href: "/databases",
-    icon: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4",
-  },
-];
 
 function StatusDot({ online, maintenance }) {
   let color = "bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.7)]";
@@ -62,7 +44,6 @@ function StorageCard({ title, value, sub }) {
 }
 
 export default function FilesPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [stats, setStats] = useState({
     disk: { used: 0, total: 0 },
   });
@@ -144,100 +125,19 @@ export default function FilesPage() {
     : "text-rose-400";
 
   return (
-    <div className="flex min-h-screen bg-[#0c0a1d] text-white">
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/60 md:hidden"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
-
-      <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#110e28] border-r border-purple-500/10 flex flex-col shrink-0 transform transition-transform duration-200 md:relative md:translate-x-0 ${
-          mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="p-6 border-b border-purple-500/10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-violet-500/30">
-              CG
-            </div>
-
-            <div>
-              <h1 className="font-bold text-sm">Chad&apos;s Goon Cave</h1>
-              <p className="text-[11px] text-purple-300/50">
-                Server Dashboard
+    <PageLayout>
+      <div className="p-4 md:p-8">
+        <div className="flex items-center justify-between gap-4 mb-6 md:mb-8">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="min-w-0">
+              <h2 className="text-xl md:text-2xl font-bold">
+                Cloud Control
+              </h2>
+              <p className="text-purple-200/40 text-sm mt-1">
+                Nextcloud status, storage and quick access
               </p>
             </div>
           </div>
-        </div>
-
-        <nav className="flex-1 p-4 space-y-1">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-purple-400/40 px-3 mb-2">
-            Menu
-          </p>
-
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
-                item.href === "/files"
-                  ? "bg-violet-500/15 text-white font-medium shadow-sm shadow-violet-500/10"
-                  : "text-purple-200/50 hover:text-white hover:bg-purple-500/10"
-              }`}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d={item.icon} />
-              </svg>
-
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </aside>
-
-      <main className="flex-1 overflow-auto">
-        <div className="p-4 md:p-8">
-          <div className="flex items-center justify-between gap-4 mb-6 md:mb-8">
-            <div className="flex items-center gap-3 min-w-0">
-              <button
-                className="md:hidden p-2 rounded-lg bg-[#110e28] border border-purple-500/10 text-purple-200/60"
-                onClick={() => setMobileMenuOpen(true)}
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-
-              <div className="min-w-0">
-                <h2 className="text-xl md:text-2xl font-bold">
-                  Cloud Control
-                </h2>
-                <p className="text-purple-200/40 text-sm mt-1">
-                  Nextcloud status, storage and quick access
-                </p>
-              </div>
-            </div>
 
             <button
               onClick={loadData}
@@ -444,7 +344,6 @@ export default function FilesPage() {
             </section>
           </div>
         </div>
-      </main>
-    </div>
+    </PageLayout>
   );
 }

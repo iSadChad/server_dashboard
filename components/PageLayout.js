@@ -92,7 +92,16 @@ export default function PageLayout({ children }) {
                   : "justify-between gap-3"
               }`}
             >
-              <div className="flex items-center gap-3 min-w-0">
+              <div
+                className={`flex items-center gap-3 min-w-0 ${
+                  sidebarCollapsed && !mobileMenuOpen ? "cursor-pointer" : ""
+                }`}
+                onClick={
+                  sidebarCollapsed && !mobileMenuOpen
+                    ? () => setSidebarCollapsed(false)
+                    : undefined
+                }
+              >
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-violet-500/30 shrink-0">
                   CG
                 </div>
@@ -112,7 +121,9 @@ export default function PageLayout({ children }) {
               <button
                 type="button"
                 onClick={() => setSidebarCollapsed((prev) => !prev)}
-                className="hidden md:flex w-8 h-8 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 items-center justify-center transition-all shrink-0"
+                className={`w-8 h-8 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 items-center justify-center transition-all shrink-0 ${
+                  sidebarCollapsed ? "hidden" : "hidden md:flex"
+                }`}
                 title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
               >
                 <svg
