@@ -82,7 +82,7 @@ export default function FilesPage() {
 
   const nextcloudUser = process.env.NEXT_PUBLIC_NEXTCLOUD_USER || "sadchad";
 
-  const filesUrl = `${nextcloudUrl}/apps/files/`;
+  const filesUrl = `${nextcloudUrl}/index.php/apps/files/`;
   const webdavUrl = `${nextcloudUrl}/remote.php/dav/files/${nextcloudUser}/`;
 
   async function loadData() {
@@ -400,7 +400,7 @@ export default function FilesPage() {
                 </a>
 
                 <a
-                  href={`${nextcloudUrl}/settings/user/sync-clients`}
+                  href={`${nextcloudUrl}/index.php/settings/user/sync-clients`}
                   target="_blank"
                   rel="noreferrer"
                   className="rounded-xl bg-[#0c0a1d] hover:bg-[#171239] border border-purple-500/10 p-4 transition-all"
@@ -414,7 +414,7 @@ export default function FilesPage() {
                 </a>
 
                 <a
-                  href={`${nextcloudUrl}/settings/user`}
+                  href={`${nextcloudUrl}/index.php/settings/user`}
                   target="_blank"
                   rel="noreferrer"
                   className="rounded-xl bg-[#0c0a1d] hover:bg-[#171239] border border-purple-500/10 p-4 transition-all"
@@ -428,7 +428,7 @@ export default function FilesPage() {
                 </a>
 
                 <a
-                  href={`${nextcloudUrl}/apps/files/trashbin`}
+                  href={`${nextcloudUrl}/index.php/apps/files/trashbin`}
                   target="_blank"
                   rel="noreferrer"
                   className="rounded-xl bg-[#0c0a1d] hover:bg-[#171239] border border-purple-500/10 p-4 transition-all"
