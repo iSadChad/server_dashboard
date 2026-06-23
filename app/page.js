@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import PageLayout, { usePageLayout } from "../components/PageLayout";
 import { formatBytes } from "../utils/formatBytes";
 import {
+  ResponsiveContainer,
   AreaChart,
   Area,
   XAxis,
@@ -227,12 +228,11 @@ function DashboardContent() {
           </p>
 
           {mounted ? (
-            <AreaChart
-              width={chartWidths.network}
-              height={260}
-              data={monthData}
-              margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
-            >
+            <ResponsiveContainer width="100%" height={260}>
+  <AreaChart
+    data={monthData}
+    margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
+  >
               <defs>
                 <linearGradient
                   id="gradInbound"
@@ -305,7 +305,8 @@ function DashboardContent() {
                 strokeWidth={2}
                 name="Outbound"
               />
-            </AreaChart>
+              </AreaChart>
+              </ResponsiveContainer>
           ) : (
             <div className="w-full h-[260px] animate-pulse rounded-lg bg-purple-500/5" />
           )}
@@ -372,12 +373,11 @@ function DashboardContent() {
           </p>
 
           {mounted ? (
+            <ResponsiveContainer width="100%" height={160}>
             <BarChart
-              width={chartWidths.cpuBar}
-              height={160}
-              data={weekData}
-              barCategoryMaxWidth={16}
-            >
+            data={weekData}
+            barCategoryMaxWidth={16}
+              >
               <XAxis
                 dataKey="day"
                 axisLine={false}
@@ -401,6 +401,7 @@ function DashboardContent() {
                 name="CPU"
               />
             </BarChart>
+            </ResponsiveContainer>
           ) : (
             <div className="w-full h-[160px] animate-pulse rounded-lg bg-purple-500/5" />
           )}
@@ -418,11 +419,10 @@ function DashboardContent() {
           </p>
 
           {mounted ? (
+            <ResponsiveContainer width="100%" height={160}>
             <BarChart
-              width={chartWidths.memBar}
-              height={160}
-              data={weekData}
-              barCategoryMaxWidth={16}
+            data={weekData}
+            barCategoryMaxWidth={16}
             >
               <XAxis
                 dataKey="day"
@@ -447,6 +447,7 @@ function DashboardContent() {
                 name="Memory"
               />
             </BarChart>
+            </ResponsiveContainer>
           ) : (
             <div className="w-full h-[160px] animate-pulse rounded-lg bg-purple-500/5" />
           )}
