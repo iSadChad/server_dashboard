@@ -103,7 +103,7 @@ function DashboardContent() {
 
     async function fetchCharts() {
       try {
-        const res = await fetch("/api/charts");
+        const res = await fetch("/api/chart");
         const data = await res.json();
 
         if (data.week) setWeekData(data.week);
