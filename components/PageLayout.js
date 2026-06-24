@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, createContext, useContext } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import StarBackground from "./StarBackground";
 
 const PageLayoutContext = createContext();
 
@@ -71,7 +72,8 @@ export default function PageLayout({ children }) {
 
   return (
     <PageLayoutContext.Provider value={contextValue}>
-      <div className="flex min-h-screen bg-[#0a0a0a] text-white">
+      <StarBackground />
+      <div className="flex min-h-screen bg-[#0a0a0a]/95 text-white relative" style={{ zIndex: 1 }}>
         {mobileMenuOpen && (
           <div
             className="fixed inset-0 z-40 bg-black/60 md:hidden"
