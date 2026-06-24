@@ -73,7 +73,7 @@ export default function PageLayout({ children }) {
   return (
     <PageLayoutContext.Provider value={contextValue}>
       <StarBackground />
-      <div className="flex min-h-screen bg-[#0a0a0a]/95 text-white relative" style={{ zIndex: 1 }}>
+      <div className="flex min-h-screen text-white relative" style={{ zIndex: 1 }}>
         {mobileMenuOpen && (
           <div
             className="fixed inset-0 z-40 bg-black/60 md:hidden"
@@ -82,7 +82,7 @@ export default function PageLayout({ children }) {
         )}
 
         <aside
-          className={`fixed inset-y-0 left-0 z-50 bg-[#111111] border-r border-red-500/10 flex flex-col shrink-0 transform transition-all duration-200 md:relative md:translate-x-0 w-64 ${
+          className={`fixed inset-y-0 left-0 z-50 bg-[#111111]/90 backdrop-blur-sm border-r border-red-500/10 flex flex-col shrink-0 transform transition-all duration-200 md:relative md:translate-x-0 w-64 ${
             sidebarCollapsed ? "md:w-20" : "md:w-64"
           } ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
         >
@@ -191,7 +191,7 @@ export default function PageLayout({ children }) {
 
           <div className="p-3 border-t border-red-500/10">
             {showSidebarText ? (
-              <div className="rounded-xl bg-gradient-to-br from-red-500/10 to-rose-500/10 border border-red-500/15 p-4">
+                <div className="rounded-xl bg-gradient-to-br from-red-500/10 to-rose-500/10 border border-red-500/15 p-4 backdrop-blur-sm">
                 <p className="text-xs font-medium text-red-200/70">
                   System Status
                 </p>
@@ -218,7 +218,7 @@ export default function PageLayout({ children }) {
 
         <main className="flex-1 overflow-auto">
           <button
-            className="md:hidden fixed top-4 left-4 z-30 p-2 rounded-lg bg-[#111111] border border-red-500/10 text-red-200/60"
+            className="md:hidden fixed top-4 left-4 z-30 p-2 rounded-lg bg-[#111111]/80 backdrop-blur-sm border border-red-500/10 text-red-200/60"
             onClick={() => setMobileMenuOpen(true)}
           >
             <svg
