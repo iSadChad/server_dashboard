@@ -217,7 +217,7 @@ function DashboardContent() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
         <div
-          className="lg:col-span-2 rounded-2xl bg-[#111111]/80 backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
+          className="lg:col-span-2 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
           ref={networkRef}
         >
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
@@ -313,7 +313,7 @@ function DashboardContent() {
         </div>
 
         <div
-          className="rounded-2xl bg-[#111111]/80 backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
+          className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
           ref={memPieRef}
         >
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
@@ -362,7 +362,7 @@ function DashboardContent() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         <div
-          className="rounded-2xl bg-[#111111]/80 backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
+          className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
           ref={cpuBarRef}
         >
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
@@ -408,7 +408,7 @@ function DashboardContent() {
         </div>
 
         <div
-          className="rounded-2xl bg-[#111111]/80 backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
+          className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
           ref={memBarRef}
         >
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
@@ -454,7 +454,7 @@ function DashboardContent() {
         </div>
 
         <div
-          className="rounded-2xl bg-[#111111]/80 backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
+          className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
           ref={diskPieRef}
         >
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
@@ -514,7 +514,7 @@ export default function Home() {
 
 function StatCard({ label, value, sub, color, icon }) {
   return (
-    <div className="rounded-2xl bg-[#111111]/80 backdrop-blur-sm border border-red-500/10 p-5 group hover:border-red-500/25 transition-all">
+    <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-5 group hover:border-red-500/25 transition-all">
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs font-medium text-red-200/50">{label}</span>
 
