@@ -178,8 +178,8 @@ async function getWeeklyData() {
     )
     SELECT
       TRIM(TO_CHAR(days.day, 'Dy')) AS day,
-      COALESCE(ROUND(AVG(m.cpu_percent))::int, 0) AS cpu,
-      COALESCE(ROUND(AVG(m.mem_percent))::int, 0) AS mem
+      COALESCE(ROUND(AVG(m.cpu_percent), 1), 0) AS cpu,
+      COALESCE(ROUND(AVG(m.mem_percent), 1), 0) AS mem
     FROM days
     LEFT JOIN server_metrics m
       ON m.created_at >= days.day
