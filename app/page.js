@@ -263,7 +263,7 @@ const backupsInterval = setInterval(fetchBackups, 60000);
           icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </div>
-
+      <BackupStatusPanel backup={backupStatus} loading={backupLoading} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
         <div
           className="lg:col-span-2 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
@@ -558,6 +558,101 @@ export default function Home() {
     <PageLayout>
       <DashboardContent />
     </PageLayout>
+  );
+}
+
+function BackupStatusPanel({ backup, loading }) {
+  const status = backup?.status || "warning";
+  const latestSnapshot = backup?.latestSnapshot || null;
+
+  const statusStyles = {
+    ok: {
+      label: "OK",
+      dot: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]",
+      text: "text-emerald-400",
+      bg: "bg-emerald-500/10 border-emerald-500/20",
+    },
+    warning: {
+      label: "Warning",
+      dot: "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.7)]",
+      text: "text-amber-400",
+      bg: "bg-amber-500/10 border-amber-500/20",
+    },
+    error: {
+      label: "Error",
+      dot: "bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.7)]",
+      text: "text-rose-400",
+      bg: "bg-rose-500/10 border-rose-500/20",
+    },
+  };
+
+  const style = statusStyles[status] || statusStyles.warning;
+
+  return (
+    <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-5 md:p-6 mb-6 md:mb-8">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className={`inline-block w-2.5 h-2.5 rounded-full ${style.dot}`} />
+            <span className={`text-xs font-mono ${style.text}`}>
+              {loading ? "Loading..." : style.label}
+            </span>
+          </div>
+
+          <h3 className="text-lg md:text-xl font-bold text-purple-100">
+            Backup Status
+          </h3>
+
+          <p className="text-sm text-purple-200/40 mt-1">
+            {loading ? "Checking latest backup..." : backup?.message || "No message"}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full lg:w-auto lg:min-w-[560px]">
+          <div className="rounded-xl bg-[#0c0a1d] border border-purple-500/10 p-4">
+            <p className="text-[10px] uppercase tracking-widest text-purple-300/35 font-semibold mb-1">
+              Last backup
+            </p>
+            <p className="text-sm text-purple-100 font-medium">
+              {loading ? "—" : formatDateTime(latestSnapshot?.time)}
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-[#0c0a1d] border border-purple-500/10 p-4">
+            <p className="text-[10px] uppercase tracking-widest text-purple-300/35 font-semibold mb-1">
+              Snapshots
+            </p>
+            <p className="text-sm text-purple-100 font-medium">
+              {loading ? "—" : backup?.snapshotCount ?? 0}
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-[#0c0a1d] border border-purple-500/10 p-4">
+            <p className="text-[10px] uppercase tracking-widest text-purple-300/35 font-semibold mb-1">
+              Snapshot ID
+            </p>
+            <p className="text-sm text-purple-100 font-mono truncate">
+              {loading ? "—" : latestSnapshot?.id || "—"}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <p className="text-xs text-purple-300/30 font-mono break-all">
+          Repository: {backup?.repository || "—"}
+        </p>
+
+        <a
+          href="/api/backups"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center justify-center rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 px-3 py-2 text-xs font-medium transition-all"
+        >
+          Open backup JSON
+        </a>
+      </div>
+    </div>
   );
 }
 
