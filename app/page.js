@@ -24,6 +24,15 @@ const defaultStats = {
   uptime: 0,
 };
 
+const defaultBackupStatus = {
+  status: "warning",
+  message: "No backup status loaded",
+  repository: null,
+  snapshotCount: 0,
+  latestSnapshot: null,
+  updatedAt: null,
+};
+
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
@@ -41,6 +50,22 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+function formatDateTime(value) {
+  if (!value) return "—";
+
+  try {
+    return new Date(value).toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return "—";
+  }
+}
+
 function DashboardContent() {
   const { sidebarCollapsed } = usePageLayout();
   const [mounted, setMounted] = useState(false);
@@ -48,6 +73,8 @@ function DashboardContent() {
   const [loading, setLoading] = useState(true);
   const [weekData, setWeekData] = useState([]);
   const [monthData, setMonthData] = useState([]);
+  const [backupStatus, setBackupStatus] = useState(defaultBackupStatus);
+  const [backupLoading, setBackupLoading] = useState(true);
 
   const [chartWidths, setChartWidths] = useState({
     network: 600,
@@ -114,16 +141,38 @@ function DashboardContent() {
       }
     }
 
-    fetchStats();
-    fetchCharts();
+    async function fetchBackups() {
+  try {
+    const res = await fetch("/api/backups");
+    const data = await res.json();
 
-    const statsInterval = setInterval(fetchStats, 5000);
-    const chartsInterval = setInterval(fetchCharts, 60000);
+    setBackupStatus(data);
+  } catch (error) {
+    console.error("Failed to fetch backup status:", error);
+
+    setBackupStatus({
+      ...defaultBackupStatus,
+      status: "error",
+      message: "Could not load backup status",
+    });
+  } finally {
+    setBackupLoading(false);
+  }
+}
+
+fetchStats();
+fetchCharts();
+fetchBackups();
+
+const statsInterval = setInterval(fetchStats, 5000);
+const chartsInterval = setInterval(fetchCharts, 60000);
+const backupsInterval = setInterval(fetchBackups, 60000);
 
     return () => {
-      clearInterval(statsInterval);
-      clearInterval(chartsInterval);
-    };
+  clearInterval(statsInterval);
+  clearInterval(chartsInterval);
+  clearInterval(backupsInterval);
+};
   }, []);
 
   const memPercent =
