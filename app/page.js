@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import PageLayout, { usePageLayout } from "../components/PageLayout";
+import { useState, useEffect } from "react";
+import PageLayout from "../components/PageLayout";
 import { formatBytes } from "../utils/formatBytes";
 import {
   ResponsiveContainer,
@@ -38,6 +38,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <div className="bg-[#1a1a1a]/90 backdrop-blur border border-red-500/20 rounded-lg px-3 py-2 text-xs shadow-lg">
         <p className="text-white/70 mb-1">{label}</p>
+
         {payload.map((p, i) => (
           <p key={i} style={{ color: p.color }} className="font-medium">
             {p.name}: {p.value}
@@ -67,7 +68,6 @@ function formatDateTime(value) {
 }
 
 function DashboardContent() {
-  const { sidebarCollapsed } = usePageLayout();
   const [mounted, setMounted] = useState(false);
   const [stats, setStats] = useState(defaultStats);
   const [loading, setLoading] = useState(true);
@@ -76,45 +76,9 @@ function DashboardContent() {
   const [backupStatus, setBackupStatus] = useState(defaultBackupStatus);
   const [backupLoading, setBackupLoading] = useState(true);
 
-  const [chartWidths, setChartWidths] = useState({
-    network: 600,
-    memoryPie: 280,
-    cpuBar: 280,
-    memBar: 280,
-    diskPie: 280,
-  });
-
-  const networkRef = useRef(null);
-  const memPieRef = useRef(null);
-  const cpuBarRef = useRef(null);
-  const memBarRef = useRef(null);
-  const diskPieRef = useRef(null);
-
-  const measure = useCallback(() => {
-    function getWidth(ref, fallback, padding = 48, min = 220) {
-      return Math.max(min, (ref.current?.clientWidth || fallback) - padding);
-    }
-
-    setChartWidths({
-      network: getWidth(networkRef, 648),
-      memoryPie: getWidth(memPieRef, 328),
-      cpuBar: getWidth(cpuBarRef, 328),
-      memBar: getWidth(memBarRef, 328),
-      diskPie: getWidth(diskPieRef, 328),
-    });
-  }, []);
-
   useEffect(() => {
     setMounted(true);
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [measure]);
-
-  useEffect(() => {
-    const timeout = setTimeout(measure, 250);
-    return () => clearTimeout(timeout);
-  }, [sidebarCollapsed, measure]);
+  }, []);
 
   useEffect(() => {
     async function fetchStats() {
@@ -136,43 +100,43 @@ function DashboardContent() {
 
         if (data.week) setWeekData(data.week);
         if (data.month) setMonthData(data.month);
-      } catch (e) {
-        console.error("Failed to fetch charts:", e);
+      } catch (error) {
+        console.error("Failed to fetch charts:", error);
       }
     }
 
     async function fetchBackups() {
-  try {
-    const res = await fetch("/api/backups");
-    const data = await res.json();
+      try {
+        const res = await fetch("/api/backups");
+        const data = await res.json();
 
-    setBackupStatus(data);
-  } catch (error) {
-    console.error("Failed to fetch backup status:", error);
+        setBackupStatus(data);
+      } catch (error) {
+        console.error("Failed to fetch backup status:", error);
 
-    setBackupStatus({
-      ...defaultBackupStatus,
-      status: "error",
-      message: "Could not load backup status",
-    });
-  } finally {
-    setBackupLoading(false);
-  }
-}
+        setBackupStatus({
+          ...defaultBackupStatus,
+          status: "error",
+          message: "Could not load backup status",
+        });
+      } finally {
+        setBackupLoading(false);
+      }
+    }
 
-fetchStats();
-fetchCharts();
-fetchBackups();
+    fetchStats();
+    fetchCharts();
+    fetchBackups();
 
-const statsInterval = setInterval(fetchStats, 5000);
-const chartsInterval = setInterval(fetchCharts, 60000);
-const backupsInterval = setInterval(fetchBackups, 60000);
+    const statsInterval = setInterval(fetchStats, 5000);
+    const chartsInterval = setInterval(fetchCharts, 60000);
+    const backupsInterval = setInterval(fetchBackups, 60000);
 
     return () => {
-  clearInterval(statsInterval);
-  clearInterval(chartsInterval);
-  clearInterval(backupsInterval);
-};
+      clearInterval(statsInterval);
+      clearInterval(chartsInterval);
+      clearInterval(backupsInterval);
+    };
   }, []);
 
   const memPercent =
@@ -201,8 +165,8 @@ const backupsInterval = setInterval(fetchBackups, 60000);
   ];
 
   return (
-    <div className="p-4 md:p-8">
-      <div className="flex items-center justify-between mb-6 md:mb-8">
+    <div className="p-3 sm:p-4 lg:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-8">
         <div>
           <h2 className="text-xl md:text-2xl font-bold">Dashboard</h2>
           <p className="text-red-200/40 text-sm mt-1">
@@ -210,15 +174,17 @@ const backupsInterval = setInterval(fetchBackups, 60000);
           </p>
         </div>
 
-        <div className="hidden sm:flex items-center gap-3">
-          <div className="flex items-center gap-2 text-xs text-red-200/40 font-mono bg-[#111111] rounded-lg px-3 py-2 border border-red-500/10">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Live · {loading ? "..." : `${stats.cpu.toFixed(0)}% CPU`}
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-2 text-xs text-red-200/40 font-mono bg-[#111111] rounded-lg px-3 py-2 border border-red-500/10 w-full sm:w-auto">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+            <span className="truncate">
+              Live · {loading ? "..." : `${stats.cpu.toFixed(0)}% CPU`}
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <StatCard
           label="CPU Usage"
           value={loading ? "—" : `${stats.cpu.toFixed(1)}%`}
@@ -263,12 +229,11 @@ const backupsInterval = setInterval(fetchBackups, 60000);
           icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </div>
+
       <BackupStatusPanel backup={backupStatus} loading={backupLoading} />
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
-        <div
-          className="lg:col-span-2 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
-          ref={networkRef}
-        >
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
+        <div className="xl:col-span-2 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Network Activity
           </h3>
@@ -277,123 +242,125 @@ const backupsInterval = setInterval(fetchBackups, 60000);
           </p>
 
           {mounted ? (
-            <ResponsiveContainer width="100%" height={260}>
-  <AreaChart
-    data={monthData}
-    margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
-  >
-              <defs>
-                <linearGradient
-                  id="gradInbound"
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
+            <div className="h-[220px] sm:h-[260px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={monthData}
+                  margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
                 >
-                  <stop
-                    offset="5%"
-                    stopColor="#ef4444"
-                    stopOpacity={0.3}
+                  <defs>
+                    <linearGradient
+                      id="gradInbound"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="5%"
+                        stopColor="#ef4444"
+                        stopOpacity={0.3}
+                      />
+                      <stop
+                        offset="95%"
+                        stopColor="#ef4444"
+                        stopOpacity={0}
+                      />
+                    </linearGradient>
+
+                    <linearGradient
+                      id="gradOutbound"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="5%"
+                        stopColor="#f43f5e"
+                        stopOpacity={0.3}
+                      />
+                      <stop
+                        offset="95%"
+                        stopColor="#f43f5e"
+                        stopOpacity={0}
+                      />
+                    </linearGradient>
+                  </defs>
+
+                  <XAxis
+                    dataKey="month"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#a35050", fontSize: 11 }}
                   />
-                  <stop
-                    offset="95%"
-                    stopColor="#ef4444"
-                    stopOpacity={0}
+
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#a35050", fontSize: 11 }}
+                    width={32}
                   />
-                </linearGradient>
 
-                <linearGradient
-                  id="gradOutbound"
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
-                  <stop
-                    offset="5%"
-                    stopColor="#f43f5e"
-                    stopOpacity={0.3}
+                  <Tooltip content={<CustomTooltip />} />
+
+                  <Area
+                    type="monotone"
+                    dataKey="inbound"
+                    stroke="#ef4444"
+                    fill="url(#gradInbound)"
+                    strokeWidth={2}
+                    name="Inbound"
                   />
-                  <stop
-                    offset="95%"
-                    stopColor="#f43f5e"
-                    stopOpacity={0}
+
+                  <Area
+                    type="monotone"
+                    dataKey="outbound"
+                    stroke="#f43f5e"
+                    fill="url(#gradOutbound)"
+                    strokeWidth={2}
+                    name="Outbound"
                   />
-                </linearGradient>
-              </defs>
-
-              <XAxis
-                dataKey="month"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#a35050", fontSize: 11 }}
-              />
-
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#a35050", fontSize: 11 }}
-              />
-
-              <Tooltip content={<CustomTooltip />} />
-
-              <Area
-                type="monotone"
-                dataKey="inbound"
-                stroke="#ef4444"
-                fill="url(#gradInbound)"
-                strokeWidth={2}
-                name="Inbound"
-              />
-
-              <Area
-                type="monotone"
-                dataKey="outbound"
-                stroke="#f43f5e"
-                fill="url(#gradOutbound)"
-                strokeWidth={2}
-                name="Outbound"
-              />
-              </AreaChart>
+                </AreaChart>
               </ResponsiveContainer>
+            </div>
           ) : (
-            <div className="w-full h-[260px] animate-pulse rounded-lg bg-red-500/5" />
+            <div className="w-full h-[220px] sm:h-[260px] animate-pulse rounded-lg bg-red-500/5" />
           )}
         </div>
 
-        <div
-          className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
-          ref={memPieRef}
-        >
+        <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Memory Split
           </h3>
-          <p className="text-[11px] text-red-300/30 mb-4">
-            Used vs Free
-          </p>
+          <p className="text-[11px] text-red-300/30 mb-4">Used vs Free</p>
 
           {mounted ? (
-            <PieChart width={chartWidths.memoryPie} height={180}>
-              <Pie
-                data={memPieData}
-                cx="50%"
-                cy="50%"
-                innerRadius={50}
-                outerRadius={75}
-                paddingAngle={4}
-                dataKey="value"
-                stroke="none"
-              >
-                {memPieData.map((entry, i) => (
-                  <Cell key={i} fill={entry.color} />
-                ))}
-              </Pie>
-            </PieChart>
+            <div className="h-[180px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={memPieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={75}
+                    paddingAngle={4}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {memPieData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
             <div className="w-full h-[180px] animate-pulse rounded-lg bg-red-500/5" />
           )}
 
-          <div className="flex justify-center gap-4 mt-2">
+          <div className="flex flex-wrap justify-center gap-4 mt-2">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
               <span className="text-[11px] text-red-200/50">
@@ -409,11 +376,8 @@ const backupsInterval = setInterval(fetchBackups, 60000);
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-        <div
-          className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
-          ref={cpuBarRef}
-        >
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
+        <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Weekly CPU
           </h3>
@@ -422,44 +386,40 @@ const backupsInterval = setInterval(fetchBackups, 60000);
           </p>
 
           {mounted ? (
-            <ResponsiveContainer width="100%" height={160}>
-            <BarChart
-            data={weekData}
-            barCategoryMaxWidth={16}
-              >
-              <XAxis
-                dataKey="day"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#a35050", fontSize: 10 }}
-              />
+            <div className="h-[150px] sm:h-[160px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={weekData} barCategoryMaxWidth={16}>
+                  <XAxis
+                    dataKey="day"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#a35050", fontSize: 10 }}
+                  />
 
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#a35050", fontSize: 10 }}
-                width={30}
-              />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#a35050", fontSize: 10 }}
+                    width={30}
+                  />
 
-              <Tooltip content={<CustomTooltip />} />
+                  <Tooltip content={<CustomTooltip />} />
 
-              <Bar
-                dataKey="cpu"
-                fill="#ef4444"
-                radius={[4, 4, 0, 0]}
-                name="CPU"
-              />
-            </BarChart>
-            </ResponsiveContainer>
+                  <Bar
+                    dataKey="cpu"
+                    fill="#ef4444"
+                    radius={[4, 4, 0, 0]}
+                    name="CPU"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
-            <div className="w-full h-[160px] animate-pulse rounded-lg bg-red-500/5" />
+            <div className="w-full h-[150px] sm:h-[160px] animate-pulse rounded-lg bg-red-500/5" />
           )}
         </div>
 
-        <div
-          className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
-          ref={memBarRef}
-        >
+        <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Weekly Memory
           </h3>
@@ -468,73 +428,71 @@ const backupsInterval = setInterval(fetchBackups, 60000);
           </p>
 
           {mounted ? (
-            <ResponsiveContainer width="100%" height={160}>
-            <BarChart
-            data={weekData}
-            barCategoryMaxWidth={16}
-            >
-              <XAxis
-                dataKey="day"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#a35050", fontSize: 10 }}
-              />
+            <div className="h-[150px] sm:h-[160px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={weekData} barCategoryMaxWidth={16}>
+                  <XAxis
+                    dataKey="day"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#a35050", fontSize: 10 }}
+                  />
 
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#a35050", fontSize: 10 }}
-                width={30}
-              />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#a35050", fontSize: 10 }}
+                    width={30}
+                  />
 
-              <Tooltip content={<CustomTooltip />} />
+                  <Tooltip content={<CustomTooltip />} />
 
-              <Bar
-                dataKey="mem"
-                fill="#f43f5e"
-                radius={[4, 4, 0, 0]}
-                name="Memory"
-              />
-            </BarChart>
-            </ResponsiveContainer>
+                  <Bar
+                    dataKey="mem"
+                    fill="#f43f5e"
+                    radius={[4, 4, 0, 0]}
+                    name="Memory"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
-            <div className="w-full h-[160px] animate-pulse rounded-lg bg-red-500/5" />
+            <div className="w-full h-[150px] sm:h-[160px] animate-pulse rounded-lg bg-red-500/5" />
           )}
         </div>
 
-        <div
-          className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0"
-          ref={diskPieRef}
-        >
+        <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Disk Usage
           </h3>
-          <p className="text-[11px] text-red-300/30 mb-4">
-            Used vs Free
-          </p>
+          <p className="text-[11px] text-red-300/30 mb-4">Used vs Free</p>
 
           {mounted ? (
-            <PieChart width={chartWidths.diskPie} height={180}>
-              <Pie
-                data={diskPieData}
-                cx="50%"
-                cy="50%"
-                innerRadius={50}
-                outerRadius={75}
-                paddingAngle={4}
-                dataKey="value"
-                stroke="none"
-              >
-                {diskPieData.map((entry, i) => (
-                  <Cell key={i} fill={entry.color} />
-                ))}
-              </Pie>
-            </PieChart>
+            <div className="h-[180px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={diskPieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={75}
+                    paddingAngle={4}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {diskPieData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
             <div className="w-full h-[180px] animate-pulse rounded-lg bg-red-500/5" />
           )}
 
-          <div className="flex justify-center gap-4 mt-2">
+          <div className="flex flex-wrap justify-center gap-4 mt-2">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
               <span className="text-[11px] text-red-200/50">
@@ -570,68 +528,69 @@ function BackupStatusPanel({ backup, loading }) {
       label: "OK",
       dot: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]",
       text: "text-emerald-400",
-      bg: "bg-emerald-500/10 border-emerald-500/20",
     },
     warning: {
       label: "Warning",
       dot: "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.7)]",
       text: "text-amber-400",
-      bg: "bg-amber-500/10 border-amber-500/20",
     },
     error: {
       label: "Error",
       dot: "bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.7)]",
       text: "text-rose-400",
-      bg: "bg-rose-500/10 border-rose-500/20",
     },
   };
 
   const style = statusStyles[status] || statusStyles.warning;
 
   return (
-    <div className="rounded-2xl bg-[#110e28] border border-purple-500/10 p-5 md:p-6 mb-6 md:mb-8">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-        <div>
+    <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 mb-6 md:mb-8">
+      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5">
+        <div className="min-w-0">
           <div className="flex items-center gap-2 mb-2">
-            <span className={`inline-block w-2.5 h-2.5 rounded-full ${style.dot}`} />
+            <span
+              className={`inline-block w-2.5 h-2.5 rounded-full shrink-0 ${style.dot}`}
+            />
             <span className={`text-xs font-mono ${style.text}`}>
               {loading ? "Loading..." : style.label}
             </span>
           </div>
 
-          <h3 className="text-lg md:text-xl font-bold text-purple-100">
+          <h3 className="text-lg md:text-xl font-bold text-red-100">
             Backup Status
           </h3>
 
-          <p className="text-sm text-purple-200/40 mt-1">
-            {loading ? "Checking latest backup..." : backup?.message || "No message"}
+          <p className="text-sm text-red-200/40 mt-1">
+            {loading
+              ? "Checking latest backup..."
+              : backup?.message || "No message"}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full lg:w-auto lg:min-w-[560px]">
-          <div className="rounded-xl bg-[#0c0a1d] border border-purple-500/10 p-4">
-            <p className="text-[10px] uppercase tracking-widest text-purple-300/35 font-semibold mb-1">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full xl:w-auto xl:min-w-[560px]">
+          <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 min-w-0">
+            <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-1">
               Last backup
             </p>
-            <p className="text-sm text-purple-100 font-medium">
+            <p className="text-sm text-red-100 font-medium">
               {loading ? "—" : formatDateTime(latestSnapshot?.time)}
             </p>
           </div>
 
-          <div className="rounded-xl bg-[#0c0a1d] border border-purple-500/10 p-4">
-            <p className="text-[10px] uppercase tracking-widest text-purple-300/35 font-semibold mb-1">
+          <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 min-w-0">
+            <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-1">
               Snapshots
             </p>
-            <p className="text-sm text-purple-100 font-medium">
+            <p className="text-sm text-red-100 font-medium">
               {loading ? "—" : backup?.snapshotCount ?? 0}
             </p>
           </div>
 
-          <div className="rounded-xl bg-[#0c0a1d] border border-purple-500/10 p-4">
-            <p className="text-[10px] uppercase tracking-widest text-purple-300/35 font-semibold mb-1">
+          <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 min-w-0">
+            <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-1">
               Snapshot ID
             </p>
-            <p className="text-sm text-purple-100 font-mono truncate">
+            <p className="text-sm text-red-100 font-mono truncate">
               {loading ? "—" : latestSnapshot?.id || "—"}
             </p>
           </div>
@@ -639,7 +598,7 @@ function BackupStatusPanel({ backup, loading }) {
       </div>
 
       <div className="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <p className="text-xs text-purple-300/30 font-mono break-all">
+        <p className="text-xs text-red-300/30 font-mono break-all">
           Repository: {backup?.repository || "—"}
         </p>
 
@@ -647,7 +606,7 @@ function BackupStatusPanel({ backup, loading }) {
           href="/api/backups"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center justify-center rounded-lg bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-300 px-3 py-2 text-xs font-medium transition-all"
+          className="inline-flex items-center justify-center rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 px-3 py-2 text-xs font-medium transition-all"
         >
           Open backup JSON
         </a>
@@ -658,12 +617,14 @@ function BackupStatusPanel({ backup, loading }) {
 
 function StatCard({ label, value, sub, color, icon }) {
   return (
-    <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-5 group hover:border-red-500/25 transition-all">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium text-red-200/50">{label}</span>
+    <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 sm:p-5 group hover:border-red-500/25 transition-all min-w-0">
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <span className="text-xs font-medium text-red-200/50 truncate">
+          {label}
+        </span>
 
         <div
-          className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg shadow-red-500/10`}
+          className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg shadow-red-500/10 shrink-0`}
         >
           <svg
             width="18"
@@ -680,10 +641,12 @@ function StatCard({ label, value, sub, color, icon }) {
         </div>
       </div>
 
-      <p className="text-2xl font-bold">{value}</p>
+      <p className="text-xl sm:text-2xl font-bold break-words">{value}</p>
 
       {sub && (
-        <p className="text-[11px] text-red-200/30 mt-1 font-mono">{sub}</p>
+        <p className="text-[11px] text-red-200/30 mt-1 font-mono break-words leading-relaxed">
+          {sub}
+        </p>
       )}
     </div>
   );
