@@ -522,30 +522,39 @@ export default function Home() {
 function BackupStatusPanel({ backup, loading }) {
   const status = backup?.status || "warning";
   const latestSnapshot = backup?.latestSnapshot || null;
+  const logLines = backup?.lastLogLines || [];
 
   const statusStyles = {
     ok: {
       label: "OK",
       dot: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]",
       text: "text-emerald-400",
+      border: "border-emerald-500/20",
+      bg: "bg-emerald-500/10",
     },
     warning: {
       label: "Warning",
       dot: "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.7)]",
       text: "text-amber-400",
+      border: "border-amber-500/20",
+      bg: "bg-amber-500/10",
     },
     error: {
       label: "Error",
       dot: "bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.7)]",
       text: "text-rose-400",
+      border: "border-rose-500/20",
+      bg: "bg-rose-500/10",
     },
   };
 
   const style = statusStyles[status] || statusStyles.warning;
 
   return (
-    <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 mb-6 md:mb-8">
-      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5">
+    <div
+      className={`rounded-2xl bg-white/[0.03] backdrop-blur-sm border ${style.border} p-4 md:p-6 mb-6 md:mb-8`}
+    >
+      <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-5">
         <div className="min-w-0">
           <div className="flex items-center gap-2 mb-2">
             <span
@@ -554,6 +563,12 @@ function BackupStatusPanel({ backup, loading }) {
             <span className={`text-xs font-mono ${style.text}`}>
               {loading ? "Loading..." : style.label}
             </span>
+
+            {!loading && backup?.backupAgeLabel && (
+              <span className="text-xs text-red-200/30 font-mono">
+                · {backup.backupAgeLabel}
+              </span>
+            )}
           </div>
 
           <h3 className="text-lg md:text-xl font-bold text-red-100">
@@ -565,39 +580,42 @@ function BackupStatusPanel({ backup, loading }) {
               ? "Checking latest backup..."
               : backup?.message || "No message"}
           </p>
+
+          {!loading && backup?.isStale && (
+            <div className={`mt-3 rounded-xl ${style.bg} border ${style.border} px-3 py-2`}>
+              <p className="text-xs text-amber-200/80">
+                The latest backup looks old. Run the backup script or check the
+                cron job.
+              </p>
+            </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full xl:w-auto xl:min-w-[560px]">
-          <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 min-w-0">
-            <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-1">
-              Last backup
-            </p>
-            <p className="text-sm text-red-100 font-medium">
-              {loading ? "—" : formatDateTime(latestSnapshot?.time)}
-            </p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 w-full xl:w-auto xl:min-w-[720px]">
+          <BackupMiniCard
+            label="Last backup"
+            value={loading ? "—" : formatDateTime(latestSnapshot?.time)}
+          />
 
-          <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 min-w-0">
-            <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-1">
-              Snapshots
-            </p>
-            <p className="text-sm text-red-100 font-medium">
-              {loading ? "—" : backup?.snapshotCount ?? 0}
-            </p>
-          </div>
+          <BackupMiniCard
+            label="Age"
+            value={loading ? "—" : backup?.backupAgeLabel || "Unknown"}
+          />
 
-          <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 min-w-0">
-            <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-1">
-              Snapshot ID
-            </p>
-            <p className="text-sm text-red-100 font-mono truncate">
-              {loading ? "—" : latestSnapshot?.id || "—"}
-            </p>
-          </div>
+          <BackupMiniCard
+            label="Snapshots"
+            value={loading ? "—" : backup?.snapshotCount ?? 0}
+          />
+
+          <BackupMiniCard
+            label="Snapshot ID"
+            value={loading ? "—" : latestSnapshot?.id || "—"}
+            mono
+          />
         </div>
       </div>
 
-      <div className="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div className="mt-4 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-3 xl:items-center">
         <p className="text-xs text-red-300/30 font-mono break-all">
           Repository: {backup?.repository || "—"}
         </p>
@@ -611,6 +629,34 @@ function BackupStatusPanel({ backup, loading }) {
           Open backup JSON
         </a>
       </div>
+
+      <details className="mt-4 rounded-xl bg-[#111111] border border-red-500/10 overflow-hidden">
+        <summary className="cursor-pointer px-4 py-3 text-xs font-semibold text-red-200/60 hover:text-red-100 transition-all">
+          Last backup log
+        </summary>
+
+        <pre className="max-h-64 overflow-auto border-t border-red-500/10 px-4 py-3 text-[11px] leading-relaxed text-red-100/55 font-mono whitespace-pre-wrap">
+          {logLines.length > 0 ? logLines.join("\n") : "No log lines found."}
+        </pre>
+      </details>
+    </div>
+  );
+}
+
+function BackupMiniCard({ label, value, mono = false }) {
+  return (
+    <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 min-w-0">
+      <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-1">
+        {label}
+      </p>
+
+      <p
+        className={`text-sm text-red-100 font-medium truncate ${
+          mono ? "font-mono" : ""
+        }`}
+      >
+        {value}
+      </p>
     </div>
   );
 }
