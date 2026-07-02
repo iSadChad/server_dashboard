@@ -33,6 +33,14 @@ const defaultBackupStatus = {
   updatedAt: null,
 };
 
+const defaultPm2Status = {
+  status: "warning",
+  message: "No PM2 status loaded",
+  expected: [],
+  processes: [],
+  updatedAt: null,
+};
+
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
@@ -75,6 +83,8 @@ function DashboardContent() {
   const [monthData, setMonthData] = useState([]);
   const [backupStatus, setBackupStatus] = useState(defaultBackupStatus);
   const [backupLoading, setBackupLoading] = useState(true);
+  const [pm2Status, setPm2Status] = useState(defaultPm2Status);
+  const [pm2Loading, setPm2Loading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -123,20 +133,40 @@ function DashboardContent() {
         setBackupLoading(false);
       }
     }
+async function fetchPm2Status() {
+  try {
+    const res = await fetch("/api/pm2");
+    const data = await res.json();
 
+    setPm2Status(data);
+  } catch (error) {
+    console.error("Failed to fetch PM2 status:", error);
+
+    setPm2Status({
+      ...defaultPm2Status,
+      status: "error",
+      message: "Could not load PM2 status",
+    });
+  } finally {
+    setPm2Loading(false);
+  }
+}
     fetchStats();
-    fetchCharts();
-    fetchBackups();
+fetchCharts();
+fetchBackups();
+fetchPm2Status();
 
-    const statsInterval = setInterval(fetchStats, 5000);
-    const chartsInterval = setInterval(fetchCharts, 60000);
-    const backupsInterval = setInterval(fetchBackups, 60000);
+const statsInterval = setInterval(fetchStats, 5000);
+const chartsInterval = setInterval(fetchCharts, 60000);
+const backupsInterval = setInterval(fetchBackups, 60000);
+const pm2Interval = setInterval(fetchPm2Status, 30000);
 
-    return () => {
-      clearInterval(statsInterval);
-      clearInterval(chartsInterval);
-      clearInterval(backupsInterval);
-    };
+return () => {
+  clearInterval(statsInterval);
+  clearInterval(chartsInterval);
+  clearInterval(backupsInterval);
+  clearInterval(pm2Interval);
+};
   }, []);
 
   const memPercent =
@@ -231,6 +261,7 @@ function DashboardContent() {
       </div>
 
       <BackupStatusPanel backup={backupStatus} loading={backupLoading} />
+      <Pm2StatusPanel pm2={pm2Status} loading={pm2Loading} />
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
         <div className="xl:col-span-2 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
@@ -657,6 +688,148 @@ function BackupMiniCard({ label, value, mono = false }) {
       >
         {value}
       </p>
+    </div>
+  );
+}
+
+function Pm2StatusPanel({ pm2, loading }) {
+  const status = pm2?.status || "warning";
+  const processes = pm2?.processes || [];
+
+  const statusStyles = {
+    ok: {
+      label: "OK",
+      dot: "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]",
+      text: "text-emerald-400",
+      border: "border-emerald-500/20",
+    },
+    warning: {
+      label: "Warning",
+      dot: "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.7)]",
+      text: "text-amber-400",
+      border: "border-amber-500/20",
+    },
+    error: {
+      label: "Error",
+      dot: "bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.7)]",
+      text: "text-rose-400",
+      border: "border-rose-500/20",
+    },
+  };
+
+  const style = statusStyles[status] || statusStyles.warning;
+
+  return (
+    <div
+      className={`rounded-2xl bg-white/[0.03] backdrop-blur-sm border ${style.border} p-4 md:p-6 mb-6 md:mb-8`}
+    >
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span
+              className={`inline-block w-2.5 h-2.5 rounded-full shrink-0 ${style.dot}`}
+            />
+            <span className={`text-xs font-mono ${style.text}`}>
+              {loading ? "Loading..." : style.label}
+            </span>
+          </div>
+
+          <h3 className="text-lg md:text-xl font-bold text-red-100">
+            PM2 Process Status
+          </h3>
+
+          <p className="text-sm text-red-200/40 mt-1">
+            {loading ? "Checking PM2 processes..." : pm2?.message || "No message"}
+          </p>
+        </div>
+
+        <a
+          href="/api/pm2"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center justify-center rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 px-3 py-2 text-xs font-medium transition-all"
+        >
+          Open PM2 JSON
+        </a>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {loading ? (
+          <>
+            <Pm2SkeletonCard />
+            <Pm2SkeletonCard />
+          </>
+        ) : processes.length > 0 ? (
+          processes.map((process) => (
+            <Pm2ProcessCard key={`${process.name}-${process.id}`} process={process} />
+          ))
+        ) : (
+          <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4">
+            <p className="text-sm text-red-200/50">No PM2 processes found.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Pm2ProcessCard({ process }) {
+  const isOnline = process.status === "online";
+
+  return (
+    <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 min-w-0">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-red-100 truncate">
+            {process.name}
+          </p>
+          <p className="text-[11px] text-red-300/30 font-mono">
+            ID {process.id} · PID {process.pid || "—"}
+          </p>
+        </div>
+
+        <span
+          className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-mono border ${
+            isOnline
+              ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+              : "text-rose-400 bg-rose-500/10 border-rose-500/20"
+          }`}
+        >
+          {process.status}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <Pm2Metric label="CPU" value={`${Number(process.cpu || 0).toFixed(1)}%`} />
+        <Pm2Metric label="Memory" value={formatBytes(process.memory || 0)} />
+        <Pm2Metric label="Restarts" value={process.restarts ?? 0} />
+        <Pm2Metric label="Uptime" value={process.uptime || "—"} />
+      </div>
+    </div>
+  );
+}
+
+function Pm2Metric({ label, value }) {
+  return (
+    <div className="rounded-lg bg-black/20 border border-red-500/5 p-2 min-w-0">
+      <p className="text-[10px] uppercase tracking-widest text-red-300/30 font-semibold mb-1">
+        {label}
+      </p>
+      <p className="text-xs text-red-100 font-mono truncate">{value}</p>
+    </div>
+  );
+}
+
+function Pm2SkeletonCard() {
+  return (
+    <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 animate-pulse">
+      <div className="h-4 w-32 bg-red-500/10 rounded mb-3" />
+      <div className="grid grid-cols-4 gap-2">
+        <div className="h-12 bg-red-500/5 rounded-lg" />
+        <div className="h-12 bg-red-500/5 rounded-lg" />
+        <div className="h-12 bg-red-500/5 rounded-lg" />
+        <div className="h-12 bg-red-500/5 rounded-lg" />
+      </div>
     </div>
   );
 }
