@@ -13,18 +13,15 @@ const defaultAdmin = {
     rebootRequired: false,
   },
   security: {
-    firewall: {
-      status: "unknown",
-      raw: "",
-    },
-    ssh: {
-      active: "unknown",
-      enabled: "unknown",
-    },
-    failedLoginsToday: 0,
-    openPorts: [],
-    lastLogins: [],
+  firewall: "unknown",
+  ssh: {
+    active: "unknown",
+    enabled: "unknown",
   },
+  failedLoginsToday: 0,
+  openPorts: [],
+  lastLogins: [],
+},
   updates: {
     pending: 0,
     packages: [],
@@ -165,11 +162,11 @@ function AdminContent() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <AdminStatCard
-  label="Firewall"
-  value={admin.security.firewall}
-  sub="UFW status"
-  status={admin.security.firewall}
-/>
+        label="Firewall"
+        value={admin.security.firewall}
+        sub="UFW status"
+        status={admin.security.firewall}
+        />
 
         <AdminStatCard
           label="SSH"
@@ -213,7 +210,7 @@ function AdminContent() {
 
         <Panel title="Security" subtitle="Firewall, SSH and exposed ports">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-            <StatusBox label="Firewall" value={admin.security.firewall.status} />
+            <StatusBox label="Firewall" value={admin.security.firewall} />
             <StatusBox label="SSH service" value={admin.security.ssh.active} />
           </div>
 
@@ -405,7 +402,7 @@ function AdminStatCard({ label, value, sub, status }) {
       </div>
 
       <p className="text-xl sm:text-2xl font-bold break-words capitalize">
-        {value}
+          {value || "unknown"}
       </p>
 
       {sub && (
