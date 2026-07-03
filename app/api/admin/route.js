@@ -167,7 +167,7 @@ async function checkHttpService(service) {
       name: service.name,
       type: service.type,
       target: service.target,
-      status: response.ok ? "online" : "warning",
+      status: response.status < 500 ? "online" : "warning",
       code: response.status,
       responseMs: Date.now() - startedAt,
     };
