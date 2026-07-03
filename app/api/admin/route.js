@@ -286,58 +286,63 @@ async function getStorageFolders() {
 export async function GET() {
   try {
     const [
-      hostname,
-      kernel,
-      uptime,
-      ufw,
-      sshActive,
-      sshEnabled,
-      openPorts,
-      aptUpdates,
-      lastLogins,
-      sshLogs,
-      systemErrors,
-      services,
-      storageFolders,
-    ] = await Promise.all([
-      runCommand("hostname"),
-      runCommand("uname", ["-r"]),
-      runCommand("uptime", ["-p"]),
-      runCommand("ufw", ["status"]),
-      runCommand("systemctl", ["is-active", "ssh"]),
-      runCommand("systemctl", ["is-enabled", "ssh"]),
-      runCommand("ss", ["-tuln"]),
-      runCommand("apt", ["list", "--upgradable"], 10000),
-      runCommand("last", ["-n", "5", "-w"]),
-      runCommand("journalctl", [
-        "-u",
-        "ssh",
-        "--since",
-        "today",
-        "--no-pager",
-        "-n",
-        "200",
-      ]),
-      runCommand("journalctl", ["-p", "err", "-n", "30", "--no-pager"]),
-      getServiceHealth(),
-      getStorageFolders(),
-    ]);
+  hostname,
+  kernel,
+  uptime,
+  ufw,
+  ufwService,
+  sshActive,
+  sshEnabled,
+  openPorts,
+  aptUpdates,
+  lastLogins,
+  sshLogs,
+  systemErrors,
+  services,
+  storageFolders,
+] = await Promise.all([
+  runCommand("hostname"),
+  runCommand("uname", ["-r"]),
+  runCommand("uptime", ["-p"]),
+  runCommand("ufw", ["status"]),
+  runCommand("systemctl", ["is-active", "ufw"]),
+  runCommand("systemctl", ["is-active", "ssh"]),
+  runCommand("systemctl", ["is-enabled", "ssh"]),
+  runCommand("ss", ["-tuln"]),
+  runCommand("apt", ["list", "--upgradable"], 10000),
+  runCommand("last", ["-n", "5", "-w"]),
+  runCommand("journalctl", [
+    "-u",
+    "ssh",
+    "--since",
+    "today",
+    "--no-pager",
+    "-n",
+    "200",
+  ]),
+  runCommand("journalctl", ["-p", "err", "-n", "30", "--no-pager"]),
+  getServiceHealth(),
+  getStorageFolders(),
+]);
 
     const updatesInfo = parseAptList(aptUpdates.stdout);
 
-    const ufwText = `${ufw.stdout} ${ufw.stderr} ${
-      ufw.error || ""
-    }`.toLowerCase();
+    const ufwText = `${ufw.stdout} ${ufw.stderr} ${ufw.error || ""}`.toLowerCase();
+const ufwServiceText = `${ufwService.stdout} ${ufwService.stderr} ${
+  ufwService.error || ""
+}`.toLowerCase();
 
-    let firewallStatus = "unknown";
+let firewallStatus = "unknown";
 
-    if (ufwText.includes("status: active")) {
-      firewallStatus = "active";
-    }
-
-    if (ufwText.includes("status: inactive")) {
-      firewallStatus = "inactive";
-    }
+if (ufwText.includes("status: active")) {
+  firewallStatus = "active";
+} else if (ufwText.includes("status: inactive")) {
+  firewallStatus = "inactive";
+} else if (ufwServiceText.includes("active")) {
+  firewallStatus = "active";
+} else if (ufwServiceText.includes("inactive")) {
+  firewallStatus = "inactive";
+}
 
     return Response.json({
       status: "ok",
@@ -351,17 +356,26 @@ export async function GET() {
       },
 
       security: {
-        firewall: firewallStatus,
+      firewall: firewallStatus,
+      firewallDebug: {
+      ufwOk: ufw.ok,
+      ufwStdout: ufw.stdout,
+      ufwStderr: ufw.stderr,
+      ufwError: ufw.error,
+      ufwServiceStdout: ufwService.stdout,
+      ufwServiceStderr: ufwService.stderr,
+      ufwServiceError: ufwService.error,
+  },
 
-        ssh: {
-          active: sshActive.stdout.trim() || "unknown",
-          enabled: sshEnabled.stdout.trim() || "unknown",
-        },
+  ssh: {
+    active: sshActive.stdout.trim() || "unknown",
+    enabled: sshEnabled.stdout.trim() || "unknown",
+  },
 
-        failedLoginsToday: countFailedLogins(sshLogs.stdout),
-        openPorts: parseOpenPorts(openPorts.stdout),
-        lastLogins: parseLastLogins(lastLogins.stdout),
-      },
+  failedLoginsToday: countFailedLogins(sshLogs.stdout),
+  openPorts: parseOpenPorts(openPorts.stdout),
+  lastLogins: parseLastLogins(lastLogins.stdout),
+},
 
       updates: {
         pending: updatesInfo.pending,
