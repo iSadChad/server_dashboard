@@ -323,48 +323,67 @@ export async function GET() {
       getStorageFolders(),
     ]);
 
-    const updateList = parseUpdates(updates.stdout);
-    const ufwText = `${ufw.stdout} ${ufw.stderr} ${ufw.error || ""}`.toLowerCase();
+    const updatesInfo = parseAptList(aptUpdates.stdout);
 
-let firewallStatus = "unknown";
+    const ufwText = `${ufw.stdout} ${ufw.stderr} ${
+      ufw.error || ""
+    }`.toLowerCase();
 
-if (ufwText.includes("status: active")) {
-  firewallStatus = "active";
-}
+    let firewallStatus = "unknown";
 
-if (ufwText.includes("status: inactive")) {
-  firewallStatus = "inactive";
-}
+    if (ufwText.includes("status: active")) {
+      firewallStatus = "active";
+    }
 
-return Response.json({
-  status: "ok",
-  updatedAt: new Date().toISOString(),
+    if (ufwText.includes("status: inactive")) {
+      firewallStatus = "inactive";
+    }
 
-  system: {
-    hostname: hostname.stdout.trim() || "unknown",
-    kernel: kernel.stdout.trim() || "unknown",
-    uptime: uptime.stdout.trim() || "unknown",
-    rebootRequired: existsSync("/var/run/reboot-required"),
-  },
+    return Response.json({
+      status: "ok",
+      updatedAt: new Date().toISOString(),
 
-  security: {
-    firewall: firewallStatus,
+      system: {
+        hostname: hostname.stdout.trim() || "unknown",
+        kernel: kernel.stdout.trim() || "unknown",
+        uptime: uptime.stdout.trim() || "unknown",
+        rebootRequired: existsSync("/var/run/reboot-required"),
+      },
 
-    ssh: {
-      active: sshActive.stdout.trim() || "unknown",
-      enabled: sshEnabled.stdout.trim() || "unknown",
-    },
+      security: {
+        firewall: firewallStatus,
 
-    openPorts: parseOpenPorts(ports.stdout),
-  },
+        ssh: {
+          active: sshActive.stdout.trim() || "unknown",
+          enabled: sshEnabled.stdout.trim() || "unknown",
+        },
 
-  updates: {
-    pending: updateList.length,
-    packages: updateList.slice(0, 10),
-  },
+        failedLoginsToday: countFailedLogins(sshLogs.stdout),
+        openPorts: parseOpenPorts(openPorts.stdout),
+        lastLogins: parseLastLogins(lastLogins.stdout),
+      },
 
-  services,
-});
+      updates: {
+        pending: updatesInfo.pending,
+        packages: updatesInfo.packages,
+      },
+
+      services,
+
+      storage: {
+        folders: storageFolders,
+      },
+
+      logs: {
+        ssh: sshLogs.ok
+          ? sshLogs.stdout.split("\n").slice(-25)
+          : [`Could not read SSH logs: ${sshLogs.error}`],
+
+        systemErrors: systemErrors.ok
+          ? systemErrors.stdout.split("\n").slice(-25)
+          : [`Could not read system errors: ${systemErrors.error}`],
+      },
+    });
   } catch (error) {
     console.error("Failed to load admin status:", error);
 
