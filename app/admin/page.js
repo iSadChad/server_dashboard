@@ -165,11 +165,11 @@ function AdminContent() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <AdminStatCard
-          label="Firewall"
-          value={admin.security.firewall.status}
-          sub="UFW status"
-          status={admin.security.firewall.status}
-        />
+  label="Firewall"
+  value={admin.security.firewall}
+  sub="UFW status"
+  status={admin.security.firewall}
+/>
 
         <AdminStatCard
           label="SSH"
