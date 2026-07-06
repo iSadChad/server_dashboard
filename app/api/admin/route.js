@@ -30,11 +30,17 @@ const SERVICE_CHECKS = [
     target: "http://127.0.0.1:1349",
   },
   {
+  name: "Actual Budget",
+  type: "http",
+  target: "http://127.0.0.1:5006",
+  },
+  {
     name: "PostgreSQL",
     type: "tcp",
     host: "127.0.0.1",
     port: 5432,
   },
+  
 ];
 
 const STORAGE_PATHS = [

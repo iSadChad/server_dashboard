@@ -15,6 +15,11 @@ export default function ToolsPage() {
     process.env.NEXT_PUBLIC_STIRLING_PDF_URL || "http://100.82.53.61:8081"
   );
 
+  const actualBudgetUrl = cleanUrl(
+    process.env.NEXT_PUBLIC_ACTUAL_BUDGET_URL ||
+      "https://chadsgooncave.tailbfa409.ts.net"
+  );
+
   return (
     <PageLayout>
       <div className="p-3 sm:p-4 lg:p-8">
@@ -40,6 +45,14 @@ export default function ToolsPage() {
             url={stirlingPdfUrl}
             buttonLabel="Open Stirling PDF"
             icon="M7 3h7l5 5v13H7a2 2 0 01-2-2V5a2 2 0 012-2z"
+          />
+
+          <ToolCard
+            title="Actual Budget"
+            description="Personal finance and spending tracker."
+            url={actualBudgetUrl}
+            buttonLabel="Open Actual Budget"
+            icon="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm14 5h.01M7 9h6"
           />
         </div>
       </div>
