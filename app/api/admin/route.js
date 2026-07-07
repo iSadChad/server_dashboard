@@ -40,6 +40,11 @@ const SERVICE_CHECKS = [
     host: "127.0.0.1",
     port: 5432,
   },
+  {
+  name: "AdGuard Home",
+  type: "http",
+  target: "http://100.82.53.61:3001",
+  },
   
 ];
 

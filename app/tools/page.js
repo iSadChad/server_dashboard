@@ -54,6 +54,14 @@ export default function ToolsPage() {
             buttonLabel="Open Actual Budget"
             icon="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm14 5h.01M7 9h6"
           />
+
+          <ToolCard
+          title="AdGuard Home"
+          description="Network-wide DNS ad and tracker blocking."
+          url="http://100.82.53.61:3001"
+          buttonLabel="Open AdGuard"
+          icon="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+/>
         </div>
       </div>
     </PageLayout>
