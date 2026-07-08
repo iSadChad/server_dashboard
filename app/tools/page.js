@@ -19,6 +19,11 @@ export default function ToolsPage() {
     process.env.NEXT_PUBLIC_ACTUAL_BUDGET_URL ||
       "https://chadsgooncave.tailbfa409.ts.net"
   );
+  const bumteacherbypassUrl = cleanUrl(
+    process.env.NEXT_PUBLIC_BUMTEACHERBYPASS_URL ||
+      "http://100.82.53.61:3847"  
+  );
+
 
   return (
     <PageLayout>
@@ -60,6 +65,13 @@ export default function ToolsPage() {
           description="Network-wide DNS ad and tracker blocking."
           url="http://100.82.53.61:3001"
           buttonLabel="Open AdGuard"
+          icon="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+/>
+<ToolCard
+          title="BumTeacherBypass"
+          description="Upload PDF and Word files and convert them into organized, editable pages using AI."
+          url={bumteacherbypassUrl}
+          buttonLabel="Open BumTeacherBypass"
           icon="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
 />
         </div>
