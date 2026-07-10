@@ -76,51 +76,33 @@ export default function ToolsPage() {
   return (
     <PageLayout>
       <div className="tools-workbench px-3 py-4 sm:px-5 lg:px-8 lg:py-7">
-        <div className="mb-5 grid gap-4 xl:grid-cols-[minmax(280px,0.75fr)_minmax(0,1.25fr)]">
-          <section className="tool-hero rounded-xl border p-4 sm:p-6 lg:p-7">
-            <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.025] px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-slate-300/55">
-                <span className="h-1.5 w-1.5 rounded-full bg-red-400 shadow-[0_0_12px_rgba(248,113,113,0.75)]" />
-                Tool Bay
+        <div className="tool-terminal-header mb-4 rounded-xl border px-4 py-4 sm:px-5">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.025] px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-slate-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-red-400 shadow-[0_0_12px_rgba(248,113,113,0.55)]" />
+                Tools
               </div>
-
-              <div className="font-mono text-[11px] text-slate-400/55">
-                {tools.length} services linked
-              </div>
+              <h2 className="text-2xl font-black tracking-normal text-white sm:text-4xl">
+                Service launch matrix
+              </h2>
             </div>
 
-            <h2 className="max-w-xl text-3xl font-black tracking-normal text-white sm:text-5xl">
-              Dark launch deck.
-            </h2>
-
-            <p className="mt-4 max-w-md text-sm leading-6 text-slate-400">
-              Self-hosted utilities, grouped like a control surface instead of
-              a pile of identical tiles.
-            </p>
-
-            <div className="mt-10 grid grid-cols-2 gap-3">
-              <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+            <div className="grid grid-cols-2 gap-2 sm:min-w-64">
+              <div className="rounded-lg border border-white/10 bg-black/20 px-3 py-2">
                 <p className="font-mono text-[10px] uppercase tracking-widest text-slate-500">
                   Services
                 </p>
-                <p className="mt-2 text-2xl font-bold text-white">
-                  {tools.length}
-                </p>
+                <p className="mt-1 text-xl font-bold text-white">{tools.length}</p>
               </div>
-              <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+              <div className="rounded-lg border border-white/10 bg-black/20 px-3 py-2">
                 <p className="font-mono text-[10px] uppercase tracking-widest text-slate-500">
-                  State
+                  Access
                 </p>
-                <p className="mt-2 text-2xl font-bold text-red-200">Ready</p>
+                <p className="mt-1 text-xl font-bold text-red-200">External</p>
               </div>
             </div>
-          </section>
-
-          <aside className="tool-side-stack tool-equal-grid grid gap-3">
-            {tools.map((tool, index) => (
-              <MiniLaunch key={tool.title} tool={tool} index={index + 1} />
-            ))}
-          </aside>
+          </div>
         </div>
 
         <div className="tool-directory rounded-xl border">
@@ -185,53 +167,6 @@ function ToolIcon({ tool }) {
         <path d={tool.icon} />
       </svg>
     </div>
-  );
-}
-
-function LaunchButton({ tool, large = false }) {
-  return (
-    <a
-      href={tool.url}
-      target="_blank"
-      rel="noreferrer"
-      className={`launch-button inline-flex items-center justify-center rounded-lg border border-red-400/20 bg-red-500/10 font-semibold text-red-100 transition-all hover:bg-red-500/15 ${
-        large ? "px-5 py-3 text-sm" : "px-3 py-2 text-xs"
-      }`}
-    >
-      {tool.buttonLabel}
-    </a>
-  );
-}
-
-function MiniLaunch({ tool, index }) {
-  const style = accentStyles[tool.accent] || accentStyles.steel;
-
-  return (
-    <section className="mini-launch rounded-xl border p-4">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <span className="font-mono text-xs text-slate-500">
-            {String(index).padStart(2, "0")}
-          </span>
-          <ToolIcon tool={tool} />
-          <div className="min-w-0">
-            <h3 className="truncate text-sm font-semibold text-white">
-              {tool.title}
-            </h3>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-slate-500">
-              {tool.meta}
-            </p>
-          </div>
-        </div>
-        <span className={`h-2 w-2 shrink-0 rounded-full ${style.dot}`} />
-      </div>
-
-      <p className="mb-4 line-clamp-2 text-xs leading-5 text-slate-400">
-        {tool.description}
-      </p>
-
-      <LaunchButton tool={tool} />
-    </section>
   );
 }
 
