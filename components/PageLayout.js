@@ -84,20 +84,23 @@ export default function PageLayout({ children }) {
   return (
     <PageLayoutContext.Provider value={contextValue}>
       <StarBackground />
-      <div className="flex min-h-screen text-white relative" style={{ zIndex: 1 }}>
+      <div
+        className="cyber-root flex min-h-screen text-white relative"
+        style={{ zIndex: 1 }}
+      >
         {mobileMenuOpen && (
           <div
-            className="fixed inset-0 z-40 bg-black/60 md:hidden"
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm md:hidden"
             onClick={() => setMobileMenuOpen(false)}
           />
         )}
 
         <aside
-          className={`fixed inset-y-0 left-0 z-50 bg-[#111111]/90 backdrop-blur-sm border-r border-red-500/10 flex flex-col shrink-0 transform transition-all duration-200 md:relative md:translate-x-0 w-64 ${
+          className={`cyber-sidebar fixed inset-y-0 left-0 z-50 flex flex-col shrink-0 transform transition-all duration-300 md:relative md:translate-x-0 w-64 ${
             sidebarCollapsed ? "md:w-20" : "md:w-64"
           } ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
         >
-          <div className="p-4 border-b border-red-500/10">
+          <div className="p-4 border-b border-cyan-300/10">
             <div
               className={`flex items-center ${
                 sidebarCollapsed && !mobileMenuOpen
@@ -115,16 +118,16 @@ export default function PageLayout({ children }) {
                     : undefined
                 }
               >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center font-bold text-sm shadow-lg shadow-red-500/30 shrink-0">
+                <div className="brand-mark w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0">
                   CG
                 </div>
 
                 {showSidebarText && (
                   <div className="min-w-0">
-                    <h1 className="font-bold text-sm truncate">
+                    <h1 className="font-bold text-sm tracking-wide truncate">
                       Chad&apos;s Goon Cave
                     </h1>
-                    <p className="text-[11px] text-red-300/50 truncate">
+                    <p className="text-[11px] text-cyan-200/50 truncate">
                       Server Dashboard
                     </p>
                   </div>
@@ -134,7 +137,7 @@ export default function PageLayout({ children }) {
               <button
                 type="button"
                 onClick={() => setSidebarCollapsed((prev) => !prev)}
-                className={`w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 items-center justify-center transition-all shrink-0 ${
+                className={`w-8 h-8 rounded-lg bg-cyan-300/10 hover:bg-cyan-300/20 border border-cyan-300/20 text-cyan-100 items-center justify-center transition-all shrink-0 ${
                   sidebarCollapsed ? "hidden" : "hidden md:flex"
                 }`}
                 title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -158,9 +161,9 @@ export default function PageLayout({ children }) {
             </div>
           </div>
 
-          <nav className="flex-1 p-3 space-y-1">
+          <nav className="flex-1 p-3 space-y-1.5">
             {showSidebarText && (
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-red-400/40 px-3 mb-2">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-cyan-200/35 px-3 mb-2">
                 Menu
               </p>
             )}
@@ -177,8 +180,8 @@ export default function PageLayout({ children }) {
                     : "gap-3 px-3"
                 } py-2.5 rounded-lg text-sm transition-all ${
                   item.href === pathname
-                    ? "bg-red-500/15 text-white font-medium shadow-sm shadow-red-500/10"
-                    : "text-red-200/50 hover:text-white hover:bg-red-500/10"
+                    ? "is-active bg-cyan-300/15 text-white font-medium shadow-sm shadow-cyan-400/10"
+                    : "text-slate-300/60 hover:text-white hover:bg-cyan-300/10"
                 }`}
               >
                 <svg
@@ -200,10 +203,10 @@ export default function PageLayout({ children }) {
             ))}
           </nav>
 
-          <div className="p-3 border-t border-red-500/10">
+          <div className="p-3 border-t border-cyan-300/10">
             {showSidebarText ? (
-                <div className="rounded-xl bg-gradient-to-br from-red-500/10 to-rose-500/10 border border-red-500/15 p-4 backdrop-blur-sm">
-                <p className="text-xs font-medium text-red-200/70">
+                <div className="status-tile rounded-xl p-4 backdrop-blur-sm">
+                <p className="text-xs font-medium text-cyan-100/70">
                   System Status
                 </p>
 
@@ -212,14 +215,14 @@ export default function PageLayout({ children }) {
                   <span className="text-xs text-emerald-400">Online</span>
                 </div>
 
-                <div className="flex items-center gap-2 mt-2 text-[10px] text-red-300/30 font-mono">
+                <div className="flex items-center gap-2 mt-2 text-[10px] text-cyan-100/35 font-mono">
                   <Clock />
                 </div>
               </div>
             ) : (
               <div
                 title="System status · Online"
-                className="hidden md:flex w-10 h-10 mx-auto rounded-xl bg-gradient-to-br from-red-500/10 to-rose-500/10 border border-red-500/15 items-center justify-center"
+                className="status-tile hidden md:flex w-10 h-10 mx-auto rounded-xl items-center justify-center"
               >
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
               </div>
@@ -227,11 +230,11 @@ export default function PageLayout({ children }) {
           </div>
         </aside>
 
-       <main className="flex-1 overflow-auto min-w-0">
-  <div className="md:hidden sticky top-0 z-30 bg-[#050505]/90 backdrop-blur-sm border-b border-red-500/10 px-3 py-3">
+       <main className="cyber-main flex-1 overflow-auto min-w-0">
+  <div className="mobile-topbar md:hidden sticky top-0 z-30 px-3 py-3">
     <button
       type="button"
-      className="inline-flex items-center justify-center p-2 rounded-lg bg-[#111111]/80 border border-red-500/10 text-red-200/70"
+      className="inline-flex items-center justify-center p-2 rounded-lg bg-cyan-300/10 border border-cyan-300/20 text-cyan-100/80"
       onClick={() => setMobileMenuOpen(true)}
       aria-label="Open menu"
     >

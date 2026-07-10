@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 export default function StarBackground() {
   const canvasRef = useRef(null);
-  const starsRef = useRef([]);
+  const particlesRef = useRef([]);
   const animRef = useRef(null);
 
   useEffect(() => {
@@ -24,21 +24,20 @@ export default function StarBackground() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    function createStars() {
-      const count = Math.floor((width * height) / 5000);
-      starsRef.current = [];
+    function createParticles() {
+      const count = Math.floor((width * height) / 7600);
+      particlesRef.current = [];
       for (let i = 0; i < count; i++) {
-        starsRef.current.push({
+        particlesRef.current.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          r: Math.random() * 1.5 + 0.3,
-          dx: (Math.random() - 0.5) * 0.12,
-          dy: (Math.random() - 0.5) * 0.08,
-          opacity: Math.random() * 0.6 + 0.2,
-          twinkleSpeed: Math.random() * 0.008 + 0.002,
-          twinkleOffset: Math.random() * Math.PI * 2,
-          hue: Math.random() > 0.5 ? 0 : 340 + Math.random() * 30,
-          sat: Math.random() > 0.5 ? 60 + Math.random() * 30 : Math.random() * 25,
+          r: Math.random() * 1.7 + 0.4,
+          dx: (Math.random() - 0.5) * 0.18,
+          dy: Math.random() * 0.18 + 0.03,
+          opacity: Math.random() * 0.46 + 0.18,
+          pulse: Math.random() * 0.01 + 0.003,
+          offset: Math.random() * Math.PI * 2,
+          hue: [184, 198, 286, 328][Math.floor(Math.random() * 4)],
         });
       }
     }
@@ -46,10 +45,67 @@ export default function StarBackground() {
     let time = 0;
 
     function draw() {
+      time += 0.8;
       ctx.clearRect(0, 0, width, height);
-      time += 1;
 
-      for (const s of starsRef.current) {
+      const bg = ctx.createLinearGradient(0, 0, width, height);
+      bg.addColorStop(0, "#02040b");
+      bg.addColorStop(0.45, "#070817");
+      bg.addColorStop(1, "#03040a");
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, width, height);
+
+      const glowOne = ctx.createRadialGradient(
+        width * 0.18,
+        height * 0.12,
+        0,
+        width * 0.18,
+        height * 0.12,
+        Math.max(width, height) * 0.7
+      );
+      glowOne.addColorStop(0, "rgba(34, 211, 238, 0.16)");
+      glowOne.addColorStop(0.38, "rgba(168, 85, 247, 0.08)");
+      glowOne.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = glowOne;
+      ctx.fillRect(0, 0, width, height);
+
+      const glowTwo = ctx.createRadialGradient(
+        width * 0.86,
+        height * 0.78,
+        0,
+        width * 0.86,
+        height * 0.78,
+        Math.max(width, height) * 0.58
+      );
+      glowTwo.addColorStop(0, "rgba(244, 63, 94, 0.14)");
+      glowTwo.addColorStop(0.42, "rgba(20, 184, 166, 0.08)");
+      glowTwo.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = glowTwo;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.save();
+      ctx.globalAlpha = 0.18;
+      ctx.strokeStyle = "rgba(125, 249, 255, 0.2)";
+      ctx.lineWidth = 1;
+      const grid = 56;
+      const drift = (time * 0.22) % grid;
+
+      for (let x = -grid + drift; x < width + grid; x += grid) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x + height * 0.22, height);
+        ctx.stroke();
+      }
+
+      for (let y = -grid + drift; y < height + grid; y += grid) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y - width * 0.08);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      for (const s of particlesRef.current) {
         s.x += s.dx;
         s.y += s.dy;
 
@@ -58,33 +114,30 @@ export default function StarBackground() {
         if (s.y < -5) s.y = height + 5;
         if (s.y > height + 5) s.y = -5;
 
-        const twinkle =
-          0.5 + 0.5 * Math.sin(time * s.twinkleSpeed + s.twinkleOffset);
+        const twinkle = 0.55 + 0.45 * Math.sin(time * s.pulse + s.offset);
         const alpha = s.opacity * twinkle;
 
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${s.hue}, ${s.sat}%, 82%, ${alpha})`;
+        ctx.fillStyle = `hsla(${s.hue}, 92%, 72%, ${alpha})`;
         ctx.fill();
 
-        if (s.r > 0.9) {
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r * 3, 0, Math.PI * 2);
-          ctx.fillStyle = `hsla(${s.hue}, ${s.sat}%, 70%, ${alpha * 0.08})`;
-          ctx.fill();
-        }
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * 5, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${s.hue}, 92%, 62%, ${alpha * 0.045})`;
+        ctx.fill();
       }
 
       animRef.current = requestAnimationFrame(draw);
     }
 
     resize();
-    createStars();
+    createParticles();
     draw();
 
     const onResize = () => {
       resize();
-      createStars();
+      createParticles();
     };
 
     window.addEventListener("resize", onResize);
