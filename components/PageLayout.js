@@ -127,7 +127,7 @@ export default function PageLayout({ children }) {
                     <h1 className="font-bold text-sm tracking-wide truncate">
                       Chad&apos;s Goon Cave
                     </h1>
-                    <p className="text-[11px] text-cyan-200/50 truncate">
+                    <p className="text-[11px] text-slate-300/70 truncate">
                       Server Dashboard
                     </p>
                   </div>
@@ -163,7 +163,7 @@ export default function PageLayout({ children }) {
 
           <nav className="flex-1 p-3 space-y-1.5">
             {showSidebarText && (
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-cyan-200/35 px-3 mb-2">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400/80 px-3 mb-2">
                 Menu
               </p>
             )}
@@ -181,7 +181,7 @@ export default function PageLayout({ children }) {
                 } py-2.5 rounded-lg text-sm transition-all ${
                   item.href === pathname
                     ? "is-active bg-cyan-300/15 text-white font-medium shadow-sm shadow-cyan-400/10"
-                    : "text-slate-300/60 hover:text-white hover:bg-cyan-300/10"
+                    : "text-slate-300/80 hover:text-white hover:bg-slate-300/10"
                 }`}
               >
                 <svg
@@ -206,7 +206,7 @@ export default function PageLayout({ children }) {
           <div className="p-3 border-t border-cyan-300/10">
             {showSidebarText ? (
                 <div className="status-tile rounded-xl p-4 backdrop-blur-sm">
-                <p className="text-xs font-medium text-cyan-100/70">
+                <p className="text-xs font-medium text-slate-200/85">
                   System Status
                 </p>
 
@@ -215,7 +215,7 @@ export default function PageLayout({ children }) {
                   <span className="text-xs text-emerald-400">Online</span>
                 </div>
 
-                <div className="flex items-center gap-2 mt-2 text-[10px] text-cyan-100/35 font-mono">
+                <div className="flex items-center gap-2 mt-2 text-[10px] text-slate-300/65 font-mono">
                   <Clock />
                 </div>
               </div>

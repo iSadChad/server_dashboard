@@ -81,14 +81,14 @@ export default function ToolsPage() {
             <h2 className="text-2xl font-black tracking-normal text-white sm:text-3xl">
               Tools
             </h2>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-300">
               {tools.length} external services ready.
             </p>
           </div>
         </div>
 
         <div className="tool-directory rounded-xl border">
-          <div className="grid grid-cols-[56px_minmax(0,1fr)_88px] border-b border-white/10 px-4 py-3 text-[10px] font-mono uppercase tracking-widest text-slate-500 md:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_120px]">
+          <div className="grid grid-cols-[56px_minmax(0,1fr)_88px] border-b border-white/10 px-4 py-3 text-[10px] font-mono uppercase tracking-widest text-slate-400 md:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_120px]">
             <span>Slot</span>
             <span>Service</span>
             <span className="hidden md:block">Endpoint</span>
@@ -159,7 +159,7 @@ function ToolRow({ tool, index }) {
     <div className="tool-row grid grid-cols-[56px_minmax(0,1fr)_88px] items-center gap-0 px-4 py-3 md:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_120px]">
       <div className="flex items-center gap-3">
         <span className={`h-2 w-2 rounded-full ${style.dot}`} />
-        <span className="font-mono text-xs text-slate-500">
+        <span className="font-mono text-xs text-slate-400">
           {String(index).padStart(2, "0")}
         </span>
       </div>
@@ -170,11 +170,11 @@ function ToolRow({ tool, index }) {
           <h3 className="truncate text-sm font-semibold text-white">
             {tool.title}
           </h3>
-          <p className="truncate text-xs text-slate-500">{tool.description}</p>
+          <p className="truncate text-xs text-slate-300/80">{tool.description}</p>
         </div>
       </div>
 
-      <p className="hidden min-w-0 break-all pr-4 font-mono text-[11px] text-slate-500 md:block">
+      <p className="hidden min-w-0 break-all pr-4 font-mono text-[11px] text-slate-400 md:block">
         {tool.url}
       </p>
 
