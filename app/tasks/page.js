@@ -172,8 +172,8 @@ function TasksContent() {
   }, [tasks, filter]);
 
   return (
-    <div className="p-3 sm:p-4 lg:p-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-8">
+    <div className="tasks-workbench p-3 sm:p-4 lg:p-8">
+      <div className="page-command-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-8">
         <div>
           <h2 className="text-xl md:text-2xl font-bold">Tasks</h2>
           <p className="text-red-200/40 text-sm mt-1">
@@ -187,13 +187,13 @@ function TasksContent() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="task-meter-grid grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
         <StatCard label="Open" value={stats.open} />
         <StatCard label="Overdue" value={stats.overdue} warning={stats.overdue > 0} />
         <StatCard label="Done" value={stats.done} />
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-[420px_1fr] gap-3 md:gap-4">
+      <div className="task-board grid grid-cols-1 xl:grid-cols-[420px_1fr] gap-3 md:gap-4">
         <section className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 h-fit">
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Add Task

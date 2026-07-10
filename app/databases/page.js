@@ -180,8 +180,8 @@ function DatabasesContent() {
   }
 
   return (
-    <div className="p-4 md:p-8">
-      <div className="flex items-center justify-between mb-6 md:mb-8">
+    <div className="databases-workbench p-4 md:p-8">
+      <div className="page-command-header flex items-center justify-between mb-6 md:mb-8">
         <div>
           <h2 className="text-xl md:text-2xl font-bold">Databases</h2>
           <p className="text-red-200/40 text-sm mt-1">
@@ -197,7 +197,7 @@ function DatabasesContent() {
       </div>
 
       {loading ? (
-        <div className="space-y-3">
+        <div className="database-stack space-y-3">
           {[...Array(3)].map((_, i) => (
             <div
               key={i}

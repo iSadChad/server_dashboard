@@ -134,8 +134,8 @@ function AdminContent() {
   const totalServices = admin.services.length;
 
   return (
-    <div className="p-3 sm:p-4 lg:p-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-8">
+    <div className="admin-workbench p-3 sm:p-4 lg:p-8">
+      <div className="page-command-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-8">
         <div>
           <h2 className="text-xl md:text-2xl font-bold">Admin</h2>
           <p className="text-red-200/40 text-sm mt-1">
@@ -160,7 +160,7 @@ function AdminContent() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="admin-status-strip grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <AdminStatCard
         label="Firewall"
         value={admin.security.firewall}
@@ -194,7 +194,7 @@ function AdminContent() {
         />
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="admin-system-grid grid grid-cols-1 xl:grid-cols-2 gap-3 md:gap-4 mb-6 md:mb-8">
         <Panel title="System" subtitle="Host and maintenance state">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <MiniInfo label="Hostname" value={admin.system.hostname} mono />
@@ -253,7 +253,7 @@ function AdminContent() {
         </Panel>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="admin-service-grid grid grid-cols-1 xl:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
         <Panel
           title="Service Health"
           subtitle="Checks if services actually respond"
@@ -314,7 +314,7 @@ function AdminContent() {
         </Panel>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 md:gap-4">
+      <div className="admin-log-grid grid grid-cols-1 xl:grid-cols-2 gap-3 md:gap-4">
         <Panel title="Storage Details" subtitle="Important folders">
           <div className="space-y-3">
             {admin.storage.folders.length > 0 ? (

@@ -73,14 +73,10 @@ export default function ToolsPage() {
     },
   ];
 
-  const featured = tools[4];
-  const quickTools = tools.slice(0, 4);
-
-
   return (
     <PageLayout>
       <div className="tools-workbench px-3 py-4 sm:px-5 lg:px-8 lg:py-7">
-        <div className="mb-5 grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="mb-5 grid gap-4 xl:grid-cols-[minmax(280px,0.75fr)_minmax(0,1.25fr)]">
           <section className="tool-hero rounded-xl border p-4 sm:p-6 lg:p-7">
             <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.025] px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-slate-300/55">
@@ -93,34 +89,35 @@ export default function ToolsPage() {
               </div>
             </div>
 
-            <h2 className="max-w-3xl text-3xl font-black tracking-normal text-white sm:text-5xl lg:text-6xl">
-              Dark launch deck for the stuff you actually use.
+            <h2 className="max-w-xl text-3xl font-black tracking-normal text-white sm:text-5xl">
+              Dark launch deck.
             </h2>
 
-            <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-400">
+            <p className="mt-4 max-w-md text-sm leading-6 text-slate-400">
               Self-hosted utilities, grouped like a control surface instead of
               a pile of identical tiles.
             </p>
 
-            <div className="mt-9 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
-              <div className="min-w-0">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-red-300/50">
-                  Featured route
+            <div className="mt-10 grid grid-cols-2 gap-3">
+              <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-slate-500">
+                  Services
                 </p>
-                <h3 className="mt-2 truncate text-2xl font-bold text-white">
-                  {featured.title}
-                </h3>
-                <p className="mt-2 max-w-xl text-sm text-slate-400">
-                  {featured.description}
+                <p className="mt-2 text-2xl font-bold text-white">
+                  {tools.length}
                 </p>
               </div>
-
-              <LaunchButton tool={featured} large />
+              <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-slate-500">
+                  State
+                </p>
+                <p className="mt-2 text-2xl font-bold text-red-200">Ready</p>
+              </div>
             </div>
           </section>
 
-          <aside className="tool-side-stack grid gap-3">
-            {quickTools.map((tool, index) => (
+          <aside className="tool-side-stack tool-equal-grid grid gap-3">
+            {tools.map((tool, index) => (
               <MiniLaunch key={tool.title} tool={tool} index={index + 1} />
             ))}
           </aside>

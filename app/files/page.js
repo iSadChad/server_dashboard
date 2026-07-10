@@ -126,8 +126,8 @@ export default function FilesPage() {
 
   return (
     <PageLayout>
-      <div className="p-4 md:p-8">
-        <div className="flex items-center justify-between gap-4 mb-6 md:mb-8">
+      <div className="files-workbench p-4 md:p-8">
+        <div className="page-command-header flex items-center justify-between gap-4 mb-6 md:mb-8">
           <div className="flex items-center gap-3 min-w-0">
             <div className="min-w-0">
               <h2 className="text-xl md:text-2xl font-bold">
@@ -147,7 +147,7 @@ export default function FilesPage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-4 mb-6">
+          <div className="files-control-grid grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-4 mb-6">
             <section className="rounded-3xl bg-[#111111] border border-red-500/10 p-5 md:p-6">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
                 <div>
@@ -231,7 +231,7 @@ export default function FilesPage() {
             </section>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-6">
+          <div className="files-storage-strip grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-6">
             <StorageCard
               title="Used"
               value={loading ? "—" : formatBytes(diskUsed)}
@@ -251,7 +251,7 @@ export default function FilesPage() {
             />
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div className="files-action-grid grid grid-cols-1 xl:grid-cols-2 gap-4">
             <section className="rounded-2xl bg-[#111111] border border-red-500/10 p-5">
               <div className="flex items-center justify-between gap-4 mb-4">
                 <div>

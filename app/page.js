@@ -195,8 +195,8 @@ return () => {
   ];
 
   return (
-    <div className="p-3 sm:p-4 lg:p-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-8">
+    <div className="dashboard-workbench p-3 sm:p-4 lg:p-8">
+      <div className="page-command-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-8">
         <div>
           <h2 className="text-xl md:text-2xl font-bold">Dashboard</h2>
           <p className="text-red-200/40 text-sm mt-1">
@@ -214,7 +214,7 @@ return () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="dashboard-metrics grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <StatCard
           label="CPU Usage"
           value={loading ? "—" : `${stats.cpu.toFixed(1)}%`}
@@ -263,7 +263,7 @@ return () => {
       <BackupStatusPanel backup={backupStatus} loading={backupLoading} />
       <Pm2StatusPanel pm2={pm2Status} loading={pm2Loading} />
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="dashboard-charts grid grid-cols-1 xl:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
         <div className="xl:col-span-2 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Network Activity
@@ -407,7 +407,7 @@ return () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
+      <div className="dashboard-secondary grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
         <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
           <h3 className="text-sm font-semibold text-red-200/70 mb-1">
             Weekly CPU
