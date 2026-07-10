@@ -77,40 +77,22 @@ export default function ToolsPage() {
     <PageLayout>
       <div className="tools-workbench px-3 py-4 sm:px-5 lg:px-8 lg:py-7">
         <div className="tool-terminal-header mb-4 rounded-xl border px-4 py-4 sm:px-5">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.025] px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-slate-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-red-400 shadow-[0_0_12px_rgba(248,113,113,0.55)]" />
-                Tools
-              </div>
-              <h2 className="text-2xl font-black tracking-normal text-white sm:text-4xl">
-                Service launch matrix
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 sm:min-w-64">
-              <div className="rounded-lg border border-white/10 bg-black/20 px-3 py-2">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-slate-500">
-                  Services
-                </p>
-                <p className="mt-1 text-xl font-bold text-white">{tools.length}</p>
-              </div>
-              <div className="rounded-lg border border-white/10 bg-black/20 px-3 py-2">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-slate-500">
-                  Access
-                </p>
-                <p className="mt-1 text-xl font-bold text-red-200">External</p>
-              </div>
-            </div>
+          <div className="flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
+            <h2 className="text-2xl font-black tracking-normal text-white sm:text-3xl">
+              Tools
+            </h2>
+            <p className="text-sm text-slate-400">
+              {tools.length} external services ready.
+            </p>
           </div>
         </div>
 
         <div className="tool-directory rounded-xl border">
-          <div className="grid grid-cols-[64px_minmax(0,1fr)] border-b border-white/10 px-4 py-3 text-[10px] font-mono uppercase tracking-widest text-slate-500 sm:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_150px]">
+          <div className="grid grid-cols-[56px_minmax(0,1fr)_88px] border-b border-white/10 px-4 py-3 text-[10px] font-mono uppercase tracking-widest text-slate-500 md:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_120px]">
             <span>Slot</span>
             <span>Service</span>
-            <span className="hidden sm:block">Endpoint</span>
-            <span className="hidden sm:block text-right">Action</span>
+            <span className="hidden md:block">Endpoint</span>
+            <span className="text-right">Action</span>
           </div>
 
           <div className="divide-y divide-white/[0.07]">
@@ -174,7 +156,7 @@ function ToolRow({ tool, index }) {
   const style = accentStyles[tool.accent] || accentStyles.steel;
 
   return (
-    <div className="tool-row grid grid-cols-[64px_minmax(0,1fr)] items-center gap-0 px-4 py-4 sm:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_150px]">
+    <div className="tool-row grid grid-cols-[56px_minmax(0,1fr)_88px] items-center gap-0 px-4 py-3 md:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_120px]">
       <div className="flex items-center gap-3">
         <span className={`h-2 w-2 rounded-full ${style.dot}`} />
         <span className="font-mono text-xs text-slate-500">
@@ -192,7 +174,7 @@ function ToolRow({ tool, index }) {
         </div>
       </div>
 
-      <p className="hidden min-w-0 break-all pr-4 font-mono text-[11px] text-slate-500 sm:block">
+      <p className="hidden min-w-0 break-all pr-4 font-mono text-[11px] text-slate-500 md:block">
         {tool.url}
       </p>
 
@@ -200,7 +182,7 @@ function ToolRow({ tool, index }) {
         href={tool.url}
         target="_blank"
         rel="noreferrer"
-        className="mt-3 inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/[0.035] px-3 py-2 text-xs font-medium text-slate-200 transition-all hover:border-red-300/25 hover:bg-red-500/10 sm:mt-0"
+        className="inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/[0.035] px-3 py-2 text-xs font-medium text-slate-200 transition-all hover:border-red-300/25 hover:bg-red-500/10"
       >
         Launch
       </a>

@@ -382,7 +382,7 @@ body {
 
 .page-command-header {
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-  padding-bottom: 1rem;
+  padding-bottom: 0.85rem;
 }
 
 .dashboard-workbench,
@@ -398,19 +398,6 @@ body {
 .admin-status-strip > div,
 .files-storage-strip > div {
   border-radius: 10px;
-}
-
-.dashboard-charts > div,
-.dashboard-secondary > div {
-  min-height: 100%;
-}
-
-.files-control-grid > section:first-child {
-  min-height: 280px;
-}
-
-.files-storage-strip {
-  align-items: stretch;
 }
 
 .files-action-grid > section,
@@ -435,7 +422,7 @@ body {
   align-self: center;
   border-right: 1px solid rgba(148, 163, 184, 0.12);
   color: rgba(148, 163, 184, 0.38);
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 0.72rem;
   padding-right: 0.85rem;
 }
@@ -446,167 +433,37 @@ body {
 }
 
 @media (min-width: 1024px) {
-  .dashboard-workbench {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 330px;
-    gap: 1rem;
-    align-items: start;
-  }
-
-  .dashboard-workbench > .page-command-header,
-  .dashboard-workbench > .dashboard-secondary {
-    grid-column: 1 / -1;
-  }
-
-  .dashboard-workbench > .dashboard-metrics {
-    grid-column: 2;
-    grid-row: 2 / span 4;
-    display: grid;
-    grid-template-columns: 1fr;
-    margin-bottom: 0;
-    position: sticky;
-    top: 1rem;
-  }
-
-  .dashboard-workbench > div:nth-of-type(3),
-  .dashboard-workbench > div:nth-of-type(4),
-  .dashboard-workbench > .dashboard-charts {
-    grid-column: 1;
-    margin-bottom: 0;
-  }
-
-  .dashboard-workbench > .dashboard-charts {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .dashboard-workbench > .dashboard-charts > div:first-child,
-  .dashboard-workbench > .dashboard-charts > div:nth-child(2) {
-    grid-column: auto;
+  .dashboard-metrics,
+  .task-meter-grid,
+  .admin-status-strip,
+  .files-storage-strip {
+    grid-auto-rows: 1fr;
   }
 
   .dashboard-secondary {
-    grid-template-columns: 1.2fr 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .files-workbench {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 360px;
-    gap: 1rem;
-    align-items: start;
+  .files-control-grid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
   }
 
-  .files-workbench > .page-command-header,
-  .files-workbench > .files-action-grid {
-    grid-column: 1 / -1;
-  }
-
-  .files-workbench > .files-control-grid {
-    grid-column: 1;
-    grid-template-columns: 1fr;
-    margin-bottom: 0;
-  }
-
-  .files-workbench > .files-storage-strip {
-    grid-column: 2;
-    grid-row: 2;
-    grid-template-columns: 1fr;
-    margin-bottom: 0;
-    position: sticky;
-    top: 1rem;
-  }
-
-  .files-action-grid {
-    grid-template-columns: 0.85fr 1.15fr;
-  }
-
-  .tasks-workbench {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 340px;
-    gap: 1rem;
-    align-items: start;
-  }
-
-  .tasks-workbench > .page-command-header,
-  .tasks-workbench > .task-board {
-    grid-column: 1 / -1;
-  }
-
-  .tasks-workbench > .task-meter-grid {
-    grid-column: 2;
-    grid-row: 2;
-    grid-template-columns: 1fr;
-    margin-bottom: 0;
+  .files-action-grid,
+  .admin-log-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .task-board {
-    grid-template-columns: minmax(0, 1fr) 380px;
-  }
-
-  .task-board > section:first-child {
-    order: 2;
-  }
-
-  .task-board > section:nth-child(2) {
-    order: 1;
-  }
-
-  .databases-workbench {
-    display: grid;
-    grid-template-columns: 280px minmax(0, 1fr);
-    gap: 1rem;
-    align-items: start;
+    grid-template-columns: 380px minmax(0, 1fr);
   }
 
   .databases-workbench > .page-command-header {
-    grid-column: 1;
-    position: sticky;
-    top: 1rem;
-    border-bottom: 0;
-    border-right: 1px solid rgba(148, 163, 184, 0.1);
-    min-height: 60vh;
-    padding-right: 1rem;
-  }
-
-  .databases-workbench > .database-stack,
-  .databases-workbench > .space-y-3,
-  .databases-workbench > .text-center {
-    grid-column: 2;
-  }
-
-  .admin-workbench {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 340px;
-    gap: 1rem;
-    align-items: start;
-  }
-
-  .admin-workbench > .page-command-header,
-  .admin-workbench > .admin-service-grid,
-  .admin-workbench > .admin-log-grid {
-    grid-column: 1 / -1;
-  }
-
-  .admin-workbench > .admin-status-strip {
-    grid-column: 2;
-    grid-row: 2 / span 2;
-    grid-template-columns: 1fr;
-    margin-bottom: 0;
-    position: sticky;
-    top: 1rem;
-  }
-
-  .admin-workbench > .admin-system-grid {
-    grid-column: 1;
-    grid-template-columns: 1fr;
-    margin-bottom: 0;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    min-height: auto;
   }
 
   .admin-service-grid {
     grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
-  }
-
-  .admin-log-grid {
-    grid-template-columns: 0.85fr 1.15fr;
   }
 }
 
