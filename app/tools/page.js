@@ -76,9 +76,9 @@ export default function ToolsPage() {
   return (
     <PageLayout>
       <div className="vapor-page tools-workbench px-3 py-5 sm:px-5 lg:px-8 lg:py-9">
-        <header className="vapor-header tool-terminal-header relative mb-7 overflow-hidden rounded-4xl border border-fuchsia-300/25 bg-linear-to-br from-fuchsia-500/20 via-violet-950/60 to-cyan-400/10 px-5 py-7 shadow-[0_0_65px_rgba(217,70,239,0.18)] sm:px-8 sm:py-10 lg:px-10">
-          <div className="tool-header-orbit pointer-events-none absolute -top-24 -right-20 h-64 w-64 rounded-full border border-cyan-200/15 shadow-[0_0_70px_rgba(34,211,238,0.15)]" />
-          <div className="relative z-10 flex max-w-4xl flex-col gap-4">
+        <header className="vapor-header tool-terminal-header relative mb-6 overflow-hidden rounded-3xl border border-fuchsia-300/25 bg-linear-to-br from-fuchsia-500/20 via-violet-950/60 to-cyan-400/10 shadow-[0_0_55px_rgba(217,70,239,0.16)]">
+          <div className="tool-header-orbit pointer-events-none absolute -top-16 -right-12 h-48 w-48 rounded-full border border-cyan-200/15 shadow-[0_0_60px_rgba(34,211,238,0.14)]" />
+          <div className="relative z-10 flex max-w-5xl flex-col gap-3">
             <div className="flex items-center gap-3">
               <span className="h-px w-10 bg-linear-to-r from-fuchsia-400 to-cyan-300" />
               <p className="vapor-kicker font-mono text-[10px] font-bold uppercase tracking-[0.34em] text-cyan-300/80">
@@ -86,9 +86,9 @@ export default function ToolsPage() {
               </p>
             </div>
 
-            <h2 className="vapor-title text-4xl font-black tracking-tighter text-white sm:text-6xl lg:text-7xl">
-              Choose your
-              <span className="block bg-linear-to-r from-fuchsia-300 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
+            <h2 className="vapor-title text-3xl font-black tracking-tighter text-white sm:text-4xl lg:text-5xl">
+              Choose your{" "}
+              <span className="bg-linear-to-r from-fuchsia-300 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
                 destination.
               </span>
             </h2>
