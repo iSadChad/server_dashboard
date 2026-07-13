@@ -75,27 +75,32 @@ export default function ToolsPage() {
 
   return (
     <PageLayout>
-      <div className="tools-workbench px-3 py-4 sm:px-5 lg:px-8 lg:py-7">
-        <div className="tool-terminal-header mb-4 rounded-xl border px-4 py-4 sm:px-5">
-          <div className="flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
-            <h2 className="text-2xl font-black tracking-normal text-white sm:text-3xl">
+      <div className="vapor-page tools-workbench px-3 py-5 sm:px-5 lg:px-8 lg:py-9">
+        <div className="vapor-header tool-terminal-header relative mb-6 overflow-hidden rounded-3xl border border-fuchsia-300/25 bg-linear-to-br from-fuchsia-500/15 via-violet-500/10 to-cyan-400/10 px-5 py-6 shadow-[0_0_55px_rgba(217,70,239,0.16)] sm:px-7 sm:py-8">
+          <div className="relative z-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="vapor-kicker mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.32em] text-cyan-300/80">
+                Utility arcade // external deck
+              </p>
+              <h2 className="vapor-title text-3xl font-black tracking-tight text-white sm:text-5xl">
               Tools
-            </h2>
-            <p className="text-sm text-slate-300">
-              {tools.length} external services ready.
+              </h2>
+            </div>
+            <p className="vapor-chip w-fit rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 font-mono text-xs uppercase tracking-wider text-cyan-100">
+              {tools.length} portals online
             </p>
           </div>
         </div>
 
-        <div className="tool-directory rounded-xl border">
-          <div className="grid grid-cols-[56px_minmax(0,1fr)_88px] border-b border-white/10 px-4 py-3 text-[10px] font-mono uppercase tracking-widest text-slate-400 md:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_120px]">
+        <div className="vapor-panel tool-directory overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-violet-950/30 shadow-[0_24px_80px_rgba(20,0,60,0.35)] backdrop-blur-xl">
+          <div className="vapor-directory-head grid grid-cols-[56px_minmax(0,1fr)_88px] border-b border-cyan-200/15 bg-linear-to-r from-fuchsia-500/10 to-cyan-400/10 px-4 py-4 font-mono text-[10px] uppercase tracking-[0.24em] text-cyan-200/60 md:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_120px]">
             <span>Slot</span>
             <span>Service</span>
             <span className="hidden md:block">Endpoint</span>
             <span className="text-right">Action</span>
           </div>
 
-          <div className="divide-y divide-white/[0.07]">
+          <div className="divide-y divide-fuchsia-200/10">
             {tools.map((tool, index) => (
               <ToolRow key={tool.title} tool={tool} index={index + 1} />
             ))}
@@ -108,24 +113,24 @@ export default function ToolsPage() {
 
 const accentStyles = {
   steel: {
-    dot: "bg-slate-300 shadow-[0_0_12px_rgba(203,213,225,0.45)]",
-    icon: "border-slate-400/20 bg-slate-300/10 text-slate-100",
+    dot: "bg-cyan-300 shadow-[0_0_14px_rgba(103,232,249,0.75)]",
+    icon: "border-cyan-300/25 bg-cyan-300/10 text-cyan-100",
   },
   ember: {
-    dot: "bg-orange-400 shadow-[0_0_12px_rgba(251,146,60,0.42)]",
-    icon: "border-orange-300/20 bg-orange-300/10 text-orange-100",
+    dot: "bg-pink-400 shadow-[0_0_14px_rgba(244,114,182,0.72)]",
+    icon: "border-pink-300/25 bg-pink-400/10 text-pink-100",
   },
   moss: {
-    dot: "bg-lime-500 shadow-[0_0_12px_rgba(132,204,22,0.35)]",
-    icon: "border-lime-300/20 bg-lime-300/10 text-lime-100",
+    dot: "bg-teal-300 shadow-[0_0_14px_rgba(94,234,212,0.7)]",
+    icon: "border-teal-300/25 bg-teal-300/10 text-teal-100",
   },
   violet: {
-    dot: "bg-violet-400 shadow-[0_0_12px_rgba(167,139,250,0.36)]",
-    icon: "border-violet-300/20 bg-violet-300/10 text-violet-100",
+    dot: "bg-violet-300 shadow-[0_0_14px_rgba(196,181,253,0.72)]",
+    icon: "border-violet-300/25 bg-violet-300/10 text-violet-100",
   },
   blood: {
-    dot: "bg-red-500 shadow-[0_0_14px_rgba(239,68,68,0.48)]",
-    icon: "border-red-300/20 bg-red-500/10 text-red-100",
+    dot: "bg-fuchsia-400 shadow-[0_0_14px_rgba(232,121,249,0.78)]",
+    icon: "border-fuchsia-300/25 bg-fuchsia-400/10 text-fuchsia-100",
   },
 };
 
@@ -134,7 +139,7 @@ function ToolIcon({ tool }) {
 
   return (
     <div
-      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${style.icon}`}
+      className={`vapor-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border shadow-inner ${style.icon}`}
     >
       <svg
         width="18"
@@ -156,10 +161,10 @@ function ToolRow({ tool, index }) {
   const style = accentStyles[tool.accent] || accentStyles.steel;
 
   return (
-    <div className="tool-row grid grid-cols-[56px_minmax(0,1fr)_88px] items-center gap-0 px-4 py-3 md:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_120px]">
+    <div className="vapor-list-row tool-row group grid grid-cols-[56px_minmax(0,1fr)_88px] items-center gap-0 px-4 py-4 transition-all duration-300 hover:bg-fuchsia-400/8 md:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_120px]">
       <div className="flex items-center gap-3">
         <span className={`h-2 w-2 rounded-full ${style.dot}`} />
-        <span className="font-mono text-xs text-slate-400">
+        <span className="font-mono text-xs text-cyan-200/45">
           {String(index).padStart(2, "0")}
         </span>
       </div>
@@ -167,14 +172,14 @@ function ToolRow({ tool, index }) {
       <div className="flex min-w-0 items-center gap-3">
         <ToolIcon tool={tool} />
         <div className="min-w-0">
-          <h3 className="truncate text-sm font-semibold text-white">
+          <h3 className="truncate text-sm font-bold tracking-wide text-fuchsia-50 transition-colors group-hover:text-cyan-100">
             {tool.title}
           </h3>
-          <p className="truncate text-xs text-slate-300/80">{tool.description}</p>
+          <p className="vapor-muted truncate text-xs text-violet-100/55">{tool.description}</p>
         </div>
       </div>
 
-      <p className="hidden min-w-0 break-all pr-4 font-mono text-[11px] text-slate-400 md:block">
+      <p className="hidden min-w-0 break-all pr-4 font-mono text-[11px] text-cyan-100/35 md:block">
         {tool.url}
       </p>
 
@@ -182,7 +187,7 @@ function ToolRow({ tool, index }) {
         href={tool.url}
         target="_blank"
         rel="noreferrer"
-        className="inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/[0.035] px-3 py-2 text-xs font-medium text-slate-200 transition-all hover:border-red-300/25 hover:bg-red-500/10"
+        className="vapor-button inline-flex items-center justify-center rounded-xl border border-fuchsia-300/30 bg-linear-to-r from-fuchsia-500/20 to-cyan-400/15 px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-fuchsia-50 shadow-[0_0_20px_rgba(217,70,239,0.1)] transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/60 hover:shadow-[0_0_24px_rgba(34,211,238,0.2)]"
       >
         Launch
       </a>

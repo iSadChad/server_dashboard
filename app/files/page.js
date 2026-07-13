@@ -19,6 +19,18 @@ function cleanUrl(url) {
   return url.replace(/\/+$/, "");
 }
 
+async function fetchCloudPanelData() {
+  const [statsRes, statusRes] = await Promise.all([
+    fetch("/api/stats"),
+    fetch("/api/nextcloud/status"),
+  ]);
+
+  const statsData = statsRes.ok ? await statsRes.json() : null;
+  const statusData = statusRes.ok ? await statusRes.json() : null;
+
+  return { statsData, statusData };
+}
+
 function StatusDot({ online, maintenance }) {
   let color = "bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.7)]";
 
@@ -35,10 +47,10 @@ function StatusDot({ online, maintenance }) {
 
 function StorageCard({ title, value, sub }) {
   return (
-    <div className="rounded-2xl bg-[#111111] border border-red-500/10 p-5">
-      <p className="text-xs text-red-200/40 font-medium mb-2">{title}</p>
-      <p className="text-2xl font-bold text-white">{value}</p>
-      {sub && <p className="text-[11px] text-red-300/30 font-mono mt-1">{sub}</p>}
+    <div className="vapor-card group rounded-3xl border border-fuchsia-300/20 bg-linear-to-br from-violet-500/12 to-cyan-400/6 p-5 shadow-[0_20px_45px_rgba(30,0,70,0.22)] transition-all duration-300 hover:-translate-y-1 hover:border-cyan-200/35">
+      <p className="vapor-kicker mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-200/55">{title}</p>
+      <p className="text-2xl font-black text-fuchsia-50 transition-colors group-hover:text-cyan-100">{value}</p>
+      {sub && <p className="vapor-muted mt-1 font-mono text-[11px] text-violet-100/45">{sub}</p>}
     </div>
   );
 }
@@ -54,7 +66,7 @@ export default function FilesPage() {
     productName: "Nextcloud",
   });
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState(true);
   const [copied, setCopied] = useState(false);
 
   const nextcloudUrl = cleanUrl(
@@ -70,18 +82,13 @@ export default function FilesPage() {
     try {
       setRefreshing(true);
 
-      const [statsRes, statusRes] = await Promise.all([
-        fetch("/api/stats"),
-        fetch("/api/nextcloud/status"),
-      ]);
+      const { statsData, statusData } = await fetchCloudPanelData();
 
-      if (statsRes.ok) {
-        const statsData = await statsRes.json();
+      if (statsData) {
         setStats(statsData);
       }
 
-      if (statusRes.ok) {
-        const statusData = await statusRes.json();
+      if (statusData) {
         setNextcloudStatus(statusData);
       }
     } catch (error) {
@@ -93,7 +100,33 @@ export default function FilesPage() {
   }
 
   useEffect(() => {
-    loadData();
+    let cancelled = false;
+
+    fetchCloudPanelData()
+      .then(({ statsData, statusData }) => {
+        if (cancelled) return;
+
+        if (statsData) {
+          setStats(statsData);
+        }
+
+        if (statusData) {
+          setNextcloudStatus(statusData);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load cloud panel data:", error);
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+          setRefreshing(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function copyWebdavUrl() {
@@ -126,14 +159,17 @@ export default function FilesPage() {
 
   return (
     <PageLayout>
-      <div className="files-workbench p-4 md:p-8">
-        <div className="page-command-header flex items-center justify-between gap-4 mb-6 md:mb-8">
+      <div className="vapor-page files-workbench p-4 md:p-8">
+        <div className="vapor-header page-command-header relative mb-6 flex items-center justify-between gap-4 overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/15 via-violet-500/10 to-cyan-400/10 px-5 py-6 shadow-[0_0_55px_rgba(217,70,239,0.14)] md:mb-8 md:px-7 md:py-8">
           <div className="flex items-center gap-3 min-w-0">
             <div className="min-w-0">
-              <h2 className="text-xl md:text-2xl font-bold">
+              <p className="vapor-kicker mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-300/75">
+                Cloud lattice // node 01
+              </p>
+              <h2 className="vapor-title text-3xl font-black tracking-tight text-white md:text-5xl">
                 Cloud Control
               </h2>
-              <p className="text-red-200/40 text-sm mt-1">
+              <p className="vapor-muted mt-2 text-sm text-violet-100/55">
                 Nextcloud status, storage and quick access
               </p>
             </div>
@@ -141,14 +177,14 @@ export default function FilesPage() {
 
             <button
               onClick={loadData}
-              className="rounded-lg bg-[#111111] hover:bg-[#1a1a1a] border border-red-500/10 text-red-200/60 px-3 py-2 text-xs font-mono transition-all"
+              className="vapor-button rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-4 py-2.5 font-mono text-xs uppercase tracking-wider text-cyan-100 transition-all duration-300 hover:-translate-y-0.5 hover:border-fuchsia-200/50 hover:bg-fuchsia-400/15"
             >
               {refreshing ? "Refreshing..." : "Refresh"}
             </button>
           </div>
 
-          <div className="files-control-grid grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-4 mb-6">
-            <section className="rounded-3xl bg-[#111111] border border-red-500/10 p-5 md:p-6">
+          <div className="files-control-grid mb-6 grid grid-cols-1 gap-4 xl:grid-cols-[1.35fr_0.65fr]">
+            <section className="vapor-panel rounded-3xl border border-fuchsia-300/20 bg-violet-950/35 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.3)] backdrop-blur-xl md:p-7">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
@@ -156,22 +192,22 @@ export default function FilesPage() {
                       online={nextcloudStatus.online}
                       maintenance={nextcloudStatus.maintenance}
                     />
-                    <span className={`text-xs font-mono ${statusColor}`}>
+                    <span className={`vapor-chip font-mono text-xs uppercase tracking-wider ${statusColor}`}>
                       {statusLabel}
                     </span>
                   </div>
 
-                  <h3 className="text-2xl font-bold">
+                  <h3 className="text-3xl font-black tracking-tight text-fuchsia-50">
                     {nextcloudStatus.productName || "Nextcloud"}
                   </h3>
 
-                  <p className="text-sm text-red-200/40 mt-1">
+                  <p className="vapor-muted mt-1 text-sm text-violet-100/55">
                     {nextcloudStatus.version
                       ? `Version ${nextcloudStatus.version}`
                       : "Version unavailable"}
                   </p>
 
-                  <p className="text-xs text-red-300/30 font-mono mt-3 break-all">
+                  <p className="mt-4 break-all font-mono text-xs text-cyan-200/40">
                     {nextcloudUrl}
                   </p>
                 </div>
@@ -181,7 +217,7 @@ export default function FilesPage() {
                     href={filesUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center justify-center rounded-xl bg-red-500 hover:bg-red-400 text-white px-5 py-3 text-sm font-semibold transition-all shadow-lg shadow-red-500/20"
+                    className="vapor-button inline-flex items-center justify-center rounded-xl border border-fuchsia-200/35 bg-linear-to-r from-fuchsia-500 to-violet-500 px-5 py-3 text-sm font-bold text-white shadow-[0_0_28px_rgba(217,70,239,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_36px_rgba(34,211,238,0.28)]"
                   >
                     Open Files
                   </a>
@@ -190,7 +226,7 @@ export default function FilesPage() {
                     href={nextcloudUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center justify-center rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-200 px-5 py-3 text-sm font-semibold transition-all"
+                    className="vapor-button inline-flex items-center justify-center rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-5 py-3 text-sm font-bold text-cyan-100 transition-all duration-300 hover:-translate-y-0.5 hover:border-fuchsia-200/50 hover:bg-fuchsia-400/15"
                   >
                     Open Nextcloud
                   </a>
@@ -198,17 +234,17 @@ export default function FilesPage() {
               </div>
             </section>
 
-            <section className="rounded-3xl bg-[#111111] border border-red-500/10 p-5 md:p-6">
-              <p className="text-xs text-red-200/40 font-medium mb-3">
+            <section className="vapor-panel rounded-3xl border border-cyan-300/20 bg-linear-to-br from-cyan-400/10 to-violet-500/15 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.3)] backdrop-blur-xl md:p-7">
+              <p className="vapor-kicker mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-cyan-200/60">
                 Storage usage
               </p>
 
               <div className="flex items-end justify-between gap-4 mb-3">
                 <div>
-                  <p className="text-3xl font-bold">
+                  <p className="text-4xl font-black tracking-tight text-cyan-50">
                     {loading ? "—" : `${diskPercent}%`}
                   </p>
-                  <p className="text-xs text-red-300/30 font-mono mt-1">
+                  <p className="vapor-muted mt-1 font-mono text-xs text-violet-100/45">
                     {loading
                       ? "Loading..."
                       : `${formatBytes(diskUsed)} used of ${formatBytes(
@@ -217,21 +253,21 @@ export default function FilesPage() {
                   </p>
                 </div>
 
-                <p className="text-xs text-red-200/35 font-mono">
+                <p className="vapor-chip rounded-full border border-fuchsia-300/20 bg-fuchsia-300/10 px-3 py-1.5 font-mono text-xs text-fuchsia-100/70">
                   {formatBytes(diskFree)} free
                 </p>
               </div>
 
-              <div className="h-3 rounded-full bg-[#0a0a0a] border border-red-500/10 overflow-hidden">
+              <div className="vapor-meter h-3 overflow-hidden rounded-full border border-violet-200/15 bg-violet-950/70 shadow-inner">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-red-500 to-rose-500 transition-all"
+                  className="h-full rounded-full bg-linear-to-r from-fuchsia-500 via-pink-400 to-cyan-300 shadow-[0_0_18px_rgba(34,211,238,0.5)] transition-all"
                   style={{ width: `${Math.min(Number(diskPercent), 100)}%` }}
                 />
               </div>
             </section>
           </div>
 
-          <div className="files-storage-strip grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-6">
+          <div className="files-storage-strip mb-6 grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-4">
             <StorageCard
               title="Used"
               value={loading ? "—" : formatBytes(diskUsed)}
@@ -251,14 +287,14 @@ export default function FilesPage() {
             />
           </div>
 
-          <div className="files-action-grid grid grid-cols-1 xl:grid-cols-2 gap-4">
-            <section className="rounded-2xl bg-[#111111] border border-red-500/10 p-5">
+          <div className="files-action-grid grid grid-cols-1 gap-4 xl:grid-cols-[0.8fr_1.2fr]">
+            <section className="vapor-panel rounded-3xl border border-fuchsia-300/20 bg-violet-950/30 p-5 backdrop-blur-xl md:p-6">
               <div className="flex items-center justify-between gap-4 mb-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-red-200/70">
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-fuchsia-100">
                     WebDAV address
                   </h3>
-                  <p className="text-xs text-red-300/30 mt-1">
+                  <p className="vapor-muted mt-1 text-xs text-violet-100/45">
                     Useful for clients, network drives and later dashboard
                     integrations.
                   </p>
@@ -266,21 +302,21 @@ export default function FilesPage() {
 
                 <button
                   onClick={copyWebdavUrl}
-                  className="rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 px-3 py-2 text-xs font-medium transition-all shrink-0"
+                  className="vapor-button shrink-0 rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-xs font-bold text-cyan-100 transition-all hover:border-fuchsia-200/50 hover:bg-fuchsia-400/15"
                 >
                   {copied ? "Copied" : "Copy"}
                 </button>
               </div>
 
-              <div className="rounded-xl bg-[#0a0a0a] border border-red-500/10 p-3">
-                <p className="text-xs text-red-100/60 font-mono break-all">
+              <div className="rounded-2xl border border-cyan-300/15 bg-violet-950/60 p-4 shadow-inner">
+                <p className="break-all font-mono text-xs text-cyan-100/60">
                   {webdavUrl}
                 </p>
               </div>
             </section>
 
-            <section className="rounded-2xl bg-[#111111] border border-red-500/10 p-5">
-              <h3 className="text-sm font-semibold text-red-200/70 mb-4">
+            <section className="vapor-panel rounded-3xl border border-cyan-300/20 bg-violet-950/30 p-5 backdrop-blur-xl md:p-6">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-cyan-100">
                 Quick actions
               </h3>
 
@@ -289,12 +325,12 @@ export default function FilesPage() {
                   href={filesUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl bg-[#0a0a0a] hover:bg-[#1a1a1a] border border-red-500/10 p-4 transition-all"
+                  className="vapor-list-row group rounded-2xl border border-fuchsia-300/15 bg-fuchsia-400/6 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/35 hover:bg-cyan-300/10"
                 >
-                  <p className="text-sm font-medium text-red-100">
+                  <p className="text-sm font-bold text-fuchsia-50 group-hover:text-cyan-100">
                     Manage files
                   </p>
-                  <p className="text-xs text-red-300/30 mt-1">
+                  <p className="vapor-muted mt-1 text-xs text-violet-100/40">
                     Upload, delete and organize
                   </p>
                 </a>
@@ -303,12 +339,12 @@ export default function FilesPage() {
                   href={`${nextcloudUrl}/index.php/settings/user/sync-clients`}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl bg-[#0a0a0a] hover:bg-[#1a1a1a] border border-red-500/10 p-4 transition-all"
+                  className="vapor-list-row group rounded-2xl border border-fuchsia-300/15 bg-fuchsia-400/6 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/35 hover:bg-cyan-300/10"
                 >
-                  <p className="text-sm font-medium text-red-100">
+                  <p className="text-sm font-bold text-fuchsia-50 group-hover:text-cyan-100">
                     Sync clients
                   </p>
-                  <p className="text-xs text-red-300/30 mt-1">
+                  <p className="vapor-muted mt-1 text-xs text-violet-100/40">
                     Desktop and mobile setup
                   </p>
                 </a>
@@ -317,12 +353,12 @@ export default function FilesPage() {
                   href={`${nextcloudUrl}/index.php/settings/user`}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl bg-[#0a0a0a] hover:bg-[#1a1a1a] border border-red-500/10 p-4 transition-all"
+                  className="vapor-list-row group rounded-2xl border border-fuchsia-300/15 bg-fuchsia-400/6 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/35 hover:bg-cyan-300/10"
                 >
-                  <p className="text-sm font-medium text-red-100">
+                  <p className="text-sm font-bold text-fuchsia-50 group-hover:text-cyan-100">
                     Account settings
                   </p>
-                  <p className="text-xs text-red-300/30 mt-1">
+                  <p className="vapor-muted mt-1 text-xs text-violet-100/40">
                     Profile and preferences
                   </p>
                 </a>
@@ -331,12 +367,12 @@ export default function FilesPage() {
                   href={`${nextcloudUrl}/index.php/apps/files/trashbin`}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-xl bg-[#0a0a0a] hover:bg-[#1a1a1a] border border-red-500/10 p-4 transition-all"
+                  className="vapor-list-row group rounded-2xl border border-fuchsia-300/15 bg-fuchsia-400/6 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/35 hover:bg-cyan-300/10"
                 >
-                  <p className="text-sm font-medium text-red-100">
+                  <p className="text-sm font-bold text-fuchsia-50 group-hover:text-cyan-100">
                     Deleted files
                   </p>
-                  <p className="text-xs text-red-300/30 mt-1">
+                  <p className="vapor-muted mt-1 text-xs text-violet-100/40">
                     Recover removed files
                   </p>
                 </a>

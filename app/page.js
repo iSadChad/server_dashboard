@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import PageLayout from "../components/PageLayout";
 import { formatBytes } from "../utils/formatBytes";
 import {
@@ -41,11 +41,15 @@ const defaultPm2Status = {
   updatedAt: null,
 };
 
+const subscribeToHydration = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#1a1a1a]/90 backdrop-blur border border-red-500/20 rounded-lg px-3 py-2 text-xs shadow-lg">
-        <p className="text-white/70 mb-1">{label}</p>
+      <div className="vapor-tooltip rounded-xl border border-cyan-300/25 bg-violet-950/90 px-3 py-2 text-xs shadow-[0_0_28px_rgba(34,211,238,0.18)] backdrop-blur-xl">
+        <p className="mb-1 text-cyan-100/60">{label}</p>
 
         {payload.map((p, i) => (
           <p key={i} style={{ color: p.color }} className="font-medium">
@@ -76,7 +80,11 @@ function formatDateTime(value) {
 }
 
 function DashboardContent() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    subscribeToHydration,
+    getClientSnapshot,
+    getServerSnapshot
+  );
   const [stats, setStats] = useState(defaultStats);
   const [loading, setLoading] = useState(true);
   const [weekData, setWeekData] = useState([]);
@@ -85,10 +93,6 @@ function DashboardContent() {
   const [backupLoading, setBackupLoading] = useState(true);
   const [pm2Status, setPm2Status] = useState(defaultPm2Status);
   const [pm2Loading, setPm2Loading] = useState(true);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     async function fetchStats() {
@@ -195,18 +199,21 @@ return () => {
   ];
 
   return (
-    <div className="dashboard-workbench p-3 sm:p-4 lg:p-8">
-      <div className="page-command-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-8">
+    <div className="vapor-page dashboard-workbench p-3 sm:p-4 lg:p-8">
+      <div className="vapor-header page-command-header relative mb-6 flex flex-col gap-4 overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/15 via-violet-500/10 to-cyan-400/10 px-5 py-6 shadow-[0_0_55px_rgba(217,70,239,0.14)] sm:flex-row sm:items-end sm:justify-between md:mb-8 md:px-7 md:py-8">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold">Dashboard</h2>
-          <p className="text-red-200/40 text-sm mt-1">
-            System overview and analytics
+          <p className="vapor-kicker mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-300/75">
+            Neon telemetry // live system
+          </p>
+          <h2 className="vapor-title text-3xl font-black tracking-tight text-white md:text-5xl">Dashboard</h2>
+          <p className="vapor-muted mt-2 text-sm text-violet-100/55">
+            System pulse, analytics and service signals
           </p>
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="flex items-center gap-2 text-xs text-red-200/40 font-mono bg-[#111111] rounded-lg px-3 py-2 border border-red-500/10 w-full sm:w-auto">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+        <div className="flex w-full items-center gap-3 sm:w-auto">
+          <div className="vapor-chip flex w-full items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2.5 font-mono text-xs uppercase tracking-wider text-cyan-100 sm:w-auto">
+            <div className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,0.85)]" />
             <span className="truncate">
               Live · {loading ? "..." : `${stats.cpu.toFixed(0)}% CPU`}
             </span>
@@ -214,12 +221,12 @@ return () => {
         </div>
       </div>
 
-      <div className="dashboard-metrics grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="dashboard-metrics mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 md:mb-8 md:gap-4 xl:grid-cols-4">
         <StatCard
           label="CPU Usage"
           value={loading ? "—" : `${stats.cpu.toFixed(1)}%`}
           sub={loading ? "" : "Current load"}
-          color="from-red-500 to-red-700"
+          color="from-fuchsia-500 to-violet-600"
           icon="M9 3v2m6-2v2M9 19v2m6-2v2M5.8 5.8l1.4 1.4M16.2 16.8l1.4 1.4M3 9h2m14 0h2M3 15h2m14 0h2M5.8 18.2l1.4-1.4M16.2 7.2l1.4-1.4M9 9h6v6H9z"
         />
 
@@ -233,7 +240,7 @@ return () => {
                   stats.memory.total
                 )}`
           }
-          color="from-rose-500 to-red-600"
+          color="from-pink-400 to-fuchsia-600"
           icon="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
         />
 
@@ -247,7 +254,7 @@ return () => {
                   stats.disk.total
                 )}`
           }
-          color="from-red-600 to-rose-600"
+          color="from-violet-500 to-cyan-500"
           icon="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
         />
 
@@ -255,7 +262,7 @@ return () => {
           label="Uptime"
           value={loading ? "—" : `${uptimeHours}h ${uptimeMinutes}m`}
           sub="Since last boot"
-          color="from-rose-500 to-red-700"
+          color="from-cyan-400 to-violet-600"
           icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </div>
@@ -263,17 +270,17 @@ return () => {
       <BackupStatusPanel backup={backupStatus} loading={backupLoading} />
       <Pm2StatusPanel pm2={pm2Status} loading={pm2Loading} />
 
-      <div className="dashboard-charts grid grid-cols-1 xl:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
-        <div className="xl:col-span-2 rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
-          <h3 className="text-sm font-semibold text-red-200/70 mb-1">
+      <div className="dashboard-charts mb-6 grid grid-cols-1 gap-4 md:mb-8 xl:grid-cols-5">
+        <div className="vapor-panel min-w-0 rounded-3xl border border-fuchsia-300/20 bg-violet-950/30 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.25)] backdrop-blur-xl md:p-6 xl:col-span-3">
+          <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-fuchsia-100">
             Network Activity
           </h3>
-          <p className="text-[11px] text-red-300/30 mb-4">
+          <p className="vapor-muted mb-4 text-[11px] text-violet-100/40">
             Inbound vs Outbound over 12 months
           </p>
 
           {mounted ? (
-            <div className="h-[220px] sm:h-[260px]">
+            <div className="h-55 sm:h-65">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
                   data={monthData}
@@ -356,18 +363,18 @@ return () => {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="w-full h-[220px] sm:h-[260px] animate-pulse rounded-lg bg-red-500/5" />
+            <div className="h-55 w-full animate-pulse rounded-2xl bg-fuchsia-400/5 sm:h-65" />
           )}
         </div>
 
-        <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
-          <h3 className="text-sm font-semibold text-red-200/70 mb-1">
+        <div className="vapor-panel min-w-0 rounded-3xl border border-cyan-300/20 bg-linear-to-br from-cyan-400/8 to-violet-500/12 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.25)] backdrop-blur-xl md:p-6 xl:col-span-2">
+          <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-cyan-100">
             Memory Split
           </h3>
-          <p className="text-[11px] text-red-300/30 mb-4">Used vs Free</p>
+          <p className="vapor-muted mb-4 text-[11px] text-violet-100/40">Used vs Free</p>
 
           {mounted ? (
-            <div className="h-[180px]">
+            <div className="h-45">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -388,36 +395,36 @@ return () => {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="w-full h-[180px] animate-pulse rounded-lg bg-red-500/5" />
+            <div className="h-45 w-full animate-pulse rounded-2xl bg-cyan-400/5" />
           )}
 
           <div className="flex flex-wrap justify-center gap-4 mt-2">
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-              <span className="text-[11px] text-red-200/50">
+              <div className="h-2.5 w-2.5 rounded-full bg-fuchsia-400 shadow-[0_0_10px_rgba(232,121,249,0.7)]" />
+              <span className="text-[11px] text-fuchsia-100/55">
                 Used {memPercent}%
               </span>
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#1a0a0a]" />
-              <span className="text-[11px] text-red-200/50">Free</span>
+              <div className="h-2.5 w-2.5 rounded-full bg-cyan-300/30" />
+              <span className="text-[11px] text-cyan-100/50">Free</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="dashboard-secondary grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
-        <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
-          <h3 className="text-sm font-semibold text-red-200/70 mb-1">
+      <div className="dashboard-secondary grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="vapor-panel min-w-0 rounded-3xl border border-fuchsia-300/18 bg-violet-950/30 p-5 shadow-[0_20px_55px_rgba(30,0,65,0.2)] backdrop-blur-xl md:p-6">
+          <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-fuchsia-100">
             Weekly CPU
           </h3>
-          <p className="text-[11px] text-red-300/30 mb-4">
+          <p className="vapor-muted mb-4 text-[11px] text-violet-100/40">
             Avg usage by day
           </p>
 
           {mounted ? (
-            <div className="h-[150px] sm:h-[160px]">
+            <div className="h-37.5 sm:h-40">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={weekData} barCategoryMaxWidth={16}>
                   <XAxis
@@ -446,20 +453,20 @@ return () => {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="w-full h-[150px] sm:h-[160px] animate-pulse rounded-lg bg-red-500/5" />
+            <div className="h-37.5 w-full animate-pulse rounded-2xl bg-fuchsia-400/5 sm:h-40" />
           )}
         </div>
 
-        <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
-          <h3 className="text-sm font-semibold text-red-200/70 mb-1">
+        <div className="vapor-panel min-w-0 rounded-3xl border border-cyan-300/18 bg-violet-950/30 p-5 shadow-[0_20px_55px_rgba(30,0,65,0.2)] backdrop-blur-xl md:p-6 xl:translate-y-4">
+          <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-cyan-100">
             Weekly Memory
           </h3>
-          <p className="text-[11px] text-red-300/30 mb-4">
+          <p className="vapor-muted mb-4 text-[11px] text-violet-100/40">
             Avg usage by day
           </p>
 
           {mounted ? (
-            <div className="h-[150px] sm:h-[160px]">
+            <div className="h-37.5 sm:h-40">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={weekData} barCategoryMaxWidth={16}>
                   <XAxis
@@ -488,18 +495,18 @@ return () => {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="w-full h-[150px] sm:h-[160px] animate-pulse rounded-lg bg-red-500/5" />
+            <div className="h-37.5 w-full animate-pulse rounded-2xl bg-cyan-400/5 sm:h-40" />
           )}
         </div>
 
-        <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0">
-          <h3 className="text-sm font-semibold text-red-200/70 mb-1">
+        <div className="vapor-panel min-w-0 rounded-3xl border border-pink-300/18 bg-violet-950/30 p-5 shadow-[0_20px_55px_rgba(30,0,65,0.2)] backdrop-blur-xl md:col-span-2 md:p-6 xl:col-span-1">
+          <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-pink-100">
             Disk Usage
           </h3>
-          <p className="text-[11px] text-red-300/30 mb-4">Used vs Free</p>
+          <p className="vapor-muted mb-4 text-[11px] text-violet-100/40">Used vs Free</p>
 
           {mounted ? (
-            <div className="h-[180px]">
+            <div className="h-45">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -520,20 +527,20 @@ return () => {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="w-full h-[180px] animate-pulse rounded-lg bg-red-500/5" />
+            <div className="h-45 w-full animate-pulse rounded-2xl bg-pink-400/5" />
           )}
 
           <div className="flex flex-wrap justify-center gap-4 mt-2">
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-              <span className="text-[11px] text-red-200/50">
+              <div className="h-2.5 w-2.5 rounded-full bg-pink-400 shadow-[0_0_10px_rgba(244,114,182,0.7)]" />
+              <span className="text-[11px] text-pink-100/55">
                 Used {diskPercent}%
               </span>
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#1a0a0a]" />
-              <span className="text-[11px] text-red-200/50">Free</span>
+              <div className="h-2.5 w-2.5 rounded-full bg-cyan-300/30" />
+              <span className="text-[11px] text-cyan-100/50">Free</span>
             </div>
           </div>
         </div>
@@ -583,7 +590,7 @@ function BackupStatusPanel({ backup, loading }) {
 
   return (
     <div
-      className={`rounded-2xl bg-white/[0.03] backdrop-blur-sm border ${style.border} p-4 md:p-6 mb-6 md:mb-8`}
+      className={`vapor-panel vapor-status-panel mb-6 rounded-3xl border bg-linear-to-br from-fuchsia-500/8 to-violet-950/35 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.24)] backdrop-blur-xl md:mb-8 md:p-6 ${style.border}`}
     >
       <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-5">
         <div className="min-w-0">
@@ -596,24 +603,24 @@ function BackupStatusPanel({ backup, loading }) {
             </span>
 
             {!loading && backup?.backupAgeLabel && (
-              <span className="text-xs text-red-200/30 font-mono">
+              <span className="font-mono text-xs text-violet-100/40">
                 · {backup.backupAgeLabel}
               </span>
             )}
           </div>
 
-          <h3 className="text-lg md:text-xl font-bold text-red-100">
+          <h3 className="text-xl font-black tracking-tight text-fuchsia-50 md:text-2xl">
             Backup Status
           </h3>
 
-          <p className="text-sm text-red-200/40 mt-1">
+          <p className="vapor-muted mt-1 text-sm text-violet-100/45">
             {loading
               ? "Checking latest backup..."
               : backup?.message || "No message"}
           </p>
 
           {!loading && backup?.isStale && (
-            <div className={`mt-3 rounded-xl ${style.bg} border ${style.border} px-3 py-2`}>
+            <div className={`mt-3 rounded-2xl border px-3 py-2 ${style.bg} ${style.border}`}>
               <p className="text-xs text-amber-200/80">
                 The latest backup looks old. Run the backup script or check the
                 cron job.
@@ -622,7 +629,7 @@ function BackupStatusPanel({ backup, loading }) {
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 w-full xl:w-auto xl:min-w-[720px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 w-full xl:w-auto xl:min-w-180">
           <BackupMiniCard
             label="Last backup"
             value={loading ? "—" : formatDateTime(latestSnapshot?.time)}
@@ -647,7 +654,7 @@ function BackupStatusPanel({ backup, loading }) {
       </div>
 
       <div className="mt-4 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-3 xl:items-center">
-        <p className="text-xs text-red-300/30 font-mono break-all">
+        <p className="break-all font-mono text-xs text-cyan-100/35">
           Repository: {backup?.repository || "—"}
         </p>
 
@@ -655,18 +662,18 @@ function BackupStatusPanel({ backup, loading }) {
           href="/api/backups"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center justify-center rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 px-3 py-2 text-xs font-medium transition-all"
+          className="vapor-button inline-flex items-center justify-center rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-xs font-bold text-cyan-100 transition-all duration-300 hover:-translate-y-0.5 hover:border-fuchsia-200/45 hover:bg-fuchsia-400/15"
         >
           Open backup JSON
         </a>
       </div>
 
-      <details className="mt-4 rounded-xl bg-[#111111] border border-red-500/10 overflow-hidden">
-        <summary className="cursor-pointer px-4 py-3 text-xs font-semibold text-red-200/60 hover:text-red-100 transition-all">
+      <details className="vapor-details mt-4 overflow-hidden rounded-2xl border border-fuchsia-300/15 bg-violet-950/55">
+        <summary className="cursor-pointer px-4 py-3 text-xs font-bold text-fuchsia-100/65 transition-all hover:text-cyan-100">
           Last backup log
         </summary>
 
-        <pre className="max-h-64 overflow-auto border-t border-red-500/10 px-4 py-3 text-[11px] leading-relaxed text-red-100/55 font-mono whitespace-pre-wrap">
+        <pre className="max-h-64 overflow-auto whitespace-pre-wrap border-t border-fuchsia-200/10 px-4 py-3 font-mono text-[11px] leading-relaxed text-violet-50/55">
           {logLines.length > 0 ? logLines.join("\n") : "No log lines found."}
         </pre>
       </details>
@@ -676,13 +683,13 @@ function BackupStatusPanel({ backup, loading }) {
 
 function BackupMiniCard({ label, value, mono = false }) {
   return (
-    <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 min-w-0">
-      <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-1">
+    <div className="vapor-subpanel min-w-0 rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-4">
+      <p className="vapor-kicker mb-1 text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-200/45">
         {label}
       </p>
 
       <p
-        className={`text-sm text-red-100 font-medium truncate ${
+        className={`truncate text-sm font-bold text-fuchsia-50 ${
           mono ? "font-mono" : ""
         }`}
       >
@@ -721,7 +728,7 @@ function Pm2StatusPanel({ pm2, loading }) {
 
   return (
     <div
-      className={`rounded-2xl bg-white/[0.03] backdrop-blur-sm border ${style.border} p-4 md:p-6 mb-6 md:mb-8`}
+      className={`vapor-panel vapor-status-panel mb-6 rounded-3xl border bg-linear-to-br from-cyan-400/7 to-violet-950/35 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.24)] backdrop-blur-xl md:mb-8 md:p-6 ${style.border}`}
     >
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
         <div>
@@ -734,11 +741,11 @@ function Pm2StatusPanel({ pm2, loading }) {
             </span>
           </div>
 
-          <h3 className="text-lg md:text-xl font-bold text-red-100">
+          <h3 className="text-xl font-black tracking-tight text-cyan-50 md:text-2xl">
             PM2 Process Status
           </h3>
 
-          <p className="text-sm text-red-200/40 mt-1">
+          <p className="vapor-muted mt-1 text-sm text-violet-100/45">
             {loading ? "Checking PM2 processes..." : pm2?.message || "No message"}
           </p>
         </div>
@@ -747,7 +754,7 @@ function Pm2StatusPanel({ pm2, loading }) {
           href="/api/pm2"
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center justify-center rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 px-3 py-2 text-xs font-medium transition-all"
+          className="vapor-button inline-flex items-center justify-center rounded-xl border border-fuchsia-300/25 bg-fuchsia-400/10 px-3 py-2 text-xs font-bold text-fuchsia-100 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/45 hover:bg-cyan-300/10"
         >
           Open PM2 JSON
         </a>
@@ -764,8 +771,8 @@ function Pm2StatusPanel({ pm2, loading }) {
             <Pm2ProcessCard key={`${process.name}-${process.id}`} process={process} />
           ))
         ) : (
-          <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4">
-            <p className="text-sm text-red-200/50">No PM2 processes found.</p>
+          <div className="vapor-empty rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-4">
+            <p className="text-sm text-violet-100/50">No PM2 processes found.</p>
           </div>
         )}
       </div>
@@ -777,13 +784,13 @@ function Pm2ProcessCard({ process }) {
   const isOnline = process.status === "online";
 
   return (
-    <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 min-w-0">
+    <div className="vapor-list-row min-w-0 rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/30 hover:bg-cyan-300/5">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-red-100 truncate">
+          <p className="truncate text-sm font-bold text-fuchsia-50">
             {process.name}
           </p>
-          <p className="text-[11px] text-red-300/30 font-mono">
+          <p className="font-mono text-[11px] text-cyan-100/35">
             ID {process.id} · PID {process.pid || "—"}
           </p>
         </div>
@@ -811,24 +818,24 @@ function Pm2ProcessCard({ process }) {
 
 function Pm2Metric({ label, value }) {
   return (
-    <div className="rounded-lg bg-black/20 border border-red-500/5 p-2 min-w-0">
-      <p className="text-[10px] uppercase tracking-widest text-red-300/30 font-semibold mb-1">
+    <div className="min-w-0 rounded-xl border border-cyan-300/8 bg-violet-950/45 p-2.5">
+      <p className="vapor-kicker mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200/40">
         {label}
       </p>
-      <p className="text-xs text-red-100 font-mono truncate">{value}</p>
+      <p className="truncate font-mono text-xs text-fuchsia-50">{value}</p>
     </div>
   );
 }
 
 function Pm2SkeletonCard() {
   return (
-    <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 animate-pulse">
-      <div className="h-4 w-32 bg-red-500/10 rounded mb-3" />
+    <div className="animate-pulse rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-4">
+      <div className="mb-3 h-4 w-32 rounded bg-fuchsia-400/10" />
       <div className="grid grid-cols-4 gap-2">
-        <div className="h-12 bg-red-500/5 rounded-lg" />
-        <div className="h-12 bg-red-500/5 rounded-lg" />
-        <div className="h-12 bg-red-500/5 rounded-lg" />
-        <div className="h-12 bg-red-500/5 rounded-lg" />
+        <div className="h-12 rounded-lg bg-fuchsia-400/5" />
+        <div className="h-12 rounded-lg bg-cyan-400/5" />
+        <div className="h-12 rounded-lg bg-fuchsia-400/5" />
+        <div className="h-12 rounded-lg bg-cyan-400/5" />
       </div>
     </div>
   );
@@ -836,14 +843,14 @@ function Pm2SkeletonCard() {
 
 function StatCard({ label, value, sub, color, icon }) {
   return (
-    <div className="rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 sm:p-5 group hover:border-red-500/25 transition-all min-w-0">
+    <div className="vapor-card group min-w-0 rounded-3xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-cyan-400/5 p-4 shadow-[0_18px_45px_rgba(30,0,70,0.2)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-200/35 hover:shadow-[0_22px_55px_rgba(34,211,238,0.1)] sm:p-5">
       <div className="flex items-center justify-between gap-3 mb-3">
-        <span className="text-xs font-medium text-red-200/50 truncate">
+        <span className="vapor-kicker truncate font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200/55">
           {label}
         </span>
 
         <div
-          className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg shadow-red-500/10 shrink-0`}
+          className={`vapor-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br shadow-[0_0_22px_rgba(217,70,239,0.25)] transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110 ${color}`}
         >
           <svg
             width="18"
@@ -860,10 +867,10 @@ function StatCard({ label, value, sub, color, icon }) {
         </div>
       </div>
 
-      <p className="text-xl sm:text-2xl font-bold break-words">{value}</p>
+      <p className="wrap-break-word text-2xl font-black tracking-tight text-fuchsia-50 sm:text-3xl">{value}</p>
 
       {sub && (
-        <p className="text-[11px] text-red-200/30 mt-1 font-mono break-words leading-relaxed">
+        <p className="vapor-muted mt-1 wrap-break-word font-mono text-[11px] leading-relaxed text-violet-100/40">
           {sub}
         </p>
       )}

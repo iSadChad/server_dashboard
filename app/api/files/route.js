@@ -2,11 +2,16 @@ import { readdirSync, statSync } from "fs";
 import path from "path";
 
 function getFiles(dir, base = dir) {
-  const entries = readdirSync(dir, { withFileTypes: true });
+  const entries = readdirSync(/* turbopackIgnore: true */ dir, {
+    withFileTypes: true,
+  });
   const files = [];
 
   for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
+    const fullPath = path.join(
+      /* turbopackIgnore: true */ dir,
+      entry.name
+    );
     const relativePath = path.relative(base, fullPath);
 
     if (entry.isDirectory()) {
@@ -34,7 +39,7 @@ function getFiles(dir, base = dir) {
       };
       let size = 0;
       try {
-        size = statSync(fullPath).size;
+        size = statSync(/* turbopackIgnore: true */ fullPath).size;
       } catch {}
       files.push({
         name: entry.name,
@@ -58,7 +63,7 @@ export async function GET() {
     path.join(/*turbopackIgnore: true*/ process.cwd(), "files");
 
   try {
-    statSync(filesDir);
+    statSync(/* turbopackIgnore: true */ filesDir);
   } catch (error) {
     console.error("Storage folder not found or not readable:", {
       filesDir,

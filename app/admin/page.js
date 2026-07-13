@@ -120,11 +120,13 @@ function AdminContent() {
   }
 
   useEffect(() => {
-    fetchAdmin();
-
+    const initialFetch = setTimeout(fetchAdmin, 0);
     const interval = setInterval(fetchAdmin, 30000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(initialFetch);
+      clearInterval(interval);
+    };
   }, []);
 
   const onlineServices = admin.services.filter(
@@ -134,11 +136,14 @@ function AdminContent() {
   const totalServices = admin.services.length;
 
   return (
-    <div className="admin-workbench p-3 sm:p-4 lg:p-8">
-      <div className="page-command-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 md:mb-8">
+    <div className="vapor-page admin-workbench p-3 sm:p-4 lg:p-8">
+      <div className="vapor-header page-command-header relative mb-6 flex flex-col gap-4 overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/15 via-violet-500/10 to-cyan-400/10 px-5 py-6 shadow-[0_0_55px_rgba(217,70,239,0.14)] sm:flex-row sm:items-end sm:justify-between md:mb-8 md:px-7 md:py-8">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold">Admin</h2>
-          <p className="text-red-200/40 text-sm mt-1">
+          <p className="vapor-kicker mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-300/75">
+            Root console // system layer
+          </p>
+          <h2 className="vapor-title text-3xl font-black tracking-tight text-white md:text-5xl">Admin</h2>
+          <p className="vapor-muted mt-2 text-sm text-violet-100/55">
             Server maintenance, security and service health
           </p>
         </div>
@@ -146,13 +151,13 @@ function AdminContent() {
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <button
             onClick={fetchAdmin}
-            className="rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 px-3 py-2 text-xs font-medium transition-all"
+            className="vapor-button rounded-xl border border-fuchsia-300/25 bg-fuchsia-400/10 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-fuchsia-100 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/45 hover:bg-cyan-300/10"
           >
             Refresh
           </button>
 
-          <div className="flex items-center gap-2 text-xs text-red-200/40 font-mono bg-[#111111] rounded-lg px-3 py-2 border border-red-500/10 w-full sm:w-auto">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+          <div className="vapor-chip flex w-full items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2.5 font-mono text-xs text-cyan-100/65 sm:w-auto">
+            <div className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,0.85)]" />
             <span className="truncate">
               {loading ? "Loading..." : `Updated · ${formatDateTime(admin.updatedAt)}`}
             </span>
@@ -160,7 +165,7 @@ function AdminContent() {
         </div>
       </div>
 
-      <div className="admin-status-strip grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="admin-status-strip mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 md:mb-8 md:gap-4 xl:grid-cols-4">
         <AdminStatCard
         label="Firewall"
         value={admin.security.firewall}
@@ -194,7 +199,7 @@ function AdminContent() {
         />
       </div>
 
-      <div className="admin-system-grid grid grid-cols-1 xl:grid-cols-2 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="admin-system-grid mb-6 grid grid-cols-1 gap-4 md:mb-8 xl:grid-cols-[0.8fr_1.2fr]">
         <Panel title="System" subtitle="Host and maintenance state">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <MiniInfo label="Hostname" value={admin.system.hostname} mono />
@@ -214,8 +219,8 @@ function AdminContent() {
             <StatusBox label="SSH service" value={admin.security.ssh.active} />
           </div>
 
-          <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 mb-3">
-            <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-2">
+          <div className="vapor-subpanel mb-3 rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-4">
+            <p className="vapor-kicker mb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-200/45">
               Failed logins today
             </p>
 
@@ -223,15 +228,15 @@ function AdminContent() {
               className={`text-2xl font-bold ${
                 admin.security.failedLoginsToday > 0
                   ? "text-amber-400"
-                  : "text-red-100"
+                  : "text-fuchsia-50"
               }`}
             >
               {admin.security.failedLoginsToday}
             </p>
           </div>
 
-          <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4">
-            <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-2">
+          <div className="vapor-subpanel rounded-2xl border border-cyan-300/15 bg-violet-950/55 p-4">
+            <p className="vapor-kicker mb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-200/45">
               Open ports
             </p>
 
@@ -240,20 +245,20 @@ function AdminContent() {
                 admin.security.openPorts.map((port) => (
                   <span
                     key={port}
-                    className="rounded-full border border-red-500/20 bg-red-500/10 px-2.5 py-1 text-xs text-red-200 font-mono"
+                    className="vapor-chip rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-2.5 py-1 font-mono text-xs text-fuchsia-100/70"
                   >
                     :{port}
                   </span>
                 ))
               ) : (
-                <span className="text-sm text-red-200/40">No ports found.</span>
+                <span className="text-sm text-violet-100/40">No ports found.</span>
               )}
             </div>
           </div>
         </Panel>
       </div>
 
-      <div className="admin-service-grid grid grid-cols-1 xl:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
+      <div className="admin-service-grid mb-6 grid grid-cols-1 gap-4 md:mb-8 xl:grid-cols-3">
         <Panel
           title="Service Health"
           subtitle="Checks if services actually respond"
@@ -265,7 +270,7 @@ function AdminContent() {
                 <ServiceCard key={service.name} service={service} />
               ))
             ) : (
-              <p className="text-sm text-red-200/40">
+              <p className="text-sm text-violet-100/40">
                 No service checks loaded.
               </p>
             )}
@@ -273,39 +278,39 @@ function AdminContent() {
         </Panel>
 
         <Panel title="Updates" subtitle="APT package status">
-          <div className="rounded-xl bg-[#111111] border border-red-500/10 p-4 mb-3">
-            <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-1">
+          <div className="vapor-subpanel mb-3 rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-4">
+            <p className="vapor-kicker mb-1 text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-200/45">
               Pending updates
             </p>
 
-            <p className="text-3xl font-bold text-red-100">
+            <p className="text-4xl font-black text-fuchsia-50">
               {admin.updates.pending}
             </p>
 
-            <p className="text-xs text-red-200/35 mt-1">
+            <p className="vapor-muted mt-1 text-xs text-violet-100/40">
               {admin.updates.rebootRequired ? "Reboot required" : "No reboot required"}
             </p>
           </div>
 
-          <details className="rounded-xl bg-[#111111] border border-red-500/10 overflow-hidden">
-            <summary className="cursor-pointer px-4 py-3 text-xs font-semibold text-red-200/60 hover:text-red-100 transition-all">
+          <details className="vapor-details overflow-hidden rounded-2xl border border-cyan-300/15 bg-violet-950/55">
+            <summary className="cursor-pointer px-4 py-3 text-xs font-bold text-cyan-100/65 transition-all hover:text-fuchsia-100">
               Show packages
             </summary>
 
-            <div className="border-t border-red-500/10 px-4 py-3">
+            <div className="border-t border-cyan-200/10 px-4 py-3">
               {admin.updates.packages.length > 0 ? (
                 <ul className="space-y-1">
                   {admin.updates.packages.map((pkg) => (
                     <li
                       key={pkg}
-                      className="text-[11px] text-red-100/55 font-mono break-all"
+                      className="break-all font-mono text-[11px] text-violet-50/55"
                     >
                       {pkg}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-[11px] text-red-100/55 font-mono">
+                <p className="font-mono text-[11px] text-violet-50/55">
                   No pending packages.
                 </p>
               )}
@@ -314,22 +319,22 @@ function AdminContent() {
         </Panel>
       </div>
 
-      <div className="admin-log-grid grid grid-cols-1 xl:grid-cols-2 gap-3 md:gap-4">
+      <div className="admin-log-grid grid grid-cols-1 gap-4 xl:grid-cols-2">
         <Panel title="Storage Details" subtitle="Important folders">
           <div className="space-y-3">
             {admin.storage.folders.length > 0 ? (
               admin.storage.folders.map((folder) => (
                 <div
                   key={folder.path}
-                  className="rounded-xl bg-[#111111] border border-red-500/10 p-4 min-w-0"
+                  className="vapor-list-row min-w-0 rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-4 transition-all hover:border-cyan-200/30 hover:bg-cyan-300/5"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-red-100">
+                      <p className="text-sm font-bold text-fuchsia-50">
                         {folder.label}
                       </p>
 
-                      <p className="text-[11px] text-red-300/30 font-mono break-all mt-1">
+                      <p className="mt-1 break-all font-mono text-[11px] text-cyan-100/35">
                         {folder.path}
                       </p>
                     </div>
@@ -347,7 +352,7 @@ function AdminContent() {
                 </div>
               ))
             ) : (
-              <p className="text-sm text-red-200/40">
+              <p className="text-sm text-violet-100/40">
                 No storage folders loaded.
               </p>
             )}
@@ -355,24 +360,24 @@ function AdminContent() {
         </Panel>
 
         <Panel title="Logs" subtitle="Recent SSH and system errors">
-          <details className="rounded-xl bg-[#111111] border border-red-500/10 overflow-hidden mb-3">
-            <summary className="cursor-pointer px-4 py-3 text-xs font-semibold text-red-200/60 hover:text-red-100 transition-all">
+          <details className="vapor-details mb-3 overflow-hidden rounded-2xl border border-fuchsia-300/15 bg-violet-950/55">
+            <summary className="cursor-pointer px-4 py-3 text-xs font-bold text-fuchsia-100/65 transition-all hover:text-cyan-100">
               Last SSH log lines
             </summary>
 
-            <pre className="max-h-64 overflow-auto border-t border-red-500/10 px-4 py-3 text-[11px] leading-relaxed text-red-100/55 font-mono whitespace-pre-wrap">
+            <pre className="max-h-64 overflow-auto whitespace-pre-wrap border-t border-fuchsia-200/10 px-4 py-3 font-mono text-[11px] leading-relaxed text-violet-50/55">
               {admin.logs.ssh.length > 0
                 ? admin.logs.ssh.join("\n")
                 : "No SSH log lines found."}
             </pre>
           </details>
 
-          <details className="rounded-xl bg-[#111111] border border-red-500/10 overflow-hidden">
-            <summary className="cursor-pointer px-4 py-3 text-xs font-semibold text-red-200/60 hover:text-red-100 transition-all">
+          <details className="vapor-details overflow-hidden rounded-2xl border border-cyan-300/15 bg-violet-950/55">
+            <summary className="cursor-pointer px-4 py-3 text-xs font-bold text-cyan-100/65 transition-all hover:text-fuchsia-100">
               System errors
             </summary>
 
-            <pre className="max-h-64 overflow-auto border-t border-red-500/10 px-4 py-3 text-[11px] leading-relaxed text-red-100/55 font-mono whitespace-pre-wrap">
+            <pre className="max-h-64 overflow-auto whitespace-pre-wrap border-t border-cyan-200/10 px-4 py-3 font-mono text-[11px] leading-relaxed text-violet-50/55">
               {admin.logs.systemErrors.length > 0
                 ? admin.logs.systemErrors.join("\n")
                 : "No system errors found."}
@@ -389,10 +394,10 @@ function AdminStatCard({ label, value, sub, status }) {
 
   return (
     <div
-      className={`rounded-2xl bg-white/[0.03] backdrop-blur-sm border ${style.border} p-4 sm:p-5 min-w-0`}
+      className={`vapor-card min-w-0 rounded-3xl border bg-linear-to-br from-fuchsia-500/10 to-cyan-400/5 p-4 shadow-[0_18px_45px_rgba(30,0,70,0.2)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-200/35 sm:p-5 ${style.border}`}
     >
       <div className="flex items-center justify-between gap-3 mb-3">
-        <span className="text-xs font-medium text-red-200/50 truncate">
+        <span className="vapor-kicker truncate font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-200/55">
           {label}
         </span>
 
@@ -401,12 +406,12 @@ function AdminStatCard({ label, value, sub, status }) {
         />
       </div>
 
-      <p className="text-xl sm:text-2xl font-bold break-words capitalize">
+      <p className="wrap-break-word text-2xl font-black capitalize text-fuchsia-50 sm:text-3xl">
           {value || "unknown"}
       </p>
 
       {sub && (
-        <p className="text-[11px] text-red-200/30 mt-1 font-mono break-words leading-relaxed">
+        <p className="vapor-muted mt-1 wrap-break-word font-mono text-[11px] leading-relaxed text-violet-100/40">
           {sub}
         </p>
       )}
@@ -417,14 +422,14 @@ function AdminStatCard({ label, value, sub, status }) {
 function Panel({ title, subtitle, children, className = "" }) {
   return (
     <div
-      className={`rounded-2xl bg-white/[0.03] backdrop-blur-sm border border-red-500/10 p-4 md:p-6 min-w-0 ${className}`}
+      className={`vapor-panel min-w-0 rounded-3xl border border-fuchsia-300/18 bg-violet-950/30 p-5 shadow-[0_22px_65px_rgba(30,0,65,0.22)] backdrop-blur-xl md:p-6 ${className}`}
     >
-      <h3 className="text-sm font-semibold text-red-200/70 mb-1">
+      <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-fuchsia-100">
         {title}
       </h3>
 
       {subtitle && (
-        <p className="text-[11px] text-red-300/30 mb-4">{subtitle}</p>
+        <p className="vapor-muted mb-4 text-[11px] text-violet-100/40">{subtitle}</p>
       )}
 
       {children}
@@ -437,16 +442,16 @@ function MiniInfo({ label, value, mono = false, status = null }) {
 
   return (
     <div
-      className={`rounded-xl bg-[#111111] border ${
-        style ? style.border : "border-red-500/10"
-      } p-4 min-w-0`}
+      className={`vapor-subpanel min-w-0 rounded-2xl border bg-violet-950/55 p-4 ${
+        style ? style.border : "border-fuchsia-300/15"
+      }`}
     >
-      <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold mb-1">
+      <p className="vapor-kicker mb-1 text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-200/45">
         {label}
       </p>
 
       <p
-        className={`text-sm text-red-100 font-medium truncate ${
+        className={`truncate text-sm font-bold text-fuchsia-50 ${
           mono ? "font-mono" : ""
         }`}
       >
@@ -460,7 +465,7 @@ function StatusBox({ label, value }) {
   const style = getStatusStyle(value);
 
   return (
-    <div className={`rounded-xl ${style.bg} border ${style.border} p-4`}>
+    <div className={`vapor-subpanel rounded-2xl border p-4 ${style.bg} ${style.border}`}>
       <div className="flex items-center gap-2 mb-1">
         <span className={`inline-block w-2 h-2 rounded-full ${style.dot}`} />
         <p className={`text-xs font-mono ${style.text} capitalize`}>
@@ -468,7 +473,7 @@ function StatusBox({ label, value }) {
         </p>
       </div>
 
-      <p className="text-[10px] uppercase tracking-widest text-red-300/35 font-semibold">
+      <p className="vapor-kicker text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-200/45">
         {label}
       </p>
     </div>
@@ -480,15 +485,15 @@ function ServiceCard({ service }) {
 
   return (
     <div
-      className={`rounded-xl bg-[#111111] border ${style.border} p-4 min-w-0`}
+      className={`vapor-list-row min-w-0 rounded-2xl border bg-violet-950/55 p-4 transition-all hover:-translate-y-0.5 hover:bg-fuchsia-400/6 ${style.border}`}
     >
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-red-100 truncate">
+          <p className="truncate text-sm font-bold text-fuchsia-50">
             {service.name}
           </p>
 
-          <p className="text-[11px] text-red-300/30 font-mono truncate">
+          <p className="truncate font-mono text-[11px] text-cyan-100/35">
             {service.target || `${service.host}:${service.port}` || "—"}
           </p>
         </div>
@@ -517,12 +522,12 @@ function ServiceCard({ service }) {
 
 function MiniMetric({ label, value }) {
   return (
-    <div className="rounded-lg bg-black/20 border border-red-500/5 p-2 min-w-0">
-      <p className="text-[10px] uppercase tracking-widest text-red-300/30 font-semibold mb-1">
+    <div className="min-w-0 rounded-xl border border-cyan-300/8 bg-violet-950/45 p-2.5">
+      <p className="vapor-kicker mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200/40">
         {label}
       </p>
 
-      <p className="text-xs text-red-100 font-mono truncate">{value}</p>
+      <p className="truncate font-mono text-xs text-fuchsia-50">{value}</p>
     </div>
   );
 }

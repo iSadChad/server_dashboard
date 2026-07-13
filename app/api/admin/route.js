@@ -268,7 +268,7 @@ async function getStorageFolders() {
   const results = [];
 
   for (const item of STORAGE_PATHS) {
-    if (!existsSync(item.path)) {
+    if (!existsSync(/* turbopackIgnore: true */ item.path)) {
       results.push({
         ...item,
         exists: false,

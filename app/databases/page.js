@@ -180,34 +180,37 @@ function DatabasesContent() {
   }
 
   return (
-    <div className="databases-workbench p-4 md:p-8">
-      <div className="page-command-header flex items-center justify-between mb-6 md:mb-8">
+    <div className="vapor-page databases-workbench p-4 md:p-8">
+      <div className="vapor-header page-command-header relative mb-6 flex items-end justify-between gap-4 overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/15 via-violet-500/10 to-cyan-400/10 px-5 py-6 shadow-[0_0_55px_rgba(217,70,239,0.14)] md:mb-8 md:px-7 md:py-8">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold">Databases</h2>
-          <p className="text-red-200/40 text-sm mt-1">
+          <p className="vapor-kicker mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-300/75">
+            Data vault // PostgreSQL matrix
+          </p>
+          <h2 className="vapor-title text-3xl font-black tracking-tight text-white md:text-5xl">Databases</h2>
+          <p className="vapor-muted mt-2 text-sm text-violet-100/55">
             Connected PostgreSQL databases
           </p>
         </div>
 
         {databases.length > 0 && (
-          <span className="text-xs text-red-200/30 font-mono bg-[#111111] rounded-lg px-3 py-2 border border-red-500/10">
+          <span className="vapor-chip rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2.5 font-mono text-xs uppercase tracking-wider text-cyan-100">
             {databases.length} db{databases.length !== 1 ? "s" : ""}
           </span>
         )}
       </div>
 
       {loading ? (
-        <div className="database-stack space-y-3">
+        <div className="database-stack space-y-4">
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="rounded-xl bg-[#111111] border border-red-500/10 h-20 animate-pulse"
+              className="vapor-list-row h-24 animate-pulse rounded-3xl border border-fuchsia-300/15 bg-violet-950/50"
             />
           ))}
         </div>
       ) : databases.length === 0 ? (
-        <div className="text-center py-20">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#111111] border border-red-500/10 flex items-center justify-center">
+        <div className="vapor-empty py-20 text-center">
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-400/15 to-cyan-300/10 shadow-[0_0_35px_rgba(217,70,239,0.16)]">
             <svg
               width="28"
               height="28"
@@ -215,7 +218,7 @@ function DatabasesContent() {
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
-              className="text-red-400/30"
+              className="text-cyan-200/45"
             >
               <ellipse cx="12" cy="5" rx="9" ry="3" />
               <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
@@ -223,16 +226,16 @@ function DatabasesContent() {
             </svg>
           </div>
 
-          <p className="text-red-200/40 text-sm">
+          <p className="text-sm font-bold text-fuchsia-100/60">
             No databases detected
           </p>
 
-          <p className="text-red-300/20 text-xs mt-1">
+          <p className="vapor-muted mt-1 text-xs text-violet-100/35">
             Check your PostgreSQL connection in .env.local
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="database-stack space-y-4">
           {databases.map((db) => {
             const tables = tablesByDb[db.name] || [];
             const isExpanded = expandedDb === db.name;
@@ -241,11 +244,11 @@ function DatabasesContent() {
             return (
               <div
                 key={db.name}
-                className="group rounded-xl bg-[#111111] border border-red-500/10 hover:border-red-500/25 hover:bg-[#1a1a1a] transition-all overflow-hidden"
+                className="vapor-list-row group overflow-hidden rounded-3xl border border-fuchsia-300/18 bg-linear-to-r from-violet-950/65 to-fuchsia-950/35 shadow-[0_18px_55px_rgba(30,0,65,0.2)] transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/35 hover:shadow-[0_22px_65px_rgba(34,211,238,0.1)]"
               >
                 <div className="p-4 md:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex items-center gap-4 min-w-0">
-                    <div className="w-10 h-10 rounded-lg bg-red-500/15 border border-red-500/20 flex items-center justify-center shrink-0">
+                    <div className="vapor-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-fuchsia-300/25 bg-linear-to-br from-fuchsia-500/20 to-cyan-400/10 text-fuchsia-100 shadow-[0_0_22px_rgba(217,70,239,0.16)]">
                       <svg
                         width="18"
                         height="18"
@@ -263,23 +266,23 @@ function DatabasesContent() {
                     </div>
 
                     <div className="min-w-0">
-                      <h3 className="font-medium text-red-100 truncate">
+                      <h3 className="truncate text-base font-bold tracking-wide text-fuchsia-50 transition-colors group-hover:text-cyan-100">
                         {db.name}
                       </h3>
 
                       <div className="flex flex-wrap items-center gap-3 mt-0.5">
-                        <span className="text-xs text-red-200/40 font-mono">
+                        <span className="font-mono text-xs text-cyan-100/50">
                           {db.type}
                         </span>
 
                         {db.version && (
-                          <span className="text-xs text-red-200/25 font-mono">
+                          <span className="font-mono text-xs text-violet-100/35">
                             v{db.version}
                           </span>
                         )}
 
                         {db.size !== undefined && Number(db.size) > 0 && (
-                          <span className="text-xs text-red-200/25 font-mono">
+                          <span className="font-mono text-xs text-violet-100/35">
                             {formatBytes(Number(db.size))}
                           </span>
                         )}
@@ -289,7 +292,7 @@ function DatabasesContent() {
 
                   <div className="flex items-center gap-3 flex-wrap sm:justify-end">
                     {db.port && (
-                      <span className="text-xs font-mono text-red-300/50 bg-red-500/10 border border-red-500/15 px-2 py-1 rounded">
+                      <span className="vapor-chip rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-2.5 py-1 font-mono text-xs text-fuchsia-100/65">
                         :{db.port}
                       </span>
                     )}
@@ -312,7 +315,7 @@ function DatabasesContent() {
 
                     <button
                       onClick={() => toggleTables(db.name)}
-                      className="rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 px-4 py-2 text-xs font-medium transition-all"
+                      className="vapor-button rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-xs font-bold text-cyan-100 transition-all duration-300 hover:-translate-y-0.5 hover:border-fuchsia-200/45 hover:bg-fuchsia-400/15"
                     >
                       {isExpanded ? "Hide Tables" : "Show Tables"}
                     </button>
@@ -320,18 +323,18 @@ function DatabasesContent() {
                 </div>
 
                 {isExpanded && (
-                  <div className="border-t border-red-500/10 px-4 md:px-5 py-4 bg-[#0a0a0a]/40">
+                  <div className="vapor-drawer border-t border-cyan-200/10 bg-violet-950/45 px-4 py-5 md:px-5">
                     {isLoadingTables ? (
-                      <p className="text-xs text-red-200/40 font-mono">
+                      <p className="font-mono text-xs text-cyan-100/45">
                         Loading tables...
                       </p>
                     ) : tables.length === 0 ? (
-                      <p className="text-xs text-red-200/40 font-mono">
+                      <p className="font-mono text-xs text-violet-100/45">
                         No tables found.
                       </p>
                     ) : (
                       <div className="space-y-2">
-                        <p className="text-[10px] font-semibold uppercase tracking-widest text-red-400/40 mb-2">
+                        <p className="vapor-kicker mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-cyan-200/50">
                           Tables
                         </p>
 
@@ -347,15 +350,15 @@ function DatabasesContent() {
                           return (
                             <div
                               key={`${table.table_schema}.${table.table_name}`}
-                              className="rounded-lg bg-[#111111] border border-red-500/10 overflow-hidden"
+                              className="vapor-subpanel overflow-hidden rounded-2xl border border-fuchsia-300/15 bg-violet-950/55"
                             >
                               <div className="px-3 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                                 <div>
-                                  <span className="text-sm text-red-100 font-medium">
+                                  <span className="text-sm font-bold text-fuchsia-50">
                                     {table.table_name}
                                   </span>
 
-                                  <div className="flex items-center gap-2 text-xs font-mono text-red-200/30 mt-0.5">
+                                  <div className="mt-0.5 flex items-center gap-2 font-mono text-xs text-violet-100/35">
                                     <span>{table.table_schema}</span>
                                     <span>·</span>
                                     <span>{table.table_type}</span>
@@ -370,26 +373,26 @@ function DatabasesContent() {
                                       table.table_name
                                     )
                                   }
-                                  className="rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-300 px-3 py-1.5 text-xs font-medium transition-all"
+                                  className="vapor-button rounded-lg border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-1.5 text-xs font-bold text-fuchsia-100 transition-all hover:border-cyan-200/40 hover:bg-cyan-300/10"
                                 >
                                   {isRowsExpanded ? "Hide Rows" : "Show Rows"}
                                 </button>
                               </div>
 
                               {isRowsExpanded && (
-                                <div className="border-t border-red-500/10 p-3 overflow-x-auto">
+                                <div className="overflow-x-auto border-t border-cyan-200/10 bg-violet-950/35 p-3">
                                   {isRowsLoading ? (
-                                    <p className="text-xs text-red-200/40 font-mono">
+                                    <p className="font-mono text-xs text-cyan-100/45">
                                       Loading rows...
                                     </p>
                                   ) : rowData.rows.length === 0 ? (
-                                    <p className="text-xs text-red-200/40 font-mono">
+                                    <p className="font-mono text-xs text-violet-100/45">
                                       No rows found.
                                     </p>
                                   ) : (
-                                    <table className="min-w-[1200px] w-full table-auto text-left text-xs font-mono">
+                                    <table className="vapor-table w-full min-w-300 table-auto text-left font-mono text-xs">
                                       <thead>
-                                        <tr className="text-red-300/50 border-b border-red-500/10">
+                                        <tr className="border-b border-cyan-200/15 text-cyan-100/55">
                                           {rowData.columns.map((column) => {
                                             const longText =
                                               isLongTextColumn(column);
@@ -399,7 +402,7 @@ function DatabasesContent() {
                                                 key={column}
                                                 className={`py-2 pr-4 font-medium align-top ${
                                                   longText
-                                                    ? "min-w-[380px]"
+                                                    ? "min-w-95"
                                                     : "whitespace-nowrap"
                                                 }`}
                                               >
@@ -415,7 +418,7 @@ function DatabasesContent() {
                                           (row, rowIndex) => (
                                             <tr
                                               key={rowIndex}
-                                              className="border-b border-red-500/5 text-red-100/70"
+                                              className="border-b border-fuchsia-200/8 text-violet-50/65 transition-colors hover:bg-fuchsia-400/5"
                                             >
                                               {rowData.columns.map(
                                                 (column) => {
@@ -427,10 +430,10 @@ function DatabasesContent() {
                                                   return (
                                                     <td
                                                       key={column}
-                                                      className={`py-2 pr-4 align-top whitespace-normal break-words ${
+                                                      className={`py-2 pr-4 align-top whitespace-normal wrap-break-word ${
                                                         longText
-                                                          ? "min-w-[380px] max-w-[620px]"
-                                                          : "max-w-[260px]"
+                                                          ? "min-w-95 max-w-155"
+                                                          : "max-w-65"
                                                       }`}
                                                     >
                                                       {row[column] ===
