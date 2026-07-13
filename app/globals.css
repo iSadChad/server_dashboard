@@ -432,17 +432,32 @@ body {
 .database-stack > div > div:first-child::before {
   counter-increment: database-row;
   content: counter(database-row, decimal-leading-zero);
-  align-self: center;
-  border-right: 1px solid rgba(148, 163, 184, 0.12);
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border-right: 0;
   color: rgba(148, 163, 184, 0.38);
   font-family: var(--font-mono), monospace;
   font-size: 0.72rem;
-  padding-right: 0.85rem;
+  padding-right: 0;
 }
 
 .database-stack > div > div:first-child {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  .database-stack > div > div:first-child {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .database-stack > div > div:first-child::before {
+    position: static;
+    align-self: center;
+    border-right: 1px solid rgba(148, 163, 184, 0.12);
+    padding-right: 0.85rem;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -1842,6 +1857,12 @@ details[open] > summary {
   .vapor-orb,
   .dashboard-workbench .vapor-title {
     animation: none !important;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .database-stack > div:hover {
+    transform: none;
   }
 }
 
