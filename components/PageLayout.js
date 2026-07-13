@@ -148,10 +148,7 @@ export default function PageLayout({ children }) {
 
               {showSidebarText && (
                 <div className="min-w-0 flex-1">
-                  <p className="vapor-eyebrow font-mono text-[9px] font-semibold tracking-[0.28em] text-cyan-300/80">
-                    NEON SERVER OS
-                  </p>
-                  <h1 className="mt-0.5 truncate text-sm font-black tracking-[0.06em] text-white">
+                  <h1 className="truncate text-sm font-black tracking-[0.06em] text-white">
                     CHAD&apos;S <span className="text-fuchsia-300">/</span> GOON CAVE
                   </h1>
                 </div>

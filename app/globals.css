@@ -1352,11 +1352,16 @@ html {
 }
 
 .tool-portal-card {
-  min-height: 250px;
+  min-height: 0;
   border-color: rgba(255, 79, 216, 0.24) !important;
   background:
     linear-gradient(135deg, rgba(39, 10, 84, 0.96), rgba(16, 4, 48, 0.96) 68%, rgba(7, 28, 48, 0.94)),
     radial-gradient(circle at 94% 12%, rgba(93, 253, 244, 0.14), transparent 34%) !important;
+}
+
+.tool-portal-card > .tool-portal-watermark {
+  position: absolute;
+  z-index: 0;
 }
 
 .tool-portal-card:nth-child(even) {
@@ -1380,7 +1385,7 @@ html {
 }
 
 .tool-portal-launch {
-  min-height: 70px;
+  min-height: 54px;
   border-color: rgba(255, 255, 255, 0.34) !important;
   background: linear-gradient(105deg, #e83bc4 0%, #8b45ed 54%, #20c9d4 100%) !important;
   box-shadow:
