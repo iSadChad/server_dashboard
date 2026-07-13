@@ -14,37 +14,31 @@ export function usePageLayout() {
 const navItems = [
   {
     label: "Dashboard",
-    mobileLabel: "Home",
     href: "/",
     icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
   },
   {
     label: "Files",
-    mobileLabel: "Files",
     href: "/files",
     icon: "M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z",
   },
   {
     label: "Databases",
-    mobileLabel: "Data",
     href: "/databases",
     icon: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4",
   },
   {
     label: "Tasks",
-    mobileLabel: "Tasks",
     href: "/tasks",
     icon: "M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11",
   },
   {
     label: "Tools",
-    mobileLabel: "Tools",
     href: "/tools",
     icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z",
   },
   {
     label: "Admin",
-    mobileLabel: "Admin",
     href: "/admin",
     icon: "M12 15c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z",
   },
@@ -289,7 +283,7 @@ export default function PageLayout({ children }) {
         </aside>
 
         <main
-          className={`vapor-main cyber-main relative z-10 min-w-0 flex-1 overflow-auto transition-[padding] duration-500 ${
+          className={`vapor-main cyber-main relative z-10 min-w-0 flex-1 overflow-x-clip overflow-y-visible transition-[padding] duration-500 md:overflow-auto ${
             sidebarCollapsed ? "md:pl-24" : "md:pl-72"
           }`}
         >
@@ -332,43 +326,6 @@ export default function PageLayout({ children }) {
 
           {children}
         </main>
-
-        <nav
-          className="mobile-bottom-nav fixed inset-x-2 bottom-2 z-30 grid grid-cols-6 items-stretch overflow-hidden rounded-2xl border border-fuchsia-200/20 bg-[#100722]/92 p-1.5 shadow-[0_18px_55px_rgba(3,0,18,0.7),0_0_30px_rgba(217,70,239,0.12)] backdrop-blur-2xl md:hidden"
-          aria-label="Mobile navigation"
-        >
-          {navItems.map((item) => {
-            const isActive = item.href === pathname;
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={isActive ? "page" : undefined}
-                aria-label={item.label}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`mobile-bottom-nav-item group relative flex min-h-12 min-w-11 flex-col items-center justify-center gap-0.5 rounded-xl border px-1 text-center transition-all duration-300 ${
-                  isActive
-                    ? "is-active border-fuchsia-300/35 bg-linear-to-br from-fuchsia-500/30 via-violet-500/20 to-cyan-400/15 text-white shadow-[0_0_20px_rgba(217,70,239,0.16)]"
-                    : "border-transparent text-violet-100/50 hover:border-cyan-300/20 hover:bg-cyan-300/8 hover:text-cyan-100"
-                }`}
-              >
-                <span
-                  className={`grid h-6 w-6 place-items-center transition-all ${
-                    isActive
-                      ? "text-cyan-200 drop-shadow-[0_0_6px_rgba(103,232,249,0.65)]"
-                      : "text-violet-100/55 group-hover:text-cyan-200"
-                  }`}
-                >
-                  <NavIcon path={item.icon} />
-                </span>
-                <span className="max-w-full truncate font-mono text-[8px] font-bold leading-none tracking-tight">
-                  {item.mobileLabel}
-                </span>
-              </Link>
-            );
-          })}
-        </nav>
       </div>
     </PageLayoutContext.Provider>
   );
