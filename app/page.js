@@ -189,19 +189,19 @@ return () => {
   const diskPercentNum = parseFloat(diskPercent) || 0;
 
   const memPieData = [
-    { name: "Used", value: memPercentNum || 1, color: "#ef4444" },
-    { name: "Free", value: 100 - (memPercentNum || 1), color: "#1a0a0a" },
+    { name: "Used", value: memPercentNum || 1, color: "#ff4fd8" },
+    { name: "Free", value: 100 - (memPercentNum || 1), color: "#281052" },
   ];
 
   const diskPieData = [
-    { name: "Used", value: diskPercentNum || 1, color: "#f43f5e" },
-    { name: "Free", value: 100 - (diskPercentNum || 1), color: "#1a0a0a" },
+    { name: "Used", value: diskPercentNum || 1, color: "#5dfdf4" },
+    { name: "Free", value: 100 - (diskPercentNum || 1), color: "#281052" },
   ];
 
   return (
     <div className="vapor-page dashboard-workbench p-3 sm:p-4 lg:p-8">
-      <div className="vapor-header page-command-header relative mb-6 flex flex-col gap-4 overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/15 via-violet-500/10 to-cyan-400/10 px-5 py-6 shadow-[0_0_55px_rgba(217,70,239,0.14)] sm:flex-row sm:items-end sm:justify-between md:mb-8 md:px-7 md:py-8">
-        <div>
+      <div className="vapor-header page-command-header dashboard-hero relative mb-6 grid gap-6 overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/15 via-violet-500/10 to-cyan-400/10 px-5 py-6 shadow-[0_0_55px_rgba(217,70,239,0.14)] md:mb-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:px-7 md:py-8">
+        <div className="dashboard-hero-copy min-w-0">
           <p className="vapor-kicker mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-300/75">
             Neon telemetry // live system
           </p>
@@ -211,17 +211,34 @@ return () => {
           </p>
         </div>
 
-        <div className="flex w-full items-center gap-3 sm:w-auto">
-          <div className="vapor-chip flex w-full items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2.5 font-mono text-xs uppercase tracking-wider text-cyan-100 sm:w-auto">
+        <div className="dashboard-hero-readouts grid w-full grid-cols-2 gap-2 md:w-auto md:min-w-72">
+          <div className="vapor-chip flex min-w-0 items-center gap-2 rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-4 py-3 font-mono text-xs uppercase tracking-wider text-cyan-100">
             <div className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,0.85)]" />
             <span className="truncate">
               Live · {loading ? "..." : `${stats.cpu.toFixed(0)}% CPU`}
             </span>
           </div>
+
+          <div className="dashboard-hero-uptime min-w-0 rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/8 px-4 py-3">
+            <p className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-fuchsia-200/45">
+              Session uptime
+            </p>
+            <p className="mt-1 truncate font-mono text-xs text-fuchsia-50">
+              {loading ? "Synchronizing" : `${uptimeHours}h ${uptimeMinutes}m`}
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="dashboard-metrics mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 md:mb-8 md:gap-4 xl:grid-cols-4">
+      <section className="dashboard-metric-deck mb-6 md:mb-8">
+        <div className="dashboard-section-label mb-3 flex items-center justify-between gap-4 px-1">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-cyan-200/50">
+            01 // Instant telemetry
+          </p>
+          <span className="h-px flex-1 bg-linear-to-r from-fuchsia-300/20 to-transparent" />
+        </div>
+
+        <div className="dashboard-metrics grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 xl:grid-cols-4">
         <StatCard
           label="CPU Usage"
           value={loading ? "—" : `${stats.cpu.toFixed(1)}%`}
@@ -265,22 +282,35 @@ return () => {
           color="from-cyan-400 to-violet-600"
           icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
         />
-      </div>
+        </div>
+      </section>
 
-      <BackupStatusPanel backup={backupStatus} loading={backupLoading} />
-      <Pm2StatusPanel pm2={pm2Status} loading={pm2Loading} />
-
-      <div className="dashboard-charts mb-6 grid grid-cols-1 gap-4 md:mb-8 xl:grid-cols-5">
-        <div className="vapor-panel min-w-0 rounded-3xl border border-fuchsia-300/20 bg-violet-950/30 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.25)] backdrop-blur-xl md:p-6 xl:col-span-3">
-          <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-fuchsia-100">
-            Network Activity
-          </h3>
-          <p className="vapor-muted mb-4 text-[11px] text-violet-100/40">
-            Inbound vs Outbound over 12 months
+      <section className="dashboard-analytics mb-6 md:mb-8">
+        <div className="dashboard-section-label mb-3 flex items-center justify-between gap-4 px-1">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-fuchsia-200/50">
+            02 // Signal cockpit
           </p>
+          <span className="h-px flex-1 bg-linear-to-r from-cyan-300/20 to-transparent" />
+        </div>
+
+        <div className="dashboard-analytics-grid grid grid-cols-1 gap-4 xl:grid-cols-12">
+        <div className="vapor-panel dashboard-network-module min-w-0 rounded-3xl border border-fuchsia-300/20 bg-violet-950/30 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.25)] backdrop-blur-xl md:p-6 xl:col-span-8">
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="vapor-kicker mb-1 font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-fuchsia-200/45">
+                Long-range transmission
+              </p>
+              <h3 className="text-sm font-bold uppercase tracking-wider text-fuchsia-100">
+                Network Activity
+              </h3>
+            </div>
+            <p className="vapor-muted font-mono text-[10px] text-violet-100/40">
+              Inbound / Outbound · 12 months
+            </p>
+          </div>
 
           {mounted ? (
-            <div className="h-55 sm:h-65">
+            <div className="dashboard-network-chart h-60 sm:h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
                   data={monthData}
@@ -296,12 +326,12 @@ return () => {
                     >
                       <stop
                         offset="5%"
-                        stopColor="#ef4444"
+                        stopColor="#5dfdf4"
                         stopOpacity={0.3}
                       />
                       <stop
                         offset="95%"
-                        stopColor="#ef4444"
+                        stopColor="#5dfdf4"
                         stopOpacity={0}
                       />
                     </linearGradient>
@@ -315,12 +345,12 @@ return () => {
                     >
                       <stop
                         offset="5%"
-                        stopColor="#f43f5e"
+                        stopColor="#ff4fd8"
                         stopOpacity={0.3}
                       />
                       <stop
                         offset="95%"
-                        stopColor="#f43f5e"
+                        stopColor="#ff4fd8"
                         stopOpacity={0}
                       />
                     </linearGradient>
@@ -330,13 +360,13 @@ return () => {
                     dataKey="month"
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: "#a35050", fontSize: 11 }}
+                    tick={{ fill: "#aa93d4", fontSize: 11 }}
                   />
 
                   <YAxis
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: "#a35050", fontSize: 11 }}
+                    tick={{ fill: "#aa93d4", fontSize: 11 }}
                     width={32}
                   />
 
@@ -345,206 +375,285 @@ return () => {
                   <Area
                     type="monotone"
                     dataKey="inbound"
-                    stroke="#ef4444"
+                    stroke="#5dfdf4"
                     fill="url(#gradInbound)"
                     strokeWidth={2}
                     name="Inbound"
+                    isAnimationActive={false}
                   />
 
                   <Area
                     type="monotone"
                     dataKey="outbound"
-                    stroke="#f43f5e"
+                    stroke="#ff4fd8"
                     fill="url(#gradOutbound)"
                     strokeWidth={2}
                     name="Outbound"
+                    isAnimationActive={false}
                   />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-55 w-full animate-pulse rounded-2xl bg-fuchsia-400/5 sm:h-65" />
+            <div className="h-60 w-full animate-pulse rounded-2xl bg-fuchsia-400/5 sm:h-72" />
           )}
         </div>
 
-        <div className="vapor-panel min-w-0 rounded-3xl border border-cyan-300/20 bg-linear-to-br from-cyan-400/8 to-violet-500/12 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.25)] backdrop-blur-xl md:p-6 xl:col-span-2">
-          <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-cyan-100">
-            Memory Split
-          </h3>
-          <p className="vapor-muted mb-4 text-[11px] text-violet-100/40">Used vs Free</p>
+        <div className="vapor-panel dashboard-resource-module min-w-0 rounded-3xl border border-cyan-300/20 bg-linear-to-br from-cyan-400/8 to-violet-500/12 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.25)] backdrop-blur-xl md:p-6 xl:col-span-4">
+          <div className="mb-4">
+            <p className="vapor-kicker mb-1 font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-cyan-200/45">
+              Capacity matrix
+            </p>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-100">
+              Resource Balance
+            </h3>
+          </div>
 
-          {mounted ? (
-            <div className="h-45">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={memPieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={75}
-                    paddingAngle={4}
-                    dataKey="value"
-                    stroke="none"
-                  >
-                    {memPieData.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
+          <div className="dashboard-resource-rings grid grid-cols-2 gap-3">
+            <div className="dashboard-resource-ring min-w-0 rounded-2xl border border-fuchsia-300/15 bg-violet-950/40 p-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-fuchsia-100/65">
+                  Memory
+                </p>
+                <span className="h-1.5 w-1.5 rounded-full bg-fuchsia-400 shadow-[0_0_8px_rgba(232,121,249,0.75)]" />
+              </div>
+
+              {mounted ? (
+                <div className="dashboard-ring-chart relative h-36">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={memPieData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={38}
+                        outerRadius={56}
+                        paddingAngle={4}
+                        dataKey="value"
+                        stroke="none"
+                        isAnimationActive={false}
+                      >
+                        {memPieData.map((entry, i) => (
+                          <Cell key={i} fill={entry.color} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <span className="font-mono text-base font-black text-fuchsia-50">
+                      {memPercent}%
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="h-36 w-full animate-pulse rounded-2xl bg-fuchsia-400/5" />
+              )}
+
+              <p className="truncate text-center font-mono text-[9px] text-fuchsia-100/40">
+                {loading
+                  ? "Synchronizing"
+                  : `${formatBytes(stats.memory.used)} used`}
+              </p>
             </div>
-          ) : (
-            <div className="h-45 w-full animate-pulse rounded-2xl bg-cyan-400/5" />
-          )}
 
-          <div className="flex flex-wrap justify-center gap-4 mt-2">
-            <div className="flex items-center gap-2">
-              <div className="h-2.5 w-2.5 rounded-full bg-fuchsia-400 shadow-[0_0_10px_rgba(232,121,249,0.7)]" />
-              <span className="text-[11px] text-fuchsia-100/55">
-                Used {memPercent}%
-              </span>
+            <div className="dashboard-resource-ring min-w-0 rounded-2xl border border-cyan-300/15 bg-violet-950/40 p-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-100/65">
+                  Disk
+                </p>
+                <span className="h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_rgba(103,232,249,0.75)]" />
+              </div>
+
+              {mounted ? (
+                <div className="dashboard-ring-chart relative h-36">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={diskPieData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={38}
+                        outerRadius={56}
+                        paddingAngle={4}
+                        dataKey="value"
+                        stroke="none"
+                        isAnimationActive={false}
+                      >
+                        {diskPieData.map((entry, i) => (
+                          <Cell key={i} fill={entry.color} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <span className="font-mono text-base font-black text-cyan-50">
+                      {diskPercent}%
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="h-36 w-full animate-pulse rounded-2xl bg-cyan-400/5" />
+              )}
+
+              <p className="truncate text-center font-mono text-[9px] text-cyan-100/40">
+                {loading
+                  ? "Synchronizing"
+                  : `${formatBytes(stats.disk.used)} used`}
+              </p>
             </div>
+          </div>
 
-            <div className="flex items-center gap-2">
-              <div className="h-2.5 w-2.5 rounded-full bg-cyan-300/30" />
-              <span className="text-[11px] text-cyan-100/50">Free</span>
+          <div className="dashboard-resource-footer mt-3 grid grid-cols-2 gap-2">
+            <div className="rounded-xl border border-fuchsia-300/10 bg-fuchsia-400/5 px-3 py-2">
+              <p className="font-mono text-[8px] uppercase tracking-wider text-fuchsia-200/35">
+                Memory free
+              </p>
+              <p className="mt-1 font-mono text-xs text-fuchsia-50/75">
+                {(100 - memPercentNum).toFixed(1)}%
+              </p>
+            </div>
+            <div className="rounded-xl border border-cyan-300/10 bg-cyan-300/5 px-3 py-2">
+              <p className="font-mono text-[8px] uppercase tracking-wider text-cyan-200/35">
+                Disk free
+              </p>
+              <p className="mt-1 font-mono text-xs text-cyan-50/75">
+                {(100 - diskPercentNum).toFixed(1)}%
+              </p>
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </section>
 
-      <div className="dashboard-secondary grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <div className="vapor-panel min-w-0 rounded-3xl border border-fuchsia-300/18 bg-violet-950/30 p-5 shadow-[0_20px_55px_rgba(30,0,65,0.2)] backdrop-blur-xl md:p-6">
-          <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-fuchsia-100">
-            Weekly CPU
-          </h3>
-          <p className="vapor-muted mb-4 text-[11px] text-violet-100/40">
-            Avg usage by day
+      <section className="dashboard-weekly mb-6 md:mb-8">
+        <div className="dashboard-section-label mb-3 flex items-center justify-between gap-4 px-1">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-cyan-200/50">
+            03 // Seven-day rhythm
           </p>
-
-          {mounted ? (
-            <div className="h-37.5 sm:h-40">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={weekData} barCategoryMaxWidth={16}>
-                  <XAxis
-                    dataKey="day"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "#a35050", fontSize: 10 }}
-                  />
-
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "#a35050", fontSize: 10 }}
-                    width={30}
-                  />
-
-                  <Tooltip content={<CustomTooltip />} />
-
-                  <Bar
-                    dataKey="cpu"
-                    fill="#ef4444"
-                    radius={[4, 4, 0, 0]}
-                    name="CPU"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <div className="h-37.5 w-full animate-pulse rounded-2xl bg-fuchsia-400/5 sm:h-40" />
-          )}
+          <span className="h-px flex-1 bg-linear-to-r from-fuchsia-300/20 to-transparent" />
         </div>
 
-        <div className="vapor-panel min-w-0 rounded-3xl border border-cyan-300/18 bg-violet-950/30 p-5 shadow-[0_20px_55px_rgba(30,0,65,0.2)] backdrop-blur-xl md:p-6 xl:translate-y-4">
-          <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-cyan-100">
-            Weekly Memory
-          </h3>
-          <p className="vapor-muted mb-4 text-[11px] text-violet-100/40">
-            Avg usage by day
-          </p>
-
-          {mounted ? (
-            <div className="h-37.5 sm:h-40">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={weekData} barCategoryMaxWidth={16}>
-                  <XAxis
-                    dataKey="day"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "#a35050", fontSize: 10 }}
-                  />
-
-                  <YAxis
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "#a35050", fontSize: 10 }}
-                    width={30}
-                  />
-
-                  <Tooltip content={<CustomTooltip />} />
-
-                  <Bar
-                    dataKey="mem"
-                    fill="#f43f5e"
-                    radius={[4, 4, 0, 0]}
-                    name="Memory"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
+        <div className="vapor-panel dashboard-weekly-module min-w-0 rounded-3xl border border-fuchsia-300/18 bg-violet-950/30 p-5 shadow-[0_20px_55px_rgba(30,0,65,0.2)] backdrop-blur-xl md:p-6">
+          <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h3 className="text-sm font-bold uppercase tracking-wider text-fuchsia-100">
+                Utilization Rhythm
+              </h3>
+              <p className="vapor-muted mt-1 text-[11px] text-violet-100/40">
+                CPU and memory averages shown as one weekly sequence
+              </p>
             </div>
-          ) : (
-            <div className="h-37.5 w-full animate-pulse rounded-2xl bg-cyan-400/5 sm:h-40" />
-          )}
-        </div>
-
-        <div className="vapor-panel min-w-0 rounded-3xl border border-pink-300/18 bg-violet-950/30 p-5 shadow-[0_20px_55px_rgba(30,0,65,0.2)] backdrop-blur-xl md:col-span-2 md:p-6 xl:col-span-1">
-          <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-pink-100">
-            Disk Usage
-          </h3>
-          <p className="vapor-muted mb-4 text-[11px] text-violet-100/40">Used vs Free</p>
-
-          {mounted ? (
-            <div className="h-45">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={diskPieData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={75}
-                    paddingAngle={4}
-                    dataKey="value"
-                    stroke="none"
-                  >
-                    {diskPieData.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <div className="h-45 w-full animate-pulse rounded-2xl bg-pink-400/5" />
-          )}
-
-          <div className="flex flex-wrap justify-center gap-4 mt-2">
-            <div className="flex items-center gap-2">
-              <div className="h-2.5 w-2.5 rounded-full bg-pink-400 shadow-[0_0_10px_rgba(244,114,182,0.7)]" />
-              <span className="text-[11px] text-pink-100/55">
-                Used {diskPercent}%
+            <div className="flex items-center gap-4 font-mono text-[9px] uppercase tracking-wider text-violet-100/45">
+              <span className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-fuchsia-400" />
+                CPU
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-cyan-300" />
+                Memory
               </span>
             </div>
+          </div>
 
-            <div className="flex items-center gap-2">
-              <div className="h-2.5 w-2.5 rounded-full bg-cyan-300/30" />
-              <span className="text-[11px] text-cyan-100/50">Free</span>
+          <div className="dashboard-weekly-grid grid grid-cols-1 gap-3 lg:grid-cols-2">
+            <div className="dashboard-weekly-chart min-w-0 rounded-2xl border border-fuchsia-300/12 bg-fuchsia-400/4 p-4">
+              <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-wider text-fuchsia-100/60">
+                CPU load
+              </p>
+              {mounted ? (
+                <div className="h-44">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={weekData} barCategoryMaxWidth={16}>
+                      <XAxis
+                        dataKey="day"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: "#aa93d4", fontSize: 10 }}
+                      />
+
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: "#aa93d4", fontSize: 10 }}
+                        width={30}
+                      />
+
+                      <Tooltip content={<CustomTooltip />} />
+
+                      <Bar
+                        dataKey="cpu"
+                        fill="#ff4fd8"
+                        radius={[4, 4, 0, 0]}
+                        name="CPU"
+                        isAnimationActive={false}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="h-44 w-full animate-pulse rounded-2xl bg-fuchsia-400/5" />
+              )}
+            </div>
+
+            <div className="dashboard-weekly-chart min-w-0 rounded-2xl border border-cyan-300/12 bg-cyan-300/4 p-4">
+              <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-100/60">
+                Memory load
+              </p>
+              {mounted ? (
+                <div className="h-44">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={weekData} barCategoryMaxWidth={16}>
+                      <XAxis
+                        dataKey="day"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: "#aa93d4", fontSize: 10 }}
+                      />
+
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: "#aa93d4", fontSize: 10 }}
+                        width={30}
+                      />
+
+                      <Tooltip content={<CustomTooltip />} />
+
+                      <Bar
+                        dataKey="mem"
+                        fill="#5dfdf4"
+                        radius={[4, 4, 0, 0]}
+                        name="Memory"
+                        isAnimationActive={false}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="h-44 w-full animate-pulse rounded-2xl bg-cyan-400/5" />
+              )}
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <section className="dashboard-operations">
+        <div className="dashboard-section-label mb-3 flex items-center justify-between gap-4 px-1">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-fuchsia-200/50">
+            04 // Operations bay
+          </p>
+          <span className="h-px flex-1 bg-linear-to-r from-cyan-300/20 to-transparent" />
+        </div>
+
+        <div className="dashboard-operations-grid grid grid-cols-1 gap-4 2xl:grid-cols-12">
+          <div className="dashboard-backup-cell min-w-0 2xl:col-span-7">
+            <BackupStatusPanel backup={backupStatus} loading={backupLoading} />
+          </div>
+          <div className="dashboard-pm2-cell min-w-0 2xl:col-span-5">
+            <Pm2StatusPanel pm2={pm2Status} loading={pm2Loading} />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
@@ -590,9 +699,9 @@ function BackupStatusPanel({ backup, loading }) {
 
   return (
     <div
-      className={`vapor-panel vapor-status-panel mb-6 rounded-3xl border bg-linear-to-br from-fuchsia-500/8 to-violet-950/35 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.24)] backdrop-blur-xl md:mb-8 md:p-6 ${style.border}`}
+      className={`vapor-panel vapor-status-panel dashboard-backup-panel h-full rounded-3xl border bg-linear-to-br from-fuchsia-500/8 to-violet-950/35 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.24)] backdrop-blur-xl md:p-6 ${style.border}`}
     >
-      <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-5">
+      <div className="flex flex-col gap-5">
         <div className="min-w-0">
           <div className="flex items-center gap-2 mb-2">
             <span
@@ -629,7 +738,7 @@ function BackupStatusPanel({ backup, loading }) {
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 w-full xl:w-auto xl:min-w-180">
+        <div className="grid w-full grid-cols-2 gap-3 xl:grid-cols-4">
           <BackupMiniCard
             label="Last backup"
             value={loading ? "—" : formatDateTime(latestSnapshot?.time)}
@@ -728,7 +837,7 @@ function Pm2StatusPanel({ pm2, loading }) {
 
   return (
     <div
-      className={`vapor-panel vapor-status-panel mb-6 rounded-3xl border bg-linear-to-br from-cyan-400/7 to-violet-950/35 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.24)] backdrop-blur-xl md:mb-8 md:p-6 ${style.border}`}
+      className={`vapor-panel vapor-status-panel dashboard-pm2-panel h-full rounded-3xl border bg-linear-to-br from-cyan-400/7 to-violet-950/35 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.24)] backdrop-blur-xl md:p-6 ${style.border}`}
     >
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
         <div>
@@ -760,7 +869,7 @@ function Pm2StatusPanel({ pm2, loading }) {
         </a>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 2xl:grid-cols-1">
         {loading ? (
           <>
             <Pm2SkeletonCard />

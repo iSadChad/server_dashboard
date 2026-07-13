@@ -76,36 +76,68 @@ export default function ToolsPage() {
   return (
     <PageLayout>
       <div className="vapor-page tools-workbench px-3 py-5 sm:px-5 lg:px-8 lg:py-9">
-        <div className="vapor-header tool-terminal-header relative mb-6 overflow-hidden rounded-3xl border border-fuchsia-300/25 bg-linear-to-br from-fuchsia-500/15 via-violet-500/10 to-cyan-400/10 px-5 py-6 shadow-[0_0_55px_rgba(217,70,239,0.16)] sm:px-7 sm:py-8">
-          <div className="relative z-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="vapor-kicker mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.32em] text-cyan-300/80">
-                Utility arcade // external deck
+        <header className="vapor-header tool-terminal-header relative mb-7 overflow-hidden rounded-4xl border border-fuchsia-300/25 bg-linear-to-br from-fuchsia-500/20 via-violet-950/60 to-cyan-400/10 px-5 py-7 shadow-[0_0_65px_rgba(217,70,239,0.18)] sm:px-8 sm:py-10 lg:px-10">
+          <div className="tool-header-orbit pointer-events-none absolute -top-24 -right-20 h-64 w-64 rounded-full border border-cyan-200/15 shadow-[0_0_70px_rgba(34,211,238,0.15)]" />
+          <div className="relative z-10 flex max-w-4xl flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-10 bg-linear-to-r from-fuchsia-400 to-cyan-300" />
+              <p className="vapor-kicker font-mono text-[10px] font-bold uppercase tracking-[0.34em] text-cyan-300/80">
+                Utility arcade // launch control
               </p>
-              <h2 className="vapor-title text-3xl font-black tracking-tight text-white sm:text-5xl">
-              Tools
-              </h2>
             </div>
-            <p className="vapor-chip w-fit rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 font-mono text-xs uppercase tracking-wider text-cyan-100">
-              {tools.length} portals online
+
+            <h2 className="vapor-title text-4xl font-black tracking-tighter text-white sm:text-6xl lg:text-7xl">
+              Choose your
+              <span className="block bg-linear-to-r from-fuchsia-300 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
+                destination.
+              </span>
+            </h2>
+
+            <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
+              <p className="vapor-muted max-w-xl text-sm leading-relaxed text-violet-100/55">
+                Jump straight into the services running beyond the dashboard.
+                Every portal opens in a new tab.
+              </p>
+              <p className="vapor-chip w-fit shrink-0 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 font-mono text-xs uppercase tracking-wider text-cyan-100 sm:ml-auto">
+                {tools.length} portals online
+              </p>
+            </div>
+          </div>
+        </header>
+
+        <section className="tool-launch-stage lg:grid lg:grid-cols-[minmax(210px,0.38fr)_minmax(0,1fr)] lg:items-start lg:gap-6 xl:gap-9">
+          <aside className="tool-launch-manifest vapor-panel mb-5 rounded-3xl border border-cyan-300/15 bg-violet-950/35 p-5 shadow-[0_22px_60px_rgba(20,0,60,0.28)] backdrop-blur-xl lg:sticky lg:top-6 lg:mb-0 lg:p-6">
+            <p className="vapor-kicker font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/60">
+              Portal manifest
             </p>
-          </div>
-        </div>
+            <p className="mt-3 text-2xl font-black tracking-tight text-fuchsia-50">
+              External deck
+            </p>
+            <p className="vapor-muted mt-2 text-xs leading-relaxed text-violet-100/45">
+              Select a service terminal, verify its endpoint, then launch.
+            </p>
 
-        <div className="vapor-panel tool-directory overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-violet-950/30 shadow-[0_24px_80px_rgba(20,0,60,0.35)] backdrop-blur-xl">
-          <div className="vapor-directory-head grid grid-cols-[56px_minmax(0,1fr)_88px] border-b border-cyan-200/15 bg-linear-to-r from-fuchsia-500/10 to-cyan-400/10 px-4 py-4 font-mono text-[10px] uppercase tracking-[0.24em] text-cyan-200/60 md:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_120px]">
-            <span>Slot</span>
-            <span>Service</span>
-            <span className="hidden md:block">Endpoint</span>
-            <span className="text-right">Action</span>
-          </div>
+            <div className="tool-signal-bank mt-6 space-y-2 border-t border-fuchsia-200/10 pt-5">
+              <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-wider text-violet-100/35">
+                <span>Signal</span>
+                <span>Stable</span>
+              </div>
+              <div className="flex h-7 items-end gap-1.5">
+                <span className="h-2 flex-1 rounded-sm bg-fuchsia-400/35" />
+                <span className="h-3 flex-1 rounded-sm bg-fuchsia-400/45" />
+                <span className="h-4 flex-1 rounded-sm bg-violet-400/55" />
+                <span className="h-5 flex-1 rounded-sm bg-cyan-400/65" />
+                <span className="h-7 flex-1 rounded-sm bg-cyan-300 shadow-[0_0_14px_rgba(103,232,249,0.4)]" />
+              </div>
+            </div>
+          </aside>
 
-          <div className="divide-y divide-fuchsia-200/10">
+          <div className="tool-portal-track space-y-5">
             {tools.map((tool, index) => (
               <ToolRow key={tool.title} tool={tool} index={index + 1} />
             ))}
           </div>
-        </div>
+        </section>
       </div>
     </PageLayout>
   );
@@ -139,7 +171,7 @@ function ToolIcon({ tool }) {
 
   return (
     <div
-      className={`vapor-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border shadow-inner ${style.icon}`}
+      className={`vapor-icon tool-portal-icon flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_0_24px_rgba(217,70,239,0.12)] sm:h-16 sm:w-16 ${style.icon}`}
     >
       <svg
         width="18"
@@ -161,36 +193,70 @@ function ToolRow({ tool, index }) {
   const style = accentStyles[tool.accent] || accentStyles.steel;
 
   return (
-    <div className="vapor-list-row tool-row group grid grid-cols-[56px_minmax(0,1fr)_88px] items-center gap-0 px-4 py-4 transition-all duration-300 hover:bg-fuchsia-400/8 md:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)_120px]">
-      <div className="flex items-center gap-3">
-        <span className={`h-2 w-2 rounded-full ${style.dot}`} />
-        <span className="font-mono text-xs text-cyan-200/45">
-          {String(index).padStart(2, "0")}
-        </span>
-      </div>
+    <article className="vapor-panel tool-portal-card group relative overflow-hidden rounded-[1.75rem] border border-fuchsia-300/18 bg-linear-to-br from-violet-950/70 via-fuchsia-950/35 to-cyan-950/25 p-4 shadow-[0_22px_65px_rgba(20,0,60,0.3)] transition-all duration-500 hover:-translate-y-1 hover:border-cyan-200/35 hover:shadow-[0_28px_80px_rgba(34,211,238,0.12)] sm:p-6">
+      <span className="tool-portal-watermark pointer-events-none absolute -top-7 right-2 font-mono text-8xl font-black tracking-tighter text-fuchsia-200/4 sm:text-9xl">
+        {String(index).padStart(2, "0")}
+      </span>
 
-      <div className="flex min-w-0 items-center gap-3">
-        <ToolIcon tool={tool} />
-        <div className="min-w-0">
-          <h3 className="truncate text-sm font-bold tracking-wide text-fuchsia-50 transition-colors group-hover:text-cyan-100">
-            {tool.title}
-          </h3>
-          <p className="vapor-muted truncate text-xs text-violet-100/55">{tool.description}</p>
+      <div className="relative z-10">
+        <div className="flex items-start gap-4 sm:gap-5">
+          <ToolIcon tool={tool} />
+
+          <div className="min-w-0 flex-1 pt-0.5">
+            <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em]">
+              <span className={`h-2 w-2 rounded-full ${style.dot}`} />
+              <span className="text-cyan-200/45">
+                Portal {String(index).padStart(2, "0")}
+              </span>
+              <span className="text-violet-200/20">{"//"}</span>
+              <span className="text-fuchsia-200/60">{tool.meta}</span>
+            </div>
+
+            <h3 className="mt-2 text-xl font-black tracking-tight text-fuchsia-50 transition-colors group-hover:text-cyan-100 sm:text-2xl">
+              {tool.title}
+            </h3>
+            <p className="vapor-muted mt-1 max-w-2xl text-sm leading-relaxed text-violet-100/50">
+              {tool.description}
+            </p>
+          </div>
+        </div>
+
+        <div className="tool-portal-actions sm:ml-21">
+          <div className="tool-endpoint-display mt-5 rounded-2xl border border-cyan-300/12 bg-violet-950/60 px-4 py-3 shadow-inner">
+            <p className="font-mono text-[9px] font-bold uppercase tracking-[0.24em] text-cyan-200/35">
+              Destination endpoint
+            </p>
+            <p className="mt-1 truncate font-mono text-[11px] text-cyan-50/55 sm:text-xs">
+              {tool.url}
+            </p>
+          </div>
+
+          <a
+            href={tool.url}
+            target="_blank"
+            rel="noreferrer"
+            className="vapor-button tool-portal-launch mt-4 flex w-full items-center justify-between rounded-2xl border border-fuchsia-200/35 bg-linear-to-r from-fuchsia-500 via-violet-500 to-cyan-500 px-5 py-4 text-sm font-black uppercase tracking-[0.14em] text-white shadow-[0_0_30px_rgba(217,70,239,0.25)] transition-all duration-300 hover:scale-[1.01] hover:border-cyan-100/70 hover:shadow-[0_0_40px_rgba(34,211,238,0.3)] sm:px-6 sm:py-5"
+          >
+            <span>{tool.buttonLabel}</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-white/10 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M7 17 17 7" />
+                <path d="M7 7h10v10" />
+              </svg>
+            </span>
+          </a>
         </div>
       </div>
-
-      <p className="hidden min-w-0 break-all pr-4 font-mono text-[11px] text-cyan-100/35 md:block">
-        {tool.url}
-      </p>
-
-      <a
-        href={tool.url}
-        target="_blank"
-        rel="noreferrer"
-        className="vapor-button inline-flex items-center justify-center rounded-xl border border-fuchsia-300/30 bg-linear-to-r from-fuchsia-500/20 to-cyan-400/15 px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-fuchsia-50 shadow-[0_0_20px_rgba(217,70,239,0.1)] transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/60 hover:shadow-[0_0_24px_rgba(34,211,238,0.2)]"
-      >
-        Launch
-      </a>
-    </div>
+    </article>
   );
 }
