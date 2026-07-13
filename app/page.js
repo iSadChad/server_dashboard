@@ -199,46 +199,46 @@ return () => {
   ];
 
   return (
-    <div className="vapor-page dashboard-workbench p-3 sm:p-4 lg:p-8">
-      <div className="vapor-header page-command-header dashboard-hero relative mb-6 grid gap-6 overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/15 via-violet-500/10 to-cyan-400/10 px-5 py-6 shadow-[0_0_55px_rgba(217,70,239,0.14)] md:mb-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:px-7 md:py-8">
+    <div className="vapor-page dashboard-workbench w-full min-w-0 max-w-full overflow-x-clip p-2.5 min-[390px]:p-3 sm:p-4 lg:p-8">
+      <div className="vapor-header page-command-header dashboard-hero relative mb-4 grid min-h-0! min-w-0 gap-3 overflow-hidden rounded-2xl! border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/15 via-violet-500/10 to-cyan-400/10 p-4! shadow-[0_0_55px_rgba(217,70,239,0.14)] sm:mb-6 sm:gap-5 sm:rounded-3xl! sm:p-5! md:mb-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:p-7!">
         <div className="dashboard-hero-copy min-w-0">
-          <p className="vapor-kicker mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-300/75">
+          <p className="vapor-kicker mb-1.5 font-mono text-[8px] font-bold uppercase tracking-[0.2em] text-cyan-300/75 sm:mb-2 sm:text-[10px] sm:tracking-[0.3em]">
             Neon telemetry // live system
           </p>
-          <h2 className="vapor-title text-3xl font-black tracking-tight text-white md:text-5xl">Dashboard</h2>
-          <p className="vapor-muted mt-2 text-sm text-violet-100/55">
+          <h2 className="vapor-title text-2xl font-black tracking-tight text-white sm:text-3xl md:text-5xl">Dashboard</h2>
+          <p className="vapor-muted mt-1 text-xs leading-relaxed text-violet-100/55 sm:mt-2 sm:text-sm">
             System pulse, analytics and service signals
           </p>
         </div>
 
         <div className="dashboard-hero-readouts grid w-full grid-cols-2 gap-2 md:w-auto md:min-w-72">
-          <div className="vapor-chip flex min-w-0 items-center gap-2 rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-4 py-3 font-mono text-xs uppercase tracking-wider text-cyan-100">
+          <div className="vapor-chip flex min-h-0! min-w-0 items-center gap-1.5 rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2.5 font-mono text-[10px] uppercase tracking-wide text-cyan-100 sm:gap-2 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-xs sm:tracking-wider">
             <div className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,0.85)]" />
             <span className="truncate">
               Live · {loading ? "..." : `${stats.cpu.toFixed(0)}% CPU`}
             </span>
           </div>
 
-          <div className="dashboard-hero-uptime min-w-0 rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/8 px-4 py-3">
-            <p className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-fuchsia-200/45">
+          <div className="dashboard-hero-uptime min-h-0! min-w-0 rounded-xl border border-fuchsia-300/20 bg-fuchsia-400/8 px-3 py-2.5 sm:rounded-2xl sm:px-4 sm:py-3">
+            <p className="truncate font-mono text-[8px] font-bold uppercase tracking-[0.12em] text-fuchsia-200/45 sm:text-[9px] sm:tracking-[0.2em]">
               Session uptime
             </p>
-            <p className="mt-1 truncate font-mono text-xs text-fuchsia-50">
+            <p className="mt-1 truncate font-mono text-[10px] text-fuchsia-50 sm:text-xs">
               {loading ? "Synchronizing" : `${uptimeHours}h ${uptimeMinutes}m`}
             </p>
           </div>
         </div>
       </div>
 
-      <section className="dashboard-metric-deck mb-6 md:mb-8">
-        <div className="dashboard-section-label mb-3 flex items-center justify-between gap-4 px-1">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-cyan-200/50">
+      <section className="dashboard-metric-deck mb-5 min-w-0 sm:mb-6 md:mb-8">
+        <div className="dashboard-section-label mb-2.5 flex min-w-0 items-center justify-between gap-2 px-1 sm:mb-3 sm:gap-4">
+          <p className="shrink-0 whitespace-nowrap font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-cyan-200/50 sm:text-[10px] sm:tracking-[0.24em]">
             01 // Instant telemetry
           </p>
           <span className="h-px flex-1 bg-linear-to-r from-fuchsia-300/20 to-transparent" />
         </div>
 
-        <div className="dashboard-metrics grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 xl:grid-cols-4">
+        <div className="dashboard-metrics grid min-w-0 grid-cols-2 gap-2 sm:gap-3 md:gap-4 xl:grid-cols-4">
         <StatCard
           label="CPU Usage"
           value={loading ? "—" : `${stats.cpu.toFixed(1)}%`}
@@ -285,17 +285,17 @@ return () => {
         </div>
       </section>
 
-      <section className="dashboard-analytics mb-6 md:mb-8">
-        <div className="dashboard-section-label mb-3 flex items-center justify-between gap-4 px-1">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-fuchsia-200/50">
+      <section className="dashboard-analytics mb-5 min-w-0 sm:mb-6 md:mb-8">
+        <div className="dashboard-section-label mb-2.5 flex min-w-0 items-center justify-between gap-2 px-1 sm:mb-3 sm:gap-4">
+          <p className="shrink-0 whitespace-nowrap font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-fuchsia-200/50 sm:text-[10px] sm:tracking-[0.24em]">
             02 // Signal cockpit
           </p>
           <span className="h-px flex-1 bg-linear-to-r from-cyan-300/20 to-transparent" />
         </div>
 
-        <div className="dashboard-analytics-grid grid grid-cols-1 gap-4 xl:grid-cols-12">
-        <div className="vapor-panel dashboard-network-module min-w-0 rounded-3xl border border-fuchsia-300/20 bg-violet-950/30 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.25)] backdrop-blur-xl md:p-6 xl:col-span-8">
-          <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <div className="dashboard-analytics-grid grid min-w-0 grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-12">
+        <div className="vapor-panel dashboard-network-module min-w-0 max-w-full overflow-hidden rounded-2xl border border-fuchsia-300/20 bg-violet-950/30 p-4 shadow-[0_24px_70px_rgba(30,0,65,0.25)] backdrop-blur-xl sm:rounded-3xl sm:p-5 md:p-6 xl:col-span-8">
+          <div className="mb-3 flex min-w-0 flex-col gap-1.5 sm:mb-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-3">
             <div>
               <p className="vapor-kicker mb-1 font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-fuchsia-200/45">
                 Long-range transmission
@@ -304,14 +304,14 @@ return () => {
                 Network Activity
               </h3>
             </div>
-            <p className="vapor-muted font-mono text-[10px] text-violet-100/40">
+            <p className="vapor-muted font-mono text-[9px] text-violet-100/40 sm:text-[10px]">
               Inbound / Outbound · 12 months
             </p>
           </div>
 
           {mounted ? (
-            <div className="dashboard-network-chart h-60 sm:h-72">
-              <ResponsiveContainer width="100%" height="100%">
+            <div className="dashboard-network-chart h-52 min-w-0 max-w-full overflow-hidden min-[390px]:h-56 sm:h-72">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <AreaChart
                   data={monthData}
                   margin={{ top: 5, right: 10, left: -10, bottom: 5 }}
@@ -358,6 +358,8 @@ return () => {
 
                   <XAxis
                     dataKey="month"
+                    interval="preserveStartEnd"
+                    minTickGap={14}
                     axisLine={false}
                     tickLine={false}
                     tick={{ fill: "#aa93d4", fontSize: 11 }}
@@ -395,12 +397,12 @@ return () => {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-60 w-full animate-pulse rounded-2xl bg-fuchsia-400/5 sm:h-72" />
+            <div className="h-52 w-full animate-pulse rounded-2xl bg-fuchsia-400/5 min-[390px]:h-56 sm:h-72" />
           )}
         </div>
 
-        <div className="vapor-panel dashboard-resource-module min-w-0 rounded-3xl border border-cyan-300/20 bg-linear-to-br from-cyan-400/8 to-violet-500/12 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.25)] backdrop-blur-xl md:p-6 xl:col-span-4">
-          <div className="mb-4">
+        <div className="vapor-panel dashboard-resource-module min-w-0 max-w-full overflow-hidden rounded-2xl border border-cyan-300/20 bg-linear-to-br from-cyan-400/8 to-violet-500/12 p-4 shadow-[0_24px_70px_rgba(30,0,65,0.25)] backdrop-blur-xl sm:rounded-3xl sm:p-5 md:p-6 xl:col-span-4">
+          <div className="mb-3 sm:mb-4">
             <p className="vapor-kicker mb-1 font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-cyan-200/45">
               Capacity matrix
             </p>
@@ -409,8 +411,8 @@ return () => {
             </h3>
           </div>
 
-          <div className="dashboard-resource-rings grid grid-cols-2 gap-3">
-            <div className="dashboard-resource-ring min-w-0 rounded-2xl border border-fuchsia-300/15 bg-violet-950/40 p-3">
+          <div className="dashboard-resource-rings grid min-w-0 grid-cols-1 gap-2.5 min-[360px]:grid-cols-2 sm:gap-3">
+            <div className="dashboard-resource-ring min-w-0 overflow-hidden rounded-2xl border border-fuchsia-300/15 bg-violet-950/40 p-2.5 sm:p-3">
               <div className="flex items-center justify-between gap-2">
                 <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-fuchsia-100/65">
                   Memory
@@ -419,15 +421,15 @@ return () => {
               </div>
 
               {mounted ? (
-                <div className="dashboard-ring-chart relative h-36">
-                  <ResponsiveContainer width="100%" height="100%">
+                <div className="dashboard-ring-chart relative h-32 min-w-0 sm:h-36">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <PieChart>
                       <Pie
                         data={memPieData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={38}
-                        outerRadius={56}
+                        innerRadius="54%"
+                        outerRadius="78%"
                         paddingAngle={4}
                         dataKey="value"
                         stroke="none"
@@ -446,7 +448,7 @@ return () => {
                   </div>
                 </div>
               ) : (
-                <div className="h-36 w-full animate-pulse rounded-2xl bg-fuchsia-400/5" />
+                <div className="h-32 w-full animate-pulse rounded-2xl bg-fuchsia-400/5 sm:h-36" />
               )}
 
               <p className="truncate text-center font-mono text-[9px] text-fuchsia-100/40">
@@ -456,7 +458,7 @@ return () => {
               </p>
             </div>
 
-            <div className="dashboard-resource-ring min-w-0 rounded-2xl border border-cyan-300/15 bg-violet-950/40 p-3">
+            <div className="dashboard-resource-ring min-w-0 overflow-hidden rounded-2xl border border-cyan-300/15 bg-violet-950/40 p-2.5 sm:p-3">
               <div className="flex items-center justify-between gap-2">
                 <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-100/65">
                   Disk
@@ -465,15 +467,15 @@ return () => {
               </div>
 
               {mounted ? (
-                <div className="dashboard-ring-chart relative h-36">
-                  <ResponsiveContainer width="100%" height="100%">
+                <div className="dashboard-ring-chart relative h-32 min-w-0 sm:h-36">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <PieChart>
                       <Pie
                         data={diskPieData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={38}
-                        outerRadius={56}
+                        innerRadius="54%"
+                        outerRadius="78%"
                         paddingAngle={4}
                         dataKey="value"
                         stroke="none"
@@ -492,7 +494,7 @@ return () => {
                   </div>
                 </div>
               ) : (
-                <div className="h-36 w-full animate-pulse rounded-2xl bg-cyan-400/5" />
+                <div className="h-32 w-full animate-pulse rounded-2xl bg-cyan-400/5 sm:h-36" />
               )}
 
               <p className="truncate text-center font-mono text-[9px] text-cyan-100/40">
@@ -503,8 +505,8 @@ return () => {
             </div>
           </div>
 
-          <div className="dashboard-resource-footer mt-3 grid grid-cols-2 gap-2">
-            <div className="rounded-xl border border-fuchsia-300/10 bg-fuchsia-400/5 px-3 py-2">
+          <div className="dashboard-resource-footer mt-2.5 grid min-w-0 grid-cols-2 gap-2 sm:mt-3">
+            <div className="min-w-0 rounded-xl border border-fuchsia-300/10 bg-fuchsia-400/5 px-2.5 py-2 sm:px-3">
               <p className="font-mono text-[8px] uppercase tracking-wider text-fuchsia-200/35">
                 Memory free
               </p>
@@ -512,7 +514,7 @@ return () => {
                 {(100 - memPercentNum).toFixed(1)}%
               </p>
             </div>
-            <div className="rounded-xl border border-cyan-300/10 bg-cyan-300/5 px-3 py-2">
+            <div className="min-w-0 rounded-xl border border-cyan-300/10 bg-cyan-300/5 px-2.5 py-2 sm:px-3">
               <p className="font-mono text-[8px] uppercase tracking-wider text-cyan-200/35">
                 Disk free
               </p>
@@ -525,17 +527,17 @@ return () => {
         </div>
       </section>
 
-      <section className="dashboard-weekly mb-6 md:mb-8">
-        <div className="dashboard-section-label mb-3 flex items-center justify-between gap-4 px-1">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-cyan-200/50">
+      <section className="dashboard-weekly mb-5 min-w-0 sm:mb-6 md:mb-8">
+        <div className="dashboard-section-label mb-2.5 flex min-w-0 items-center justify-between gap-2 px-1 sm:mb-3 sm:gap-4">
+          <p className="shrink-0 whitespace-nowrap font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-cyan-200/50 sm:text-[10px] sm:tracking-[0.24em]">
             03 // Seven-day rhythm
           </p>
           <span className="h-px flex-1 bg-linear-to-r from-fuchsia-300/20 to-transparent" />
         </div>
 
-        <div className="vapor-panel dashboard-weekly-module min-w-0 rounded-3xl border border-fuchsia-300/18 bg-violet-950/30 p-5 shadow-[0_20px_55px_rgba(30,0,65,0.2)] backdrop-blur-xl md:p-6">
-          <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-            <div>
+        <div className="vapor-panel dashboard-weekly-module min-w-0 max-w-full overflow-hidden rounded-2xl border border-fuchsia-300/18 bg-violet-950/30 p-4 shadow-[0_20px_55px_rgba(30,0,65,0.2)] backdrop-blur-xl sm:rounded-3xl sm:p-5 md:p-6">
+          <div className="mb-4 flex min-w-0 flex-col gap-2.5 sm:mb-5 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-3">
+            <div className="min-w-0">
               <h3 className="text-sm font-bold uppercase tracking-wider text-fuchsia-100">
                 Utilization Rhythm
               </h3>
@@ -543,7 +545,7 @@ return () => {
                 CPU and memory averages shown as one weekly sequence
               </p>
             </div>
-            <div className="flex items-center gap-4 font-mono text-[9px] uppercase tracking-wider text-violet-100/45">
+            <div className="flex flex-wrap items-center gap-3 font-mono text-[9px] uppercase tracking-wider text-violet-100/45 sm:gap-4">
               <span className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-fuchsia-400" />
                 CPU
@@ -555,14 +557,14 @@ return () => {
             </div>
           </div>
 
-          <div className="dashboard-weekly-grid grid grid-cols-1 gap-3 lg:grid-cols-2">
-            <div className="dashboard-weekly-chart min-w-0 rounded-2xl border border-fuchsia-300/12 bg-fuchsia-400/4 p-4">
+          <div className="dashboard-weekly-grid grid min-w-0 grid-cols-1 gap-3 lg:grid-cols-2">
+            <div className="dashboard-weekly-chart min-w-0 max-w-full overflow-hidden rounded-2xl border border-fuchsia-300/12 bg-fuchsia-400/4 p-3 sm:p-4">
               <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-wider text-fuchsia-100/60">
                 CPU load
               </p>
               {mounted ? (
-                <div className="h-44">
-                  <ResponsiveContainer width="100%" height="100%">
+                <div className="h-40 min-w-0 max-w-full overflow-hidden sm:h-44">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <BarChart data={weekData} barCategoryMaxWidth={16}>
                       <XAxis
                         dataKey="day"
@@ -591,17 +593,17 @@ return () => {
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="h-44 w-full animate-pulse rounded-2xl bg-fuchsia-400/5" />
+                <div className="h-40 w-full animate-pulse rounded-2xl bg-fuchsia-400/5 sm:h-44" />
               )}
             </div>
 
-            <div className="dashboard-weekly-chart min-w-0 rounded-2xl border border-cyan-300/12 bg-cyan-300/4 p-4">
+            <div className="dashboard-weekly-chart min-w-0 max-w-full overflow-hidden rounded-2xl border border-cyan-300/12 bg-cyan-300/4 p-3 sm:p-4">
               <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-100/60">
                 Memory load
               </p>
               {mounted ? (
-                <div className="h-44">
-                  <ResponsiveContainer width="100%" height="100%">
+                <div className="h-40 min-w-0 max-w-full overflow-hidden sm:h-44">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <BarChart data={weekData} barCategoryMaxWidth={16}>
                       <XAxis
                         dataKey="day"
@@ -630,22 +632,22 @@ return () => {
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="h-44 w-full animate-pulse rounded-2xl bg-cyan-400/5" />
+                <div className="h-40 w-full animate-pulse rounded-2xl bg-cyan-400/5 sm:h-44" />
               )}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="dashboard-operations">
-        <div className="dashboard-section-label mb-3 flex items-center justify-between gap-4 px-1">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-fuchsia-200/50">
+      <section className="dashboard-operations min-w-0">
+        <div className="dashboard-section-label mb-2.5 flex min-w-0 items-center justify-between gap-2 px-1 sm:mb-3 sm:gap-4">
+          <p className="shrink-0 whitespace-nowrap font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-fuchsia-200/50 sm:text-[10px] sm:tracking-[0.24em]">
             04 // Operations bay
           </p>
           <span className="h-px flex-1 bg-linear-to-r from-cyan-300/20 to-transparent" />
         </div>
 
-        <div className="dashboard-operations-grid grid grid-cols-1 gap-4 2xl:grid-cols-12">
+        <div className="dashboard-operations-grid grid min-w-0 grid-cols-1 gap-3 sm:gap-4 2xl:grid-cols-12">
           <div className="dashboard-backup-cell min-w-0 2xl:col-span-7">
             <BackupStatusPanel backup={backupStatus} loading={backupLoading} />
           </div>
@@ -699,11 +701,11 @@ function BackupStatusPanel({ backup, loading }) {
 
   return (
     <div
-      className={`vapor-panel vapor-status-panel dashboard-backup-panel h-full rounded-3xl border bg-linear-to-br from-fuchsia-500/8 to-violet-950/35 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.24)] backdrop-blur-xl md:p-6 ${style.border}`}
+      className={`vapor-panel vapor-status-panel dashboard-backup-panel h-full min-w-0 max-w-full overflow-hidden rounded-2xl border bg-linear-to-br from-fuchsia-500/8 to-violet-950/35 p-4 shadow-[0_24px_70px_rgba(30,0,65,0.24)] backdrop-blur-xl sm:rounded-3xl sm:p-5 md:p-6 ${style.border}`}
     >
-      <div className="flex flex-col gap-5">
+      <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
         <div className="min-w-0">
-          <div className="flex items-center gap-2 mb-2">
+          <div className="mb-2 flex min-w-0 flex-wrap items-center gap-2">
             <span
               className={`inline-block w-2.5 h-2.5 rounded-full shrink-0 ${style.dot}`}
             />
@@ -712,7 +714,7 @@ function BackupStatusPanel({ backup, loading }) {
             </span>
 
             {!loading && backup?.backupAgeLabel && (
-              <span className="font-mono text-xs text-violet-100/40">
+              <span className="min-w-0 truncate font-mono text-xs text-violet-100/40">
                 · {backup.backupAgeLabel}
               </span>
             )}
@@ -738,7 +740,7 @@ function BackupStatusPanel({ backup, loading }) {
           )}
         </div>
 
-        <div className="grid w-full grid-cols-2 gap-3 xl:grid-cols-4">
+        <div className="grid w-full min-w-0 grid-cols-2 gap-2 sm:gap-3 xl:grid-cols-4">
           <BackupMiniCard
             label="Last backup"
             value={loading ? "—" : formatDateTime(latestSnapshot?.time)}
@@ -762,8 +764,8 @@ function BackupStatusPanel({ backup, loading }) {
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 xl:grid-cols-[1fr_auto] gap-3 xl:items-center">
-        <p className="break-all font-mono text-xs text-cyan-100/35">
+      <div className="mt-4 grid min-w-0 grid-cols-1 gap-2 sm:gap-3 xl:grid-cols-[1fr_auto] xl:items-center">
+        <p className="min-w-0 break-all font-mono text-[10px] leading-relaxed text-cyan-100/35 sm:text-xs">
           Repository: {backup?.repository || "—"}
         </p>
 
@@ -771,18 +773,18 @@ function BackupStatusPanel({ backup, loading }) {
           href="/api/backups"
           target="_blank"
           rel="noreferrer"
-          className="vapor-button inline-flex items-center justify-center rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-xs font-bold text-cyan-100 transition-all duration-300 hover:-translate-y-0.5 hover:border-fuchsia-200/45 hover:bg-fuchsia-400/15"
+          className="vapor-button inline-flex w-full items-center justify-center rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2.5 text-xs font-bold text-cyan-100 transition-all duration-300 hover:-translate-y-0.5 hover:border-fuchsia-200/45 hover:bg-fuchsia-400/15 xl:w-auto xl:py-2"
         >
           Open backup JSON
         </a>
       </div>
 
       <details className="vapor-details mt-4 overflow-hidden rounded-2xl border border-fuchsia-300/15 bg-violet-950/55">
-        <summary className="cursor-pointer px-4 py-3 text-xs font-bold text-fuchsia-100/65 transition-all hover:text-cyan-100">
+        <summary className="cursor-pointer px-3 py-3 text-xs font-bold text-fuchsia-100/65 transition-all hover:text-cyan-100 sm:px-4">
           Last backup log
         </summary>
 
-        <pre className="max-h-64 overflow-auto whitespace-pre-wrap border-t border-fuchsia-200/10 px-4 py-3 font-mono text-[11px] leading-relaxed text-violet-50/55">
+        <pre className="max-h-64 max-w-full overflow-auto whitespace-pre-wrap wrap-break-word border-t border-fuchsia-200/10 px-3 py-3 font-mono text-[10px] leading-relaxed text-violet-50/55 sm:px-4 sm:text-[11px]">
           {logLines.length > 0 ? logLines.join("\n") : "No log lines found."}
         </pre>
       </details>
@@ -792,13 +794,13 @@ function BackupStatusPanel({ backup, loading }) {
 
 function BackupMiniCard({ label, value, mono = false }) {
   return (
-    <div className="vapor-subpanel min-w-0 rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-4">
-      <p className="vapor-kicker mb-1 text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-200/45">
+    <div className="vapor-subpanel min-w-0 overflow-hidden rounded-xl border border-fuchsia-300/15 bg-violet-950/55 p-3 sm:rounded-2xl sm:p-4">
+      <p className="vapor-kicker mb-1 truncate text-[9px] font-bold uppercase tracking-[0.12em] text-cyan-200/45 sm:text-[10px] sm:tracking-[0.22em]">
         {label}
       </p>
 
       <p
-        className={`truncate text-sm font-bold text-fuchsia-50 ${
+        className={`truncate text-xs font-bold text-fuchsia-50 sm:text-sm ${
           mono ? "font-mono" : ""
         }`}
       >
@@ -837,11 +839,11 @@ function Pm2StatusPanel({ pm2, loading }) {
 
   return (
     <div
-      className={`vapor-panel vapor-status-panel dashboard-pm2-panel h-full rounded-3xl border bg-linear-to-br from-cyan-400/7 to-violet-950/35 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.24)] backdrop-blur-xl md:p-6 ${style.border}`}
+      className={`vapor-panel vapor-status-panel dashboard-pm2-panel h-full min-w-0 max-w-full overflow-hidden rounded-2xl border bg-linear-to-br from-cyan-400/7 to-violet-950/35 p-4 shadow-[0_24px_70px_rgba(30,0,65,0.24)] backdrop-blur-xl sm:rounded-3xl sm:p-5 md:p-6 ${style.border}`}
     >
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
+      <div className="mb-4 flex min-w-0 flex-col gap-3 sm:gap-4 md:flex-row md:items-start md:justify-between">
+        <div className="min-w-0">
+          <div className="mb-2 flex min-w-0 flex-wrap items-center gap-2">
             <span
               className={`inline-block w-2.5 h-2.5 rounded-full shrink-0 ${style.dot}`}
             />
@@ -854,7 +856,7 @@ function Pm2StatusPanel({ pm2, loading }) {
             PM2 Process Status
           </h3>
 
-          <p className="vapor-muted mt-1 text-sm text-violet-100/45">
+          <p className="vapor-muted mt-1 wrap-break-word text-xs leading-relaxed text-violet-100/45 sm:text-sm">
             {loading ? "Checking PM2 processes..." : pm2?.message || "No message"}
           </p>
         </div>
@@ -863,7 +865,7 @@ function Pm2StatusPanel({ pm2, loading }) {
           href="/api/pm2"
           target="_blank"
           rel="noreferrer"
-          className="vapor-button inline-flex items-center justify-center rounded-xl border border-fuchsia-300/25 bg-fuchsia-400/10 px-3 py-2 text-xs font-bold text-fuchsia-100 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/45 hover:bg-cyan-300/10"
+          className="vapor-button inline-flex w-full shrink-0 items-center justify-center rounded-xl border border-fuchsia-300/25 bg-fuchsia-400/10 px-3 py-2.5 text-xs font-bold text-fuchsia-100 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/45 hover:bg-cyan-300/10 md:w-auto md:py-2"
         >
           Open PM2 JSON
         </a>
@@ -893,13 +895,13 @@ function Pm2ProcessCard({ process }) {
   const isOnline = process.status === "online";
 
   return (
-    <div className="vapor-list-row min-w-0 rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/30 hover:bg-cyan-300/5">
-      <div className="flex items-start justify-between gap-3 mb-3">
+    <div className="vapor-list-row min-w-0 max-w-full overflow-hidden rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-200/30 hover:bg-cyan-300/5 sm:p-4">
+      <div className="mb-3 flex min-w-0 items-start justify-between gap-2 sm:gap-3">
         <div className="min-w-0">
           <p className="truncate text-sm font-bold text-fuchsia-50">
             {process.name}
           </p>
-          <p className="font-mono text-[11px] text-cyan-100/35">
+          <p className="wrap-break-word font-mono text-[10px] text-cyan-100/35 sm:text-[11px]">
             ID {process.id} · PID {process.pid || "—"}
           </p>
         </div>
@@ -915,7 +917,7 @@ function Pm2ProcessCard({ process }) {
         </span>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      <div className="grid min-w-0 grid-cols-2 gap-1.5 sm:grid-cols-4 sm:gap-2">
         <Pm2Metric label="CPU" value={`${Number(process.cpu || 0).toFixed(1)}%`} />
         <Pm2Metric label="Memory" value={formatBytes(process.memory || 0)} />
         <Pm2Metric label="Restarts" value={process.restarts ?? 0} />
@@ -927,8 +929,8 @@ function Pm2ProcessCard({ process }) {
 
 function Pm2Metric({ label, value }) {
   return (
-    <div className="min-w-0 rounded-xl border border-cyan-300/8 bg-violet-950/45 p-2.5">
-      <p className="vapor-kicker mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200/40">
+    <div className="min-w-0 overflow-hidden rounded-xl border border-cyan-300/8 bg-violet-950/45 p-2 sm:p-2.5">
+      <p className="vapor-kicker mb-1 truncate text-[9px] font-bold uppercase tracking-[0.12em] text-cyan-200/40 sm:text-[10px] sm:tracking-[0.18em]">
         {label}
       </p>
       <p className="truncate font-mono text-xs text-fuchsia-50">{value}</p>
@@ -938,9 +940,9 @@ function Pm2Metric({ label, value }) {
 
 function Pm2SkeletonCard() {
   return (
-    <div className="animate-pulse rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-4">
+    <div className="min-w-0 animate-pulse overflow-hidden rounded-2xl border border-fuchsia-300/15 bg-violet-950/55 p-3 sm:p-4">
       <div className="mb-3 h-4 w-32 rounded bg-fuchsia-400/10" />
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <div className="h-12 rounded-lg bg-fuchsia-400/5" />
         <div className="h-12 rounded-lg bg-cyan-400/5" />
         <div className="h-12 rounded-lg bg-fuchsia-400/5" />
@@ -952,14 +954,14 @@ function Pm2SkeletonCard() {
 
 function StatCard({ label, value, sub, color, icon }) {
   return (
-    <div className="vapor-card group min-w-0 rounded-3xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-cyan-400/5 p-4 shadow-[0_18px_45px_rgba(30,0,70,0.2)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-200/35 hover:shadow-[0_22px_55px_rgba(34,211,238,0.1)] sm:p-5">
-      <div className="flex items-center justify-between gap-3 mb-3">
-        <span className="vapor-kicker truncate font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200/55">
+    <div className="vapor-card group min-h-0! min-w-0 overflow-hidden rounded-2xl border border-fuchsia-300/20 bg-linear-to-br from-fuchsia-500/10 to-cyan-400/5 p-3! shadow-[0_18px_45px_rgba(30,0,70,0.2)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-cyan-200/35 hover:shadow-[0_22px_55px_rgba(34,211,238,0.1)] sm:rounded-3xl sm:p-5!">
+      <div className="mb-2 flex min-w-0 items-center justify-between gap-2 sm:mb-3 sm:gap-3">
+        <span className="vapor-kicker min-w-0 truncate font-mono text-[8px] font-bold uppercase tracking-[0.12em] text-cyan-200/55 min-[390px]:text-[9px] sm:text-[10px] sm:tracking-[0.2em]">
           {label}
         </span>
 
         <div
-          className={`vapor-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br shadow-[0_0_22px_rgba(217,70,239,0.25)] transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110 ${color}`}
+          className={`vapor-icon flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-linear-to-br shadow-[0_0_22px_rgba(217,70,239,0.25)] transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110 sm:h-11 sm:w-11 sm:rounded-2xl ${color}`}
         >
           <svg
             width="18"
@@ -976,10 +978,10 @@ function StatCard({ label, value, sub, color, icon }) {
         </div>
       </div>
 
-      <p className="wrap-break-word text-2xl font-black tracking-tight text-fuchsia-50 sm:text-3xl">{value}</p>
+      <p className="wrap-break-word text-xl font-black tracking-tight text-fuchsia-50 min-[390px]:text-2xl sm:text-3xl">{value}</p>
 
       {sub && (
-        <p className="vapor-muted mt-1 wrap-break-word font-mono text-[11px] leading-relaxed text-violet-100/40">
+        <p className="vapor-muted mt-1 wrap-break-word font-mono text-[9px] leading-snug text-violet-100/40 sm:text-[11px] sm:leading-relaxed">
           {sub}
         </p>
       )}

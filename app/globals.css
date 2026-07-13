@@ -1419,6 +1419,19 @@ html {
   overflow: visible;
 }
 
+.dashboard-workbench .recharts-responsive-container {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.dashboard-workbench .recharts-wrapper {
+  min-width: 0 !important;
+}
+
+.dashboard-workbench .recharts-surface {
+  overflow: hidden;
+}
+
 .recharts-cartesian-axis-tick-value {
   fill: rgba(218, 204, 255, 0.66) !important;
 }
@@ -1812,5 +1825,132 @@ details[open] > summary {
   .admin-workbench > *,
   .tools-workbench > * {
     animation: none !important;
+  }
+}
+
+/* Phone dashboard polish lives last so it wins over the shared desktop skin. */
+@media (max-width: 767px) {
+  .cyber-root .mobile-bottom-nav a {
+    background-image: none;
+    box-shadow: none;
+    animation: none;
+  }
+
+  .cyber-root .mobile-bottom-nav a:hover {
+    transform: none;
+  }
+
+  .cyber-root .mobile-bottom-nav-item::after {
+    content: none;
+  }
+
+  .cyber-root .mobile-bottom-nav-item.is-active::after {
+    content: "";
+    position: absolute;
+    right: 28%;
+    bottom: 2px;
+    left: 28%;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--pink), var(--cyan));
+    box-shadow: 0 0 8px rgba(93, 253, 244, 0.7);
+    transform: none;
+  }
+
+  .dashboard-network-chart .recharts-cartesian-axis-tick-value {
+    font-size: 9px;
+  }
+
+  .cyber-main > div:not(.mobile-topbar) {
+    animation: none;
+  }
+
+  .vapor-overlay::after,
+  .vapor-orb,
+  .dashboard-workbench .vapor-title {
+    animation: none !important;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mobile app shell only — phone top bar, drawer safety, and bottom navigation */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
+
+  .vapor-root {
+    width: 100%;
+    max-width: 100vw;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
+
+  .vapor-main {
+    width: 100%;
+    max-width: 100vw;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    padding-bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .mobile-app-bar {
+    min-height: calc(3.75rem + env(safe-area-inset-top, 0px));
+    padding-top: calc(0.5rem + env(safe-area-inset-top, 0px));
+  }
+
+  .mobile-brand-mark,
+  .mobile-menu-trigger,
+  .mobile-bottom-nav-item {
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-bottom-nav {
+    left: max(0.5rem, env(safe-area-inset-left, 0px));
+    right: max(0.5rem, env(safe-area-inset-right, 0px));
+    bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-width: calc(100vw - 1rem);
+    isolation: isolate;
+  }
+
+  .mobile-bottom-nav::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background:
+      linear-gradient(105deg, rgba(255, 79, 216, 0.08), transparent 38%, rgba(93, 253, 244, 0.08)),
+      rgba(10, 3, 31, 0.78);
+    pointer-events: none;
+  }
+
+  .mobile-bottom-nav-item.is-active::after {
+    content: "";
+    position: absolute;
+    right: 28%;
+    bottom: 2px;
+    left: 28%;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--pink), var(--cyan));
+    box-shadow: 0 0 8px rgba(93, 253, 244, 0.7);
+  }
+
+  #primary-navigation.vapor-sidebar {
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
