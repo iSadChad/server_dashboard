@@ -287,7 +287,7 @@ export default function PageLayout({ children }) {
             sidebarCollapsed ? "md:pl-24" : "md:pl-72"
           }`}
         >
-          <header className="vapor-mobile-header mobile-app-bar sticky top-0 z-30 flex min-h-15 items-center gap-3 border-b border-fuchsia-300/20 bg-[#0d061c] px-3 py-2 md:hidden">
+          <header className="vapor-mobile-header mobile-app-bar relative z-30 mx-3 mt-3 flex min-h-15 items-center gap-3 rounded-2xl border border-fuchsia-300/20 bg-[#0d061c] px-3 py-2 md:hidden">
             <Link
               href="/"
               className="mobile-brand-mark relative grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-cyan-200/45 bg-linear-to-br from-cyan-300 via-violet-500 to-fuchsia-500 font-mono text-[10px] font-black tracking-[-0.08em] text-[#120421] shadow-[0_0_20px_rgba(34,211,238,0.28)]"
