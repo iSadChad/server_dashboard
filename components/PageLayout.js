@@ -287,7 +287,7 @@ export default function PageLayout({ children }) {
             sidebarCollapsed ? "md:pl-24" : "md:pl-72"
           }`}
         >
-          <header className="vapor-mobile-header mobile-app-bar sticky top-0 z-30 flex min-h-15 items-center gap-3 border-b border-fuchsia-300/20 bg-[#0d061c]/90 px-3 py-2 shadow-[0_12px_35px_rgba(8,2,24,0.4)] backdrop-blur-xl md:hidden">
+          <header className="vapor-mobile-header mobile-app-bar sticky top-0 z-30 flex min-h-15 items-center gap-3 border-b border-fuchsia-300/20 bg-[#0d061c] px-3 py-2 md:hidden">
             <Link
               href="/"
               className="mobile-brand-mark relative grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-cyan-200/45 bg-linear-to-br from-cyan-300 via-violet-500 to-fuchsia-500 font-mono text-[10px] font-black tracking-[-0.08em] text-[#120421] shadow-[0_0_20px_rgba(34,211,238,0.28)]"
@@ -312,7 +312,7 @@ export default function PageLayout({ children }) {
 
             <button
               type="button"
-              className="mobile-menu-trigger grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-cyan-300/30 bg-cyan-300/10 text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,0.12)] transition-colors hover:bg-cyan-300/20"
+              className="mobile-menu-trigger order-first grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-cyan-300/30 bg-cyan-300/10 text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,0.12)] transition-colors hover:bg-cyan-300/20"
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open menu"
               aria-expanded={mobileMenuOpen}

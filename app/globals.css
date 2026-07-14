@@ -927,8 +927,9 @@ html {
 .mobile-topbar,
 .vapor-mobile-header {
   border-bottom: 1px solid rgba(93, 253, 244, 0.2);
-  background: rgba(10, 3, 31, 0.84);
-  box-shadow: 0 12px 40px rgba(4, 0, 20, 0.42);
+  background: linear-gradient(90deg, #0a031f, #13072b 56%, #090723);
+  box-shadow: 0 8px 24px rgba(4, 0, 20, 0.32);
+  -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
 
@@ -1899,6 +1900,11 @@ details[open] > summary {
   .mobile-app-bar {
     min-height: calc(3.75rem + env(safe-area-inset-top, 0px));
     padding-top: calc(0.5rem + env(safe-area-inset-top, 0px));
+    isolation: isolate;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    contain: paint;
+    will-change: transform;
   }
 
   .mobile-brand-mark,
