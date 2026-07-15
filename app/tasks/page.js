@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import PageLayout from "../../components/PageLayout";
+import TaskNotifications from "../../components/TaskNotifications";
 
 const emptyForm = {
   title: "",
@@ -216,7 +217,9 @@ const payload = {
           <span>{loading ? "Loading..." : `${stats.open} open tasks`}</span>
         </div>
       </div>
-
+      <div className="mb-4 flex justify-end">
+        <TaskNotifications />
+      </div>
       <div className="task-meter-grid mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3 md:mb-8 md:gap-4">
         <StatCard label="Open" value={stats.open} />
         <StatCard label="Overdue" value={stats.overdue} warning={stats.overdue > 0} />
