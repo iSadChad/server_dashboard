@@ -3,7 +3,7 @@ export default function manifest() {
     name: "Chad's Goon Cave",
     short_name: "Goon Cave",
     description: "Personal server dashboard",
-    start_url: "/tasks",
+    start_url: "/",
     scope: "/",
     display: "standalone",
     background_color: "#090014",
