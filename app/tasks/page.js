@@ -8,7 +8,8 @@ const emptyForm = {
   notes: "",
   category: "General",
   priority: "normal",
-  dueDate: "",
+  dueAt: "",
+  remindAt: "",
 };
 
 const priorityStyles = {
@@ -17,30 +18,27 @@ const priorityStyles = {
   high: "text-amber-300 bg-amber-500/10 border-amber-500/20",
 };
 
-function formatDate(value) {
+function formatDateTime(value) {
   if (!value) return "No due date";
 
   try {
-    return new Date(`${value}T00:00:00`).toLocaleDateString("en-GB", {
+    return new Date(value).toLocaleString("en-GB", {
       day: "2-digit",
       month: "short",
       year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   } catch {
     return value;
   }
 }
-
 function isOverdue(task) {
-  if (!task.dueDate || task.status === "done") return false;
+  if (!task.dueAt || task.status === "done") {
+    return false;
+  }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const due = new Date(`${task.dueDate}T00:00:00`);
-  due.setHours(0, 0, 0, 0);
-
-  return due < today;
+  return new Date(task.dueAt) < new Date();
 }
 
 async function requestTasks() {
@@ -96,13 +94,33 @@ function TasksContent() {
 
     setSaving(true);
 
+    if (
+      form.dueAt &&
+      form.remindAt &&
+      new Date(form.remindAt) > new Date(form.dueAt)
+      ) {
+        window.alert("The reminder cannot be after the due date.");
+        setSaving(false);
+        return;
+      }
+
+const payload = {
+  ...form,
+  dueAt: form.dueAt
+    ? new Date(form.dueAt).toISOString()
+    : null,
+  remindAt: form.remindAt
+    ? new Date(form.remindAt).toISOString()
+    : null,
+};
+
     try {
       const response = await fetch("/api/tasks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -277,19 +295,37 @@ function TasksContent() {
               </Field>
             </div>
 
-            <Field label="Due date">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Field label="Due date and time">
               <input
-                type="date"
-                value={form.dueDate}
+                type="datetime-local"
+                value={form.dueAt}
                 onChange={(event) =>
                   setForm((current) => ({
                     ...current,
-                    dueDate: event.target.value,
+                    dueAt: event.target.value,
                   }))
                 }
                 className="vapor-input w-full rounded-xl border border-fuchsia-300/15 bg-violet-950/60 px-3 py-3 text-sm text-fuchsia-50 outline-none transition-all focus:border-cyan-300/50"
               />
             </Field>
+
+            <Field label="Remind me at">
+              <input
+                type="datetime-local"
+                value={form.remindAt}
+                max={form.dueAt || undefined}
+                disabled={!form.dueAt}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    remindAt: event.target.value,
+                  }))
+                }
+                className="vapor-input w-full rounded-xl border border-fuchsia-300/15 bg-violet-950/60 px-3 py-3 text-sm text-fuchsia-50 outline-none transition-all focus:border-cyan-300/50 disabled:cursor-not-allowed disabled:opacity-40"
+              />
+            </Field>
+          </div>
 
             <button
               type="submit"
@@ -461,7 +497,12 @@ function TaskCard({ task, onToggle, onDelete }) {
               }`}
             >
               {overdue ? "Overdue · " : ""}
-              {formatDate(task.dueDate)}
+              {formatDateTime(task.dueAt)}
+              {task.remindAt && (
+              <span className="rounded-full border border-cyan-300/15 bg-cyan-400/5 px-2.5 py-1 text-[11px] text-cyan-100/55">
+                Reminder · {formatDateTime(task.remindAt)}
+              </span>
+            )}
             </span>
           </div>
         </div>

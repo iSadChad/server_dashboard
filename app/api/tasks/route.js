@@ -53,9 +53,8 @@ function normalizeTask(row) {
     notes: row.notes || "",
     category: row.category || "General",
     priority: row.priority || "normal",
-    dueDate: row.due_date
-      ? new Date(row.due_date).toISOString().slice(0, 10)
-      : "",
+    dueAt: row.due_at ? new Date(row.due_at).toISOString() : "",
+    remindAt: row.remind_at ? new Date(row.remind_at).toISOString() : "",
     status: row.status,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -108,26 +107,66 @@ export async function POST(request) {
     const priority = ["low", "normal", "high"].includes(body.priority)
       ? body.priority
       : "normal";
-    const dueDate = body.dueDate ? String(body.dueDate) : null;
+    const dueAt = body.dueAt ? new Date(String(body.dueAt)) : null;
+    const remindAt = body.remindAt
+      ? new Date(String(body.remindAt))
+      : null;
 
-    if (!title) {
+    if (dueAt && Number.isNaN(dueAt.getTime())) {
       return Response.json(
         {
           status: "error",
-          message: "Task title is required",
+          message: "Invalid due date and time",
         },
         { status: 400 }
       );
     }
 
+    if (remindAt && Number.isNaN(remindAt.getTime())) {
+      return Response.json(
+        {
+          status: "error",
+          message: "Invalid reminder date and time",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (remindAt && !dueAt) {
+      return Response.json(
+        {
+          status: "error",
+          message: "A due date is required when using a reminder",
+        },
+        { status: 400 }
+      );
+    }
+
+if (dueAt && remindAt && remindAt > dueAt) {
+  return Response.json(
+    {
+      status: "error",
+      message: "The reminder cannot be after the due date",
+    },
+    { status: 400 }
+  );
+}
+
     const result = await getPool().query(
-      `
-      INSERT INTO tasks (title, notes, category, priority, due_date)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *;
-      `,
-      [title, notes, category, priority, dueDate || null]
-    );
+    `
+    INSERT INTO tasks (
+      title,
+      notes,
+      category,
+      priority,
+      due_at,
+      remind_at
+    )
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING *;
+    `,
+    [title, notes, category, priority, dueAt, remindAt]
+  );
 
     return Response.json(
       {
