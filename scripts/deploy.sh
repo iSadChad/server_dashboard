@@ -24,14 +24,41 @@ check_repository_clean() {
   log "Repository is clean."
 }
 
+pull() {
+  log "Pulling latest changes..."
+  git pull --ff-only
+  log "Latest changes pulled."
+}
+
+npm_ci() {
+  log "Installing dependencies using npm ci..."
+  npm ci
+  log "Dependencies installed."
+}
+
+npm_run_build() {
+  log "Running npm build..."
+  npm run build
+  log "Build completed."
+}
+
+pm2_restart() {
+  log "Restarting PM2 process..."
+  pm2 restart server-dashboard
+  log "PM2 process restarted."
+}
+
 main() {
   log "Starting deployment."
 
   cd "$PROJECT_DIR"
 
   check_repository_clean
-
-  log "Initial checks completed."
+  pull
+  npm_ci
+  npm_run_build
+  pm2_restart
+  log "Deployment completed successfully."
 }
 
 main "$@"
