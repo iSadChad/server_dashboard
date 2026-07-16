@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import StarBackground from "./StarBackground";
@@ -142,7 +143,14 @@ export default function PageLayout({ children }) {
                 onClick={() => sidebarCollapsed && setSidebarCollapsed(false)}
                 aria-label={sidebarCollapsed ? "Expand navigation" : "Chad's Goon Cave"}
               >
-                C/G
+                <Image
+                  src="/icon-192x192.png"
+                  alt="Chad's Goon Cave"
+                  width={44}
+                  height={44}
+                  className="h-full w-full rounded-xl object-cover"
+                  priority
+                />
                 <span className="absolute -right-1 -bottom-1 h-2.5 w-2.5 rounded-full border-2 border-[#100822] bg-lime-300 shadow-[0_0_10px_rgba(190,242,100,0.9)]" />
               </button>
 
@@ -294,7 +302,14 @@ export default function PageLayout({ children }) {
               aria-label="Go to dashboard"
               onClick={() => setMobileMenuOpen(false)}
             >
-              C/G
+              <Image
+                src="/icon-192x192.png"
+                alt="Chad's Goon Cave"
+                width={44}
+                height={44}
+                className="h-full w-full rounded-xl object-cover"
+                priority
+              />
               <span className="absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-[#0d061c] bg-lime-300 shadow-[0_0_8px_rgba(190,242,100,0.85)]" />
             </Link>
 
