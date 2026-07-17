@@ -53,9 +53,6 @@ export default function NotesPage() {
               API test · GET /api/notes
             </p>
             <h2 className="mt-2 text-3xl font-black text-white">Notes</h2>
-            <p className="mt-1 text-sm text-violet-100/55">
-              A temporary page for checking the notes endpoint.
-            </p>
           </div>
 
           <button

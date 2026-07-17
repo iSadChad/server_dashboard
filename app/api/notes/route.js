@@ -46,3 +46,37 @@ export async function GET() {
   }
 }
 
+export async function POST(request) {
+    try {
+        const body = await request.json();
+
+        const title =
+        typeof body.title === "string" ? body.title.trim() : "";
+        const content =
+        typeof body.content === "string" ? body.content.trim() : null;
+
+        if (!title) {
+            return Response.json(
+                {
+                    error: "Title are required",
+                },
+                { status: 400 }
+            );
+        }
+
+        const result = await getPool().query(
+            "INSERT INTO notes (title, content) VALUES ($1, $2) RETURNING *",
+            [title, content]
+        );
+        return Response.json(result.rows[0], { status: 201 });
+    } catch (error) {
+        console.error("Failed to create note:", error);
+        return Response.json(
+            {
+                error: "Failed to create note",
+                details: error.message,
+            },
+            { status: 500 }
+        );
+    }
+}
