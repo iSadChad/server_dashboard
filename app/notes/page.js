@@ -18,6 +18,8 @@ export default function NotesPage() {
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [deletingId, setDeletingId] = useState(null);
+  const [deleteError, setDeleteError] = useState("");
 
   const loadNotes = useCallback(async () => {
     setLoading(true);
@@ -82,14 +84,38 @@ export default function NotesPage() {
     }
   }
 
+  async function deleteNote(note) {
+    const confirmed = window.confirm(`Delete “${note.title}”?`);
+    if (!confirmed) return;
+
+    setDeletingId(note.id);
+    setDeleteError("");
+
+    try {
+      const response = await fetch(`/api/notes/${note.id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || "Could not delete note");
+      }
+
+      setNotes((currentNotes) =>
+        currentNotes.filter((currentNote) => currentNote.id !== note.id)
+      );
+    } catch (requestError) {
+      setDeleteError(requestError.message || "Could not delete note");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   return (
     <PageLayout>
       <div className="mx-auto w-full max-w-5xl p-4 sm:p-6 lg:p-8">
         <header className="mb-6 flex flex-col gap-4 rounded-2xl border border-fuchsia-300/20 bg-violet-950/30 p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-cyan-300/70">
-              GET + POST · /api/notes
-            </p>
             <h2 className="mt-2 text-3xl font-black text-white">Notes</h2>
           </div>
 
@@ -166,6 +192,15 @@ export default function NotesPage() {
           </div>
         )}
 
+        {deleteError && (
+          <div
+            className="mb-4 rounded-xl border border-fuchsia-400/40 bg-fuchsia-500/10 p-4 text-sm text-fuchsia-100"
+            role="alert"
+          >
+            {deleteError}
+          </div>
+        )}
+
         {!error && loading && (
           <div className="rounded-2xl border border-cyan-300/15 bg-violet-950/20 p-8 text-center text-violet-100/60">
             Loading notes…
@@ -192,9 +227,19 @@ export default function NotesPage() {
                 <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-violet-100/70">
                   {note.content || "No content"}
                 </p>
-                <p className="mt-5 border-t border-violet-200/10 pt-3 font-mono text-xs text-cyan-100/45">
-                  Updated {formatDate(note.updated_at)}
-                </p>
+                <div className="mt-5 flex items-center justify-between gap-3 border-t border-violet-200/10 pt-3">
+                  <p className="font-mono text-xs text-cyan-100/45">
+                    Updated {formatDate(note.updated_at)}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => deleteNote(note)}
+                    disabled={deletingId === note.id}
+                    className="rounded-lg border border-fuchsia-400/30 bg-fuchsia-500/10 px-3 py-1.5 text-xs font-semibold text-fuchsia-100 transition hover:bg-fuchsia-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {deletingId === note.id ? "Deleting…" : "Delete"}
+                  </button>
+                </div>
               </article>
             ))}
           </div>
