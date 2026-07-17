@@ -8,13 +8,16 @@ const { Pool } = pg;
 const globalForNotes = globalThis;
 
 function getPool() {
-  if (!process.env.NOTES_DATABASE_URL) {
-    throw new Error("NOTES_DATABASE_URL is not set");
+  const connectionString =
+    process.env.NOTES_DATABASE_URL || process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    throw new Error("NOTES_DATABASE_URL or DATABASE_URL is not set");
   }
 
   if (!globalForNotes.notesPool) {
     globalForNotes.notesPool = new Pool({
-      connectionString: process.env.NOTES_DATABASE_URL,
+      connectionString,
     });
   }
 
@@ -33,7 +36,13 @@ export async function GET() {
 
     return Response.json(result.rows);
   } catch (error) {
-    console.error("Failed to fetch notes:", error);
-    return Response.json({ error: "Failed to fetch notes" }, { status: 500 });
+    return Response.json(   
+  {
+    error: "Failed to fetch notes",
+    details: error.message,
+  },
+  { status: 500 }
+);
   }
 }
+
