@@ -21,6 +21,7 @@ function getPool() {
   return globalForNotes.notesPool;
 }
 
+
 export async function GET() {
   try {
 
@@ -33,9 +34,6 @@ export async function GET() {
     return Response.json(result.rows);
   } catch (error) {
     console.error("Failed to fetch notes:", error);
-    return Response.json(
-      { error: "Failed to fetch notes" },
-      { status: 500 }
-    );
-}
+    return Response.json({ error: "Failed to fetch notes" }, { status: 500 });
+  }
 }
