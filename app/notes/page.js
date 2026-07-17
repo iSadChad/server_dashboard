@@ -135,9 +135,6 @@ export default function NotesPage() {
         >
           <div className="mb-4">
             <h3 className="text-lg font-bold text-white">Create a note</h3>
-            <p className="mt-1 text-sm text-violet-100/55">
-              This sends a POST request to the notes API.
-            </p>
           </div>
 
           <div className="grid gap-4">
