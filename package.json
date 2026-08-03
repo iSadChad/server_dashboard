@@ -9,7 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@excalidraw/excalidraw": "^0.17.6",
+    "@excalidraw/excalidraw": "^0.18.1",
     "@next/env": "^16.2.10",
     "next": "^16.2.12",
     "pg": "^8.22.0",
