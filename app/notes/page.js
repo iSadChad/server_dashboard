@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import PageLayout from "../../components/PageLayout";
+import WhiteboardEditor from "../../components/WhiteboardEditor";
+
 
 function formatDate(value) {
   if (!value) return "Unknown";
@@ -128,6 +130,10 @@ export default function NotesPage() {
             {loading ? "Loading..." : "Refresh"}
           </button>
         </header>
+
+        <section className="mb-6 overflow-hidden rounded-2xl">
+          <WhiteboardEditor />
+        </section>
 
         <form
           onSubmit={createNote}
