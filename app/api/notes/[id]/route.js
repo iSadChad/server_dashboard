@@ -25,7 +25,7 @@ function getPool() {
 }
 
 function getId(value) {
-    const id = Number(value);   
+    const id = Number(value);
 
     if (!Number.isInteger(id) || id <= 0) {
         return null;
@@ -34,10 +34,75 @@ function getId(value) {
 }
 
 export async function PATCH(request, context) {
-    try {
-        const { id: rawId } = await context.params;
-        const id = getId(rawId);
+  try {
+    const { id: rawId } = await context.params;
+    const id = getId(rawId);
 
+    if (!id) {
+      return Response.json(
+        {
+          status: "error",
+          message: "Invalid note id",
+        },
+        { status: 400 }
+      );
+    }
+
+    const body = await request.json();
+    const drawingData = body.drawingData;
+
+    if (drawingData === undefined) {
+      return Response.json(
+        {
+          status: "error",
+          message: "Drawing Data is required",
+        },
+        { status: 400 }
+      );
+    }
+
+    const result = await getPool().query(
+      `
+      UPDATE notes
+      SET drawing_data = $1, updated_at = NOW()
+      WHERE id = $2
+      RETURNING id
+      `,
+      [drawingData, id]
+    );
+
+    if (result.rowCount === 0) {
+      return Response.json(
+        {
+          status: "error",
+          message: "Note not found",
+        },
+        { status: 404 }
+      );
+    }
+
+    return Response.json({
+      status: "ok",
+      updatedId: id,
+    });
+  } catch (error) {
+    console.error("Failed to update note:", error);
+
+    return Response.json(
+      {
+        status: "error",
+        message: "Could not update note",
+        details: error.message,
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request, context) {
+  try {
+    const { id: rawId } = await context.params;
+    const id = getId(rawId);
 
     if (!id) {
       return Response.json(
