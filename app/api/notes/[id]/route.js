@@ -33,10 +33,11 @@ function getId(value) {
     return id;
 }
 
-export async function DELETE(_request, context) {
-  try {
-    const { id: rawId } = await context.params;
-    const id = getId(rawId);
+export async function PATCH(request, context) {
+    try {
+        const { id: rawId } = await context.params;
+        const id = getId(rawId);
+
 
     if (!id) {
       return Response.json(
