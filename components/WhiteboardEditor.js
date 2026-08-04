@@ -10,7 +10,7 @@ const Excalidraw = dynamic(
 
 export default function WhiteboardEditor() {
     return (
-        <div className="relative h-[68dvh] min-h-110 max-h-160 w-full overflow-hidden bg-white sm:h-[72dvh] sm:min-h-130 lg:h-[min(72dvh,720px)] lg:max-h-180">
+        <div className="relative h-[68dvh] min-h-110 max-h-160 w-full overflow-hidden bg-white sm:h-[72dvh] sm:min-h-130 lg:aspect-[16/10] lg:h-auto lg:min-h-0 lg:max-h-none">
             <div className="h-full w-full">
                 <Excalidraw />
             </div>
