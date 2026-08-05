@@ -22,7 +22,7 @@ export default function NotesPage() {
   const [saveError, setSaveError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
   const [deleteError, setDeleteError] = useState("");
-  const [selectedNote, setSelectedNote] = useState(null);
+  const [whiteboardOpen, setWhiteboardOpen] = useState(true);
 
   const loadNotes = useCallback(async () => {
     setLoading(true);
@@ -167,21 +167,11 @@ export default function NotesPage() {
                 <p className="hidden text-[11px] text-violet-100/40 sm:block">Draw, connect, and map out your thoughts</p>
               </div>
             </div>
-            <span className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-widest text-cyan-200/45">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" /> Live canvas
-            </span>
+            <button type="button" onClick={() => setWhiteboardOpen((current) => !current)} className="rounded-lg px-3 py-2 text-xs font-semibold text-cyan-200/70 hover:bg-cyan-400/10">
+              {whiteboardOpen ? "Collapse" : "Open"}
+            </button>
           </div>
-          {selectedNote ? (
-          <WhiteboardEditor
-            key={selectedNote.id}
-            noteId={selectedNote.id}
-            initialDrawingData={selectedNote.drawing_data}
-          />
-        ) : (
-          <div className="p-8 text-center text-sm text-violet-100/50">
-            Select a note to open its whiteboard.
-          </div>
-        )}
+          {whiteboardOpen && <WhiteboardEditor />}
         </section>
 
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(260px,0.38fr)_minmax(0,1fr)] lg:gap-6">
