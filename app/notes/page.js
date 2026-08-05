@@ -22,6 +22,7 @@ export default function NotesPage() {
   const [saveError, setSaveError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
   const [deleteError, setDeleteError] = useState("");
+  const [selectedNote, setSelectedNote] = useState(null);
 
   const loadNotes = useCallback(async () => {
     setLoading(true);
@@ -106,6 +107,11 @@ export default function NotesPage() {
       setNotes((currentNotes) =>
         currentNotes.filter((currentNote) => currentNote.id !== note.id)
       );
+      
+      if (selectedNote?.id === note.id) {
+      setSelectedNote(null);
+      
+    }
     } catch (requestError) {
       setDeleteError(requestError.message || "Could not delete note");
     } finally {
@@ -113,6 +119,8 @@ export default function NotesPage() {
     }
   }
 
+    
+  
   return (
     <PageLayout>
       <div className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-6 sm:py-7 lg:px-8">
@@ -163,7 +171,17 @@ export default function NotesPage() {
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" /> Live canvas
             </span>
           </div>
-          <WhiteboardEditor />
+          {selectedNote ? (
+          <WhiteboardEditor
+            key={selectedNote.id}
+            noteId={selectedNote.id}
+            initialDrawingData={selectedNote.drawing_data}
+          />
+        ) : (
+          <div className="p-8 text-center text-sm text-violet-100/50">
+            Select a note to open its whiteboard.
+          </div>
+        )}
         </section>
 
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(260px,0.38fr)_minmax(0,1fr)] lg:gap-6">
@@ -218,6 +236,8 @@ export default function NotesPage() {
                     <p className="mt-2 line-clamp-4 whitespace-pre-wrap text-sm leading-6 text-violet-100/60">{note.content || "No additional details"}</p>
                     <div className="mt-auto flex items-center justify-between gap-3 border-t border-violet-200/8 pt-3">
                       <p className="truncate font-mono text-[9px] uppercase tracking-wide text-cyan-100/35">{formatDate(note.updated_at)}</p>
+                      <button type="button" onClick={() => setSelectedNote(note)} className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-cyan-200/70 transition hover:bg-cyan-500/10 hover:text-cyan-100"> Open board
+                      </button>
                       <button type="button" onClick={() => deleteNote(note)} disabled={deletingId === note.id} aria-label={`Delete ${note.title}`} className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-fuchsia-200/60 transition hover:bg-fuchsia-500/10 hover:text-fuchsia-100 disabled:opacity-40">
                         {deletingId === note.id ? "…" : "Delete"}
                       </button>
