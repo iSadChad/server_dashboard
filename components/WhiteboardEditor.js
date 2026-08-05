@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import "@excalidraw/excalidraw/index.css";
-import { serializeAsJSON } from "@excalidraw/excalidraw";
 
 
 const Excalidraw = dynamic(
@@ -15,6 +14,10 @@ export default function WhiteboardEditor({ noteId, initialDrawingData }) {
     if (!noteId) return;
 
     try {
+        const { serializeAsJSON } = await import(
+            "@excalidraw/excalidraw"
+        );
+        
         const drawingData = JSON.parse(
          serializeAsJSON({
             elements,
