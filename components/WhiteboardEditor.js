@@ -57,6 +57,7 @@ export default function WhiteboardEditor() {
 
 
     function scheduleSave(drawingData) {
+        
         if (saveTimeRef.current) {
             clearTimeout(saveTimeRef.current);
         }
@@ -68,29 +69,30 @@ export default function WhiteboardEditor() {
         }
     
     async function handleChange(elements, appState) {
-
+        if (!whiteboardLoaded) {
+            return;
+        }
+        
     try {
         const { serializeAsJSON } = await import(
             "@excalidraw/excalidraw"
         );
         
+
         const drawingData = JSON.parse(
          serializeAsJSON({
             elements,
             appState,
          })
         );
+    scheduleSave(drawingData);
+    } 
 
-        const data = await response.json();
-
-        if (!response.ok) {
-        throw new Error(data.message || "Failed to save drawing");
-        }
-        } catch (error) {
-            console.error("Failed to save whiteboard:", error);
-        }
+    catch (error) {
+        console.error("Failed to serialize drawing data:", error);
+        return;
     }
-
+}
     useEffect(() => {
         if (!whiteboardLoaded) {
             loadWhiteboard();
