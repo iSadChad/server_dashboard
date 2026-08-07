@@ -196,7 +196,10 @@ export default function NotesPage() {
             </button>
           </form>
 
-          <section aria-labelledby="saved-notes-heading">
+          <section
+            aria-labelledby="saved-notes-heading"
+            className="vapor-panel rounded-3xl border border-fuchsia-300/15 bg-violet-950/35 p-4 sm:p-5"
+          >
             <div className="mb-3 flex items-center justify-between px-1">
               <div>
                 <p className="font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-cyan-300/55">Archive</p>
