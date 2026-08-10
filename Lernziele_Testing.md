@@ -24,3 +24,28 @@ Diese Testmittel werden für Funktions-, Benutzeroberflächen-, API- und Respons
 
 
 ## Testfälle
+
+Die Voraussetzungen, Testdaten und Testschritte werden so dokumentiert, dass jeder Test später unter denselben Bedingungen wiederholt und die Ergebnisse verglichen werden können.
+
+Für jeden Testfall kopiere ich die folgende Vorlage und ersetze die Texte in den eckigen Klammern. Die Testfälle werden fortlaufend als `TC-01`, `TC-02`, `TC-03` usw. nummeriert.
+
+---
+
+### TC-01: Online- und Offline-Status eines Server-Tools korrekt anzeigen
+
+**Anforderung:**
+
+**Vorbereitung:**
+
+**Testschritte:**
+
+**Erwartetes Resultat:**
+
+**Tatsächliches Resultat:**
+
+**Testergebnis:**
+
+**Bemerkungen:**
+
+---
+
