@@ -35,10 +35,21 @@ Für jeden Testfall kopiere ich die folgende Vorlage und ersetze die Texte in de
 
 **Anforderung:**
 
+Das Dashboard muss anzeigen, ob ein Tool auf dem Server erreichbar ist oder nicht.
+
 **Vorbereitung:**
+
+- Das Dashboard des Servers ist erreichbar.
+- Das ausgewählte Tool ist auf dem Server installiert.
+- Für den ersten Teil des Tests läuft das Tool.
+- Für den zweiten Teil des Tests wird das Tool gestoppt.
 
 **Testschritte:**
 
+1. Das Dashboard öffnen.
+2. Das Tool starten.
+3. Den angezeigten Status des Tools kontrollieren.
+4. 
 **Erwartetes Resultat:**
 
 **Tatsächliches Resultat:**
