@@ -6,7 +6,7 @@ Getestet wird mein selbst entwickeltes Server-Dashboard. Die Applikation wurde m
 
 Auf meinem Windows-PC ist das Dashboard als Web-App installiert. Die Benutzeroberfläche wird deshalb hauptsächlich über die installierte Desktop-App getestet. Da diese auf der Browser-Technologie von Chrome basiert, werden ausgewählte Tests zusätzlich direkt im Webbrowser durchgeführt.
 
-Der Zugriff auf das Dashboard erfolgt über das lokale Netzwerk/VPN/Internet. Die Darstellung wird auf dem Windows-PC und auf meinem Handy getestet. Dadurch werden sowohl die Desktop- als auch die mobile Ansicht überprüft.
+Der Zugriff auf das Dashboard erfolgt über Tailscale, was über das Internet verläuft. Die Darstellung wird auf dem Windows-PC und auf meinem Handy getestet. Dadurch werden sowohl die Desktop- als auch die mobile Ansicht überprüft.
 Für die Funktionstests werden Testeinträge verwendet, zum Beispiel Notizen und Aufgaben. Dadurch können Daten erstellt, bearbeitet und gelöscht werden, ohne wichtige Daten zu gefährden.
 
 ## Testmittel
@@ -49,14 +49,117 @@ Das Dashboard muss anzeigen, ob ein Tool auf dem Server erreichbar ist oder nich
 1. Das Dashboard öffnen.
 2. Das Tool starten.
 3. Den angezeigten Status des Tools kontrollieren.
-4. 
+4. Das Tool stoppen.
+5. Das Dashboard aktualisieren.
+6. Den angezeigten Status des Tools erneut kontrollieren.
+
 **Erwartetes Resultat:**
 
-**Tatsächliches Resultat:**
-
-**Testergebnis:**
-
-**Bemerkungen:**
+Wenn das Tool läuft, wird es im Dashboard als online angezeigt. Nachdem das Tool gestoppt und das Dashboard aktualisiert wurde, wird es als offline angezeigt.
 
 ---
 
+### TC-02: Benachrichtigung auf dem Smartphone erhalten für das Tool Tasks
+
+**Anforderung:**
+
+Die auf dem Smartphone installierte PWA muss zum festgelegten Erinnerungszeitpunkt eine Benachrichtigung für eine Aufgabe anzeigen. Benachrichtigungen auf dem Computer sind nicht Bestandteil dieses Tests.
+
+**Vorbereitung:**
+
+- Das Dashboard und der Benachrichtigungsdienst ist erreichbar 
+- Die PWA ist installiert
+- Benachrichtigungen sind für die PWA aktiviert
+- Das Smartphone besitzt eine Internetverbindung
+
+**Testschritte:**
+
+1. Eine Aufgabe erstellen, entweder am Desktop oder auf dem Smartphone
+2. Den Erinnerungszeitpunkt auf wenige Minuten in der Zukunft setzen
+3. Die Aufgabe speichern
+4. Bis zum festgelegten Erinnerungszeitpunkt warten
+5. Kontrollieren ob auf dem Smartphone die Benachrichtigun erscheint
+6. Kontrollieren ob die Benachrichtigung zur erstellten Aufgabe gehört
+
+**Erwartetes Resultat:**
+
+Die Benachrichtigung erscheint zum festgelegten Erinnerungszeitpunkt auf dem Smartphone und gehört zur zuvor erstellten Aufgabe
+
+---
+
+### TC-03: Server Statistiken werden korrekt angezeigt
+
+**Anforderung:**
+
+Das Dashboard muss die aktuellen Server Statistiken wie CPU Auslastung, Arbeitsspeicher, Speicherplatz und Uptime korrekt anzeigen 
+
+**Vorbereitung:**
+
+- Der PC ist mit dem Internet verbunden
+- Der Ubuntu-Server und das Dashboard sind erreichbar
+- Die Kommandozeile des Ubuntu-Servers ist geöffnet
+
+**Testschritte:**
+
+1. Das Dashboard öffnen
+2. Die angezeigten Werte für CPU-Auslastung, Arbeitsspeicher, Speicherplatz und Uptime notieren
+3. Die aktuellen Werte direkt über die Kommandozeile des Ubuntu-Servers abrufen
+4. Die Werte aus dem Dashboard mit den Werten aus der Kommandozeile vergleichen
+5. Das Dashboard aktualisieren und kontrollieren, ob die Statistiken weiterhin angezeigt werden
+
+**Erwartetes Resultat:**
+
+Die CPU-Auslastung, der verwendete Arbeitsspeicher, der verwendete Speicherplatz und die Uptime werden im Dashboard vollständig angezeigt. Die angezeigten Werte stimmen ungefähr mit den direkt auf dem Ubuntu-Server abgerufenen Werten überein. Kleine Abweichungen sind möglich, da die Werte nicht exakt zum gleichen Zeitpunkt erfasst werden. Nach dem Aktualisieren des Dashboards werden weiterhin aktuelle Statistiken ohne Fehlermeldung angezeigt.
+
+---
+
+### TC-04: Verfügbare Updates werden korrekt erkannt und angezeigt
+
+**Anforderung:**
+
+
+**Vorbereitung:**
+
+
+
+**Testschritte:**
+
+
+
+**Erwartetes Resultat:**
+
+---
+
+### TC-05: Whiteboard-Daten über die API speichern und laden
+
+**Anforderung:**
+
+
+**Vorbereitung:**
+
+
+
+**Testschritte:**
+
+
+
+**Erwartetes Resultat:**
+
+---
+
+### TC-06: Darstellung und Navigation der mobilen PWA prüfen
+
+**Anforderung:**
+
+
+**Vorbereitung:**
+
+
+
+**Testschritte:**
+
+
+
+**Erwartetes Resultat:**
+
+---
