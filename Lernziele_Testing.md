@@ -20,14 +20,12 @@ Für die Tests des Server-Dashboards werden folgende Testmittel verwendet:
 - **Kommandozeile des Ubuntu-Servers:** zum Überprüfen der Serverausgaben und Fehlermeldungen
 - **Vorbereitete Testdaten:** zum Erstellen, Bearbeiten und Löschen von Einträgen, ohne wichtige Daten zu gefährden
 
-Diese Testmittel werden für Funktions-, Benutzeroberflächen-, API- und Responsive-Tests eingesetzt
+Diese Testmittel werden für Funktions-, Benutzeroberflächen-, API- und Responsive-Tests eingesetzt.
 
 
 ## Testfälle
 
-Die Voraussetzungen, Testdaten und Testschritte werden so dokumentiert, dass jeder Test später unter denselben Bedingungen wiederholt und die Ergebnisse verglichen werden können
-
-Für jeden Testfall kopiere ich die folgende Vorlage und ersetze die Texte in den eckigen Klammern, die Testfälle werden fortlaufend als `TC-01`, `TC-02`, `TC-03` und so weiter nummeriert
+Die Voraussetzungen, Testdaten und Testschritte werden so dokumentiert, dass jeder Test später unter denselben Bedingungen wiederholt und die Ergebnisse verglichen werden können.
 
 ---
 
@@ -35,7 +33,7 @@ Für jeden Testfall kopiere ich die folgende Vorlage und ersetze die Texte in de
 
 **Anforderung:**
 
-Das Dashboard muss anzeigen, ob ein Tool auf dem Server erreichbar ist oder nicht
+Das Dashboard muss anzeigen, ob ein Tool auf dem Server erreichbar ist oder nicht.
 
 **Vorbereitung:**
 
@@ -55,7 +53,7 @@ Das Dashboard muss anzeigen, ob ein Tool auf dem Server erreichbar ist oder nich
 
 **Erwartetes Resultat:**
 
-Wenn das Tool läuft, wird es im Dashboard als online angezeigt und nachdem das Tool gestoppt und das Dashboard aktualisiert wurde, wird es als offline angezeigt
+Wenn das Tool läuft, wird es im Dashboard als online angezeigt und nachdem das Tool gestoppt und das Dashboard aktualisiert wurde, wird es als offline angezeigt.
 
 ---
 
@@ -63,11 +61,11 @@ Wenn das Tool läuft, wird es im Dashboard als online angezeigt und nachdem das 
 
 **Anforderung:**
 
-Die auf dem Smartphone installierte PWA muss zum festgelegten Erinnerungszeitpunkt eine Benachrichtigung für eine Aufgabe anzeigen, Benachrichtigungen auf dem Computer sind nicht Bestandteil dieses Tests
+Die auf dem Smartphone installierte PWA muss zum festgelegten Erinnerungszeitpunkt eine Benachrichtigung für eine Aufgabe anzeigen, Benachrichtigungen auf dem Computer sind nicht Bestandteil dieses Tests.
 
 **Vorbereitung:**
 
-- Das Dashboard und der Benachrichtigungsdienst ist erreichbar 
+- Das Dashboard und der Benachrichtigungsdienst sind erreichbar
 - Die PWA ist installiert
 - Benachrichtigungen sind für die PWA aktiviert
 - Das Smartphone besitzt eine Internetverbindung
@@ -78,12 +76,12 @@ Die auf dem Smartphone installierte PWA muss zum festgelegten Erinnerungszeitpun
 2. Den Erinnerungszeitpunkt auf wenige Minuten in der Zukunft setzen
 3. Die Aufgabe speichern
 4. Bis zum festgelegten Erinnerungszeitpunkt warten
-5. Kontrollieren ob auf dem Smartphone die Benachrichtigun erscheint
+5. Kontrollieren, ob auf dem Smartphone die Benachrichtigung erscheint
 6. Kontrollieren ob die Benachrichtigung zur erstellten Aufgabe gehört
 
 **Erwartetes Resultat:**
 
-Die Benachrichtigung erscheint zum festgelegten Erinnerungszeitpunkt auf dem Smartphone und gehört zur zuvor erstellten Aufgabe
+Die Benachrichtigung erscheint zum festgelegten Erinnerungszeitpunkt auf dem Smartphone und gehört zur zuvor erstellten Aufgabe.
 
 ---
 
@@ -91,7 +89,7 @@ Die Benachrichtigung erscheint zum festgelegten Erinnerungszeitpunkt auf dem Sma
 
 **Anforderung:**
 
-Das Dashboard muss die aktuellen Server Statistiken wie CPU Auslastung, Arbeitsspeicher, Speicherplatz und Uptime korrekt anzeigen 
+Das Dashboard muss die aktuellen Server Statistiken wie CPU Auslastung, Arbeitsspeicher, Speicherplatz und Uptime korrekt anzeigen.
 
 **Vorbereitung:**
 
@@ -109,7 +107,7 @@ Das Dashboard muss die aktuellen Server Statistiken wie CPU Auslastung, Arbeitss
 
 **Erwartetes Resultat:**
 
-Die CPU-Auslastung, der verwendete Arbeitsspeicher, der verwendete Speicherplatz und die Uptime werden im Dashboard vollständig angezeigt, die angezeigten Werte stimmen ungefähr mit den direkt auf dem Ubuntu-Server abgerufenen Werten überein, kleine Abweichungen sind möglich, da die Werte nicht exakt zum gleichen Zeitpunkt erfasst werden und nach dem Aktualisieren des Dashboards werden weiterhin aktuelle Statistiken ohne Fehlermeldung angezeigt
+Die angezeigten Werte stimmen mit den direkt auf dem Ubuntu-Server abgerufenen Werten überein. Geringe Abweichungen bei dynamischen Werten wie CPU- und Arbeitsspeicherauslastung sind zulässig, da die Werte nicht exakt zum gleichen Zeitpunkt erfasst werden.
 
 ---
 
@@ -117,7 +115,7 @@ Die CPU-Auslastung, der verwendete Arbeitsspeicher, der verwendete Speicherplatz
 
 **Anforderung:**
 
-Das Dashboard darf keine Aufgabe ohne Titel speichern, da der Titel ein Pflichtfeld ist
+Das Dashboard darf keine Aufgabe ohne Titel speichern, da der Titel ein Pflichtfeld ist.
 
 **Vorbereitung:**
 
@@ -130,12 +128,12 @@ Das Dashboard darf keine Aufgabe ohne Titel speichern, da der Titel ein Pflichtf
 1. Das Feld für den Titel leer lassen
 2. Optional eine Beschreibung, Kategorie oder Priorität eingeben
 3. Kontrollieren, ob die Schaltfläche zum Erstellen der Aufgabe aktiviert ist
-4. Versuchen, das Formular ohne Titel abzusenden
+4. Kontrollieren, ob das Formular ohne Titel abgesendet werden kann
 5. Kontrollieren, ob in der Aufgabenliste ein neuer Eintrag erstellt wurde
 
 **Erwartetes Resultat:**
 
-Die Schaltfläche zum Erstellen der Aufgabe bleibt deaktiviert, solange kein Titel eingegeben wurde und das Formular kann ohne Titel nicht abgesendet werden und in der Aufgabenliste wird kein neuer Eintrag erstellt
+Die Schaltfläche zum Erstellen der Aufgabe bleibt deaktiviert, solange kein Titel eingegeben wurde und das Formular kann ohne Titel nicht abgesendet werden und in der Aufgabenliste wird kein neuer Eintrag erstellt.
 
 ---
 
@@ -143,7 +141,7 @@ Die Schaltfläche zum Erstellen der Aufgabe bleibt deaktiviert, solange kein Tit
 
 **Anforderung:**
 
-Das Dashboard muss die auf dem Whiteboard erstellten Zeichnungen automatisch über die API speichern und beim erneuten Öffnen vollständig laden
+Das Dashboard muss die auf dem Whiteboard erstellten Zeichnungen automatisch speichern und beim erneuten Öffnen vollständig laden.
 
 **Vorbereitung:**
 
@@ -163,7 +161,7 @@ Das Dashboard muss die auf dem Whiteboard erstellten Zeichnungen automatisch üb
 
 **Erwartetes Resultat:**
 
-Die Testzeichnung wird nach der Änderung automatisch über die API in der Datenbank gespeichert und nach dem Aktualisieren oder erneuten Öffnen wird dieselbe Zeichnung wieder angezeigt, wobei die gezeichneten Elemente vollständig vorhanden sind und sich weiterhin an der gespeicherten Position befinden
+Die Testzeichnung wird nach der Änderung automatisch über die API in der Datenbank gespeichert und nach dem Aktualisieren oder erneuten Öffnen wird dieselbe Zeichnung wieder angezeigt, wobei die gezeichneten Elemente vollständig vorhanden sind und sich weiterhin an der gespeicherten Position befinden.
 
 ---
 
@@ -171,7 +169,7 @@ Die Testzeichnung wird nach der Änderung automatisch über die API in der Daten
 
 **Anforderung:**
 
-Das Server-Dashboard muss auf dem Smartphone übersichtlich dargestellt und vollständig über die mobile Navigation bedienbar sein
+Das Server-Dashboard muss auf dem Smartphone übersichtlich dargestellt und vollständig über die mobile Navigation bedienbar sein.
 
 **Vorbereitung:**
 
@@ -191,6 +189,6 @@ Das Server-Dashboard muss auf dem Smartphone übersichtlich dargestellt und voll
 
 **Erwartetes Resultat:**
 
-Die PWA startet auf dem Smartphone und alle aufgeführten Seiten können über das mobile Navigationsmenü geöffnet werden, der jeweils ausgewählte Inhalt wird korrekt dargestellt, Texte, Schaltflächen und Formulare überlappen sich nicht, werden nicht abgeschnitten und können bedient werden und das Navigationsmenü lässt sich zuverlässig öffnen und schliessen
+Die PWA startet auf dem Smartphone und alle aufgeführten Seiten können über das mobile Navigationsmenü geöffnet werden, der jeweils ausgewählte Inhalt wird korrekt dargestellt, Texte, Schaltflächen und Formulare überlappen sich nicht, werden nicht abgeschnitten und können bedient werden und das Navigationsmenü lässt sich zuverlässig öffnen und schliessen.
 
 ---
