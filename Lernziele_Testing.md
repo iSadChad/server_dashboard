@@ -2,12 +2,12 @@
 
 ## Testumgebung
 
-Getestet wird mein selbst entwickeltes Server-Dashboard, die Applikation wurde mit Next.js entwickelt und läuft auf einem Ubuntu-Server, als Laufzeitumgebung wird Node.js verwendet und die Daten werden aus einer PostgreSQL-Datenbank sowie über verschiedene API-Routen abgerufen
+Getestet wird mein selbst entwickeltes Server-Dashboard, die Applikation wurde mit Next.js entwickelt und läuft auf einem Ubuntu-Server, als Laufzeitumgebung wird Node.js verwendet und die Daten werden aus einer PostgreSQL-Datenbank sowie über verschiedene API-Routen abgerufen.
 
-Auf meinem Windows-PC ist das Dashboard als Web-App installiert, die Benutzeroberfläche wird deshalb hauptsächlich über die installierte Desktop-App getestet und da diese auf der Browser-Technologie von Chrome basiert, werden ausgewählte Tests zusätzlich direkt im Webbrowser durchgeführt
+Auf meinem Windows-PC ist das Dashboard als Web-App installiert, die Benutzeroberfläche wird deshalb hauptsächlich über die installierte Desktop-App getestet und da diese auf der Browser-Technologie von Chrome basiert, werden ausgewählte Tests zusätzlich direkt im Webbrowser durchgeführt.
 
-Der Zugriff auf das Dashboard erfolgt über Tailscale, was über das Internet verläuft, die Darstellung wird auf dem Windows-PC und auf meinem Handy getestet, wodurch sowohl die Desktop- als auch die mobile Ansicht überprüft werden
-Für die Funktionstests werden Testeinträge verwendet, zum Beispiel Notizen und Aufgaben, dadurch können Daten erstellt, bearbeitet und gelöscht werden, ohne wichtige Daten zu gefährden
+Der Zugriff auf das Dashboard erfolgt über Tailscale, was über das Internet verläuft, die Darstellung wird auf dem Windows-PC und auf meinem Handy getestet, wodurch sowohl die Desktop- als auch die mobile Ansicht überprüft werden.
+Für die Funktionstests werden Testeinträge verwendet, zum Beispiel Notizen und Aufgaben, dadurch können Daten erstellt, bearbeitet und gelöscht werden, ohne wichtige Daten zu gefährden.
 
 ## Testmittel
 
