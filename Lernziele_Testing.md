@@ -4,9 +4,9 @@
 
 Getestet wird mein selbst entwickeltes Server-Dashboard, die Applikation wurde mit Next.js entwickelt und läuft auf einem Ubuntu-Server, als Laufzeitumgebung wird Node.js verwendet und die Daten werden aus einer PostgreSQL-Datenbank sowie über verschiedene API-Routen abgerufen.
 
-Auf meinem Windows-PC ist das Dashboard als Web-App installiert, die Benutzeroberfläche wird deshalb hauptsächlich über die installierte Desktop-App getestet und da diese auf der Browser-Technologie von Chrome basiert, werden ausgewählte Tests zusätzlich direkt im Webbrowser durchgeführt.
+Auf meinem Windows-PC ist das Dashboard als PWA installiert, die Benutzeroberfläche wird deshalb hauptsächlich über die installierte Desktop-App getestet und da diese auf der Browser-Technologie von Chrome basiert, werden ausgewählte Tests zusätzlich direkt im Webbrowser durchgeführt.
 
-Der Zugriff auf das Dashboard erfolgt über Tailscale, was über das Internet verläuft, die Darstellung wird auf dem Windows-PC und auf meinem Handy getestet, wodurch sowohl die Desktop- als auch die mobile Ansicht überprüft werden.
+Der Zugriff auf das Dashboard erfolgt über Tailscale. Die Darstellung wird auf dem Windows-PC und auf meinem Handy getestet, wodurch sowohl die Desktop- als auch die mobile Ansicht überprüft werden.
 Für die Funktionstests werden Testeinträge verwendet, zum Beispiel Notizen und Aufgaben, dadurch können Daten erstellt, bearbeitet und gelöscht werden, ohne wichtige Daten zu gefährden.
 
 ## Testmittel
@@ -16,7 +16,7 @@ Für die Tests des Server-Dashboards werden folgende Testmittel verwendet:
 - **Google Chrome:** zum Testen der Benutzeroberfläche und der Funktionen auf dem Windows-PC
 - **Chrome-Entwicklerwerkzeuge:** zum Überprüfen der API-Anfragen, Fehlermeldungen und verschiedenen Bildschirmgrössen
 - **Installierte Desktop-PWA:** zum Testen des Dashboards als eigenständige Anwendung unter Windows
-- **Smartphone mit Safari:** zum Installieren der PWA über die Funktion „Zum Home-Bildschirm“ sowie zum Testen der mobilen Darstellung und Bedienung
+- **Smartphone mit Safari:** zum Installieren der PWA über die Funktion Zum Home-Bildschirm sowie zum Testen der mobilen Darstellung und Bedienung
 - **Kommandozeile des Ubuntu-Servers:** zum Überprüfen der Serverausgaben und Fehlermeldungen
 - **Vorbereitete Testdaten:** zum Erstellen, Bearbeiten und Löschen von Einträgen, ohne wichtige Daten zu gefährden
 
@@ -77,7 +77,7 @@ Die auf dem Smartphone installierte PWA muss zum festgelegten Erinnerungszeitpun
 3. Die Aufgabe speichern
 4. Bis zum festgelegten Erinnerungszeitpunkt warten
 5. Kontrollieren, ob auf dem Smartphone die Benachrichtigung erscheint
-6. Kontrollieren ob die Benachrichtigung zur erstellten Aufgabe gehört
+6. Kontrollieren, ob die Benachrichtigung zur erstellten Aufgabe gehört
 
 **Erwartetes Resultat:**
 
@@ -127,7 +127,7 @@ Das Dashboard darf keine Aufgabe ohne Titel speichern, da der Titel ein Pflichtf
 
 1. Das Feld für den Titel leer lassen
 2. Optional eine Beschreibung, Kategorie oder Priorität eingeben
-3. Kontrollieren, ob die Schaltfläche zum Erstellen der Aufgabe aktiviert ist
+3. Kontrollieren, ob die Schaltfläche zum Erstellen der Aufgabe deaktiviert ist
 4. Kontrollieren, ob das Formular ohne Titel abgesendet werden kann
 5. Kontrollieren, ob in der Aufgabenliste ein neuer Eintrag erstellt wurde
 
@@ -137,7 +137,7 @@ Die Schaltfläche zum Erstellen der Aufgabe bleibt deaktiviert, solange kein Tit
 
 ---
 
-### TC-05: Whiteboard-Daten über die API speichern und laden
+### TC-05: WWhiteboard-Daten speichern und laden
 
 **Anforderung:**
 
@@ -161,7 +161,7 @@ Das Dashboard muss die auf dem Whiteboard erstellten Zeichnungen automatisch spe
 
 **Erwartetes Resultat:**
 
-Die Testzeichnung wird nach der Änderung automatisch über die API in der Datenbank gespeichert und nach dem Aktualisieren oder erneuten Öffnen wird dieselbe Zeichnung wieder angezeigt, wobei die gezeichneten Elemente vollständig vorhanden sind und sich weiterhin an der gespeicherten Position befinden.
+Die Testzeichnung wird nach der Änderung automatisch gespeichert und nach dem Aktualisieren oder erneuten Öffnen wird dieselbe Zeichnung wieder angezeigt. Die gezeichneten Elemente sind vollständig vorhanden und befinden sich weiterhin an der gespeicherten Position.
 
 ---
 
