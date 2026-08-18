@@ -32,7 +32,7 @@ Die Voraussetzungen, Testdaten und Testschritte werden so dokumentiert, dass jed
 
 **Anforderung:**
 
-Der Admin Bereich muss anzeigen, ob ein vom Server geprüftes Tool beziehungsweise ein Dienst auf dem Server erreichbar ist oder nicht
+Der Admin Bereich muss anzeigen, ob ein vom Server geprüftes Tool beziehungsweise ein Dienst auf dem Server erreichbar ist oder nicht.
 
 **Vorbereitung:**
 
@@ -52,7 +52,7 @@ Der Admin Bereich muss anzeigen, ob ein vom Server geprüftes Tool beziehungswei
 
 **Erwartetes Resultat:**
 
-Wenn das ausgewählte Tool läuft und auf die Serveranfrage antwortet, wird es im Admin Bereich als online angezeigt, nachdem das Tool gestoppt und der Admin Bereich aktualisiert wurde, wird es als offline angezeigt
+Wenn das ausgewählte Tool läuft und auf die Serveranfrage antwortet, wird es im Admin Bereich als online angezeigt, nachdem das Tool gestoppt und der Admin Bereich aktualisiert wurde, wird es als offline angezeigt.
 
 ---
 
@@ -60,7 +60,7 @@ Wenn das ausgewählte Tool läuft und auf die Serveranfrage antwortet, wird es i
 
 **Anforderung:**
 
-Die auf dem Smartphone installierte PWA muss zum festgelegten Erinnerungszeitpunkt eine Push Benachrichtigung für eine Aufgabe anzeigen, Benachrichtigungen auf dem Computer sind nicht Bestandteil dieses Tests
+Die auf dem Smartphone installierte PWA muss zum festgelegten Erinnerungszeitpunkt eine Push Benachrichtigung für eine Aufgabe anzeigen, Benachrichtigungen auf dem Computer sind nicht Bestandteil dieses Tests.
 
 **Vorbereitung:**
 
@@ -83,7 +83,7 @@ Die auf dem Smartphone installierte PWA muss zum festgelegten Erinnerungszeitpun
 
 **Erwartetes Resultat:**
 
-Die Benachrichtigung erscheint spätestens ungefähr eine Minute nach dem festgelegten Erinnerungszeitpunkt auf dem Smartphone und enthält den Titel der zuvor erstellten Aufgabe
+Die Benachrichtigung erscheint spätestens ungefähr eine Minute nach dem festgelegten Erinnerungszeitpunkt auf dem Smartphone und enthält den Titel der zuvor erstellten Aufgabe.
 
 ---
 
@@ -91,7 +91,7 @@ Die Benachrichtigung erscheint spätestens ungefähr eine Minute nach dem festge
 
 **Anforderung:**
 
-Das Dashboard muss die aktuellen Statistiken des Servers wie normalisierte CPU Auslastung, Arbeitsspeicher, Speicherplatz und Uptime korrekt anzeigen
+Das Dashboard muss die aktuellen Statistiken des Servers wie normalisierte CPU Auslastung, Arbeitsspeicher, Speicherplatz und Uptime korrekt anzeigen.
 
 **Vorbereitung:**
 
@@ -110,7 +110,7 @@ Das Dashboard muss die aktuellen Statistiken des Servers wie normalisierte CPU A
 
 **Erwartetes Resultat:**
 
-Die Statistiken werden vollständig und ohne Fehlermeldung angezeigt, die Uptime und der Speicherplatz des Root Dateisystems stimmen unter Berücksichtigung von Rundungen ungefähr mit den Serverwerten überein und bei den dynamischen Werten der CPU und des Arbeitsspeichers sind geringe Abweichungen zulässig, da die Messwerte nicht exakt zum gleichen Zeitpunkt erfasst werden
+Die Statistiken werden vollständig und ohne Fehlermeldung angezeigt, die Uptime und der Speicherplatz des Root Dateisystems stimmen unter Berücksichtigung von Rundungen ungefähr mit den Serverwerten überein und bei den dynamischen Werten der CPU und des Arbeitsspeichers sind geringe Abweichungen zulässig, da die Messwerte nicht exakt zum gleichen Zeitpunkt erfasst werden.
 
 ---
 
@@ -118,7 +118,7 @@ Die Statistiken werden vollständig und ohne Fehlermeldung angezeigt, die Uptime
 
 **Anforderung:**
 
-Das Formular auf der Seite Tasks darf keine Aufgabe ohne gültigen Titel absenden, da der Titel ein Pflichtfeld ist
+Das Formular auf der Seite Tasks darf keine Aufgabe ohne gültigen Titel absenden, da der Titel ein Pflichtfeld ist.
 
 **Vorbereitung:**
 
@@ -136,21 +136,19 @@ Das Formular auf der Seite Tasks darf keine Aufgabe ohne gültigen Titel absende
 
 **Erwartetes Resultat:**
 
-Die Schaltfläche zum Erstellen der Aufgabe bleibt deaktiviert, das Formular kann nicht abgesendet werden und in der Aufgabenliste wird kein neuer Eintrag erstellt
+Die Schaltfläche zum Erstellen der Aufgabe bleibt deaktiviert, das Formular kann nicht abgesendet werden und in der Aufgabenliste wird kein neuer Eintrag erstellt.
 
 ---
 
-### TC-05: Daten des Whiteboards über die API speichern und laden
+### TC-05: Daten des Whiteboards speichern und laden
 
 **Anforderung:**
 
-Das Dashboard muss eine auf dem Whiteboard erstellte Zeichnung über die API des Whiteboards in der PostgreSQL Datenbank speichern und beim erneuten Öffnen wieder laden
+Das Dashboard muss eine auf dem Whiteboard erstellte Zeichnung automatisch speichern und beim erneuten Öffnen wieder anzeigen.
 
 **Vorbereitung:**
 
-- Das Dashboard und die API des Whiteboards sind erreichbar
-- Die PostgreSQL Datenbank ist erreichbar
-- Die Tabelle `whiteboard_state` und der Datensatz mit der ID `1` sind vorhanden
+- Das Dashboard ist erreichbar
 - Die Seite Notes mit dem Whiteboard ist geöffnet
 - Für den Test werden einfache Formen und Text ohne eingefügte Bilddateien verwendet
 
@@ -165,7 +163,7 @@ Das Dashboard muss eine auf dem Whiteboard erstellte Zeichnung über die API des
 
 **Erwartetes Resultat:**
 
-Die Testzeichnung wird gespeichert und nach dem Aktualisieren oder erneuten Öffnen mit allen erstellten Formen und Textelementen an den gespeicherten Positionen wieder angezeigt
+Die Testzeichnung wird gespeichert und nach dem Aktualisieren oder erneuten Öffnen mit allen erstellten Formen und Textelementen an den gespeicherten Positionen wieder angezeigt.
 
 ---
 
@@ -173,7 +171,7 @@ Die Testzeichnung wird gespeichert und nach dem Aktualisieren oder erneuten Öff
 
 **Anforderung:**
 
-Das Server Dashboard muss als installierte PWA auf dem Smartphone übersichtlich dargestellt und vollständig über die mobile Navigation bedienbar sein
+Das Server Dashboard muss als installierte PWA auf dem Smartphone übersichtlich dargestellt und vollständig über die mobile Navigation bedienbar sein.
 
 **Vorbereitung:**
 
@@ -193,12 +191,12 @@ Das Server Dashboard muss als installierte PWA auf dem Smartphone übersichtlich
 
 **Erwartetes Resultat:**
 
-Die PWA startet im Standalone Modus auf dem Smartphone und alle aufgeführten Seiten können über das mobile Navigationsmenü geöffnet werden, der jeweils ausgewählte Inhalt wird korrekt dargestellt, Texte, Schaltflächen und Formulare überlappen sich nicht, werden nicht abgeschnitten und können bedient werden und das Navigationsmenü lässt sich zuverlässig öffnen und schliessen
+Die PWA startet im Standalone Modus auf dem Smartphone und alle aufgeführten Seiten können über das mobile Navigationsmenü geöffnet werden, der jeweils ausgewählte Inhalt wird korrekt dargestellt, Texte, Schaltflächen und Formulare überlappen sich nicht, werden nicht abgeschnitten und können bedient werden und das Navigationsmenü lässt sich zuverlässig öffnen und schliessen.
 
 
 ## Aufbau der Testumgebung
 
-Für die Durchfürung der definierten Testfälle wurde die benötigte Testumgebung vorbereitet
+Für die Durchführung der definierten Testfälle wurde die benötigte Testumgebung vorbereitet:
 
 - Das Server Dashboard läuft auf dem Ubuntu Server und ist über Tailscale erreichbar
 - Die benötigten PostgreSQL Datenbanken und API Routen sind erreichbar
