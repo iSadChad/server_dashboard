@@ -14,13 +14,12 @@ Für die Funktionstests werden Testeinträge verwendet, zum Beispiel Notizen und
 Für die Tests des Server Dashboard werden folgende Testmittel verwendet:
 
 - **Google Chrome:** zum Testen der Benutzeroberfläche und der Funktionen auf dem Windows PC
-- **Entwicklerwerkzeuge von Chrome:** zum Überprüfen der API Anfragen, Fehlermeldungen und verschiedenen Bildschirmgrössen
 - **Installierte Desktop PWA:** zum Testen des Dashboards als eigenständige Anwendung unter Windows
 - **Smartphone mit Safari:** zum Installieren der PWA über die Funktion Zum Home Bildschirm sowie zum Testen der mobilen Darstellung und Bedienung
 - **Kommandozeile des Ubuntu Servers:** zum Überprüfen der Serverausgaben und Fehlermeldungen
 - **Vorbereitete Testdaten:** zum Erstellen, Bearbeiten und Löschen von Einträgen, ohne wichtige Daten zu gefährden
 
-Diese Testmittel werden für Tests der Funktionen, der Benutzeroberfläche, der API und der responsiven Darstellung eingesetzt.
+Diese Testmittel werden für Tests der Funktionen, der Benutzeroberfläche, der Verbindungen zwischen den Komponenten und der responsiven Darstellung eingesetzt.
 
 
 ## Testfälle
@@ -126,7 +125,6 @@ Das Formular auf der Seite Tasks darf keine Aufgabe ohne gültigen Titel absende
 - Das Dashboard ist erreichbar
 - Die Seite Tasks ist geöffnet
 - Das Formular zum Erstellen einer Aufgabe ist leer
-- Die Netzwerkansicht der Entwicklerwerkzeuge von Chrome ist geöffnet
 
 **Testschritte:**
 
@@ -134,12 +132,11 @@ Das Formular auf der Seite Tasks darf keine Aufgabe ohne gültigen Titel absende
 2. Optional eine Beschreibung, Kategorie oder Priorität eingeben
 3. Kontrollieren, ob die Schaltfläche zum Erstellen der Aufgabe deaktiviert ist
 4. Versuchen, das Formular mit der Eingabetaste abzusenden
-5. In der Netzwerkansicht kontrollieren, ob eine POST Anfrage an `/api/tasks` gesendet wurde
-6. Kontrollieren, ob in der Aufgabenliste ein neuer Eintrag erstellt wurde
+5. Kontrollieren, ob in der Aufgabenliste ein neuer Eintrag erstellt wurde
 
 **Erwartetes Resultat:**
 
-Die Schaltfläche zum Erstellen der Aufgabe bleibt deaktiviert, das Formular sendet keine POST Anfrage an `/api/tasks` und in der Aufgabenliste wird kein neuer Eintrag erstellt
+Die Schaltfläche zum Erstellen der Aufgabe bleibt deaktiviert, das Formular kann nicht abgesendet werden und in der Aufgabenliste wird kein neuer Eintrag erstellt
 
 ---
 
@@ -155,22 +152,20 @@ Das Dashboard muss eine auf dem Whiteboard erstellte Zeichnung über die API des
 - Die PostgreSQL Datenbank ist erreichbar
 - Die Tabelle `whiteboard_state` und der Datensatz mit der ID `1` sind vorhanden
 - Die Seite Notes mit dem Whiteboard ist geöffnet
-- Die Netzwerkansicht der Entwicklerwerkzeuge von Chrome ist geöffnet
 - Für den Test werden einfache Formen und Text ohne eingefügte Bilddateien verwendet
 
 **Testschritte:**
 
 1. Das Whiteboard auf der Seite Notes öffnen
-2. Warten, bis die GET Anfrage an `/api/whiteboard` erfolgreich abgeschlossen ist
+2. Warten, bis das Whiteboard vollständig geladen ist
 3. Eine erkennbare Testzeichnung aus mindestens einer Form und einem Textelement erstellen
 4. Nach der letzten Änderung mindestens zwei Sekunden warten, damit die Zeichnung gespeichert werden kann
-5. Kontrollieren, ob die PATCH Anfrage an `/api/whiteboard` erfolgreich abgeschlossen wurde
-6. Die Seite aktualisieren oder die PWA schliessen und erneut öffnen
-7. Das Whiteboard wieder öffnen und die geladene Zeichnung mit der zuvor erstellten Testzeichnung vergleichen
+5. Die Seite aktualisieren oder die PWA schliessen und erneut öffnen
+6. Das Whiteboard wieder öffnen und die geladene Zeichnung mit der zuvor erstellten Testzeichnung vergleichen
 
 **Erwartetes Resultat:**
 
-Die GET und PATCH Anfragen an `/api/whiteboard` werden mit dem HTTP Statuscode `200` abgeschlossen, die Testzeichnung wird in der Datenbank gespeichert und nach dem Aktualisieren oder erneuten Öffnen mit allen erstellten Formen und Textelementen an den gespeicherten Positionen wieder angezeigt
+Die Testzeichnung wird gespeichert und nach dem Aktualisieren oder erneuten Öffnen mit allen erstellten Formen und Textelementen an den gespeicherten Positionen wieder angezeigt
 
 ---
 
@@ -210,7 +205,7 @@ Für die Durchfürung der definierten Testfälle wurde die benötigte Testumgebu
 - Der Admin Bereich kann den Status der ausgewählten Dienste des Servers überprüfen
 - Der Worker für die Aufgabenerinnerungen läuft und die Push Benachrichtigungen sind auf dem Smartphone eingerichtet
 - Die PWA ist auf dem Windows PC und dem Smartphone installiert
-- Google Chrome, die Entwicklerwerkzeuge von Chrome und der Zugriff auf die Kommandozeile des Servers stehen zur Verfügung
+- Google Chrome und der Zugriff auf die Kommandozeile des Servers stehen zur Verfügung
 - Die Tabelle `whiteboard_state` mit dem benötigten Datensatz ist vorhanden
 - Testdaten für Aufgaben und das Whiteboard wurden vorbereitet
 - Für den Test des erreichbaren und nicht erreichbaren Zustands wurde ein nicht kritischer Dienst auf dem Server ausgewählt
