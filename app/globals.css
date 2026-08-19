@@ -1921,3 +1921,11 @@ details[open] > summary {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
+
+/* Keep the shared command-header look, but use toolbar proportions on Network. */
+.network-header,
+.vapor-header.network-header {
+  min-height: 0;
+  padding: 0.8rem 1rem;
+  border-radius: 1rem;
+}
