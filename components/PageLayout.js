@@ -44,6 +44,11 @@ const navItems = [
     icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z",
   },
   {
+    label: "Network",
+    href: "/network",
+    icon: "M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01",
+  },
+  {
     label: "Admin",
     href: "/admin",
     icon: "M12 15c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z",
@@ -207,7 +212,7 @@ export default function PageLayout({ children }) {
               <div className="mb-3 flex items-center gap-2 px-3">
                 <span className="font-mono text-[9px] font-semibold tracking-[0.25em] text-fuchsia-200/55">SYS.NAV</span>
                 <span className="h-px flex-1 bg-linear-to-r from-fuchsia-300/30 to-transparent" />
-                <span className="font-mono text-[9px] text-cyan-200/45">06</span>
+                <span className="font-mono text-[9px] text-cyan-200/45">{String(navItems.length).padStart(2, "0")}</span>
               </div>
             )}
 
