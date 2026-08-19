@@ -1925,7 +1925,15 @@ details[open] > summary {
 /* Keep the shared command-header look, but use toolbar proportions on Network. */
 .network-header,
 .vapor-header.network-header {
-  min-height: 0;
-  padding: 0.8rem 1rem;
-  border-radius: 1rem;
+  min-height: 96px;
+  padding: 1rem 1.25rem;
+  border-radius: 1.25rem;
+}
+
+@media (max-width: 639px) {
+  .network-header,
+  .vapor-header.network-header {
+    min-height: 88px;
+    padding: 0.9rem 1rem;
+  }
 }

@@ -111,7 +111,7 @@ function NetworkContent() {
           <div>
             <p className="vapor-kicker font-mono text-[9px] font-bold uppercase tracking-[0.26em] text-cyan-300/70">Mesh console // tailscale layer</p>
             <div className="mt-0.5 flex items-center gap-3">
-              <h2 className="vapor-title text-2xl font-black tracking-tight text-white">Network</h2>
+              <h2 className="vapor-title text-3xl font-black tracking-tight text-white">Network</h2>
               <StatusDot online={connected} pulse />
             </div>
             <p className="vapor-muted mt-0.5 text-[11px] text-violet-100/50">Private devices and tunnel health</p>
