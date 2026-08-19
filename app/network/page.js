@@ -107,11 +107,14 @@ function NetworkContent() {
 
   return (
     <div className="vapor-page p-3 sm:p-4 lg:p-8">
-      <header className="vapor-header relative mb-4 flex flex-col gap-3 rounded-xl border border-cyan-300/20 bg-cyan-400/[0.06] px-4 py-3 shadow-[0_0_24px_rgba(34,211,238,0.07)] sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <StatusDot online={connected} pulse />
-            <h2 className="text-lg font-black tracking-tight text-white">Network</h2>
-            <span className="hidden font-mono text-[9px] uppercase tracking-[0.2em] text-cyan-300/50 sm:inline">Tailscale mesh</span>
+      <header className="vapor-header page-command-header network-header mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="vapor-kicker font-mono text-[9px] font-bold uppercase tracking-[0.26em] text-cyan-300/70">Mesh console // tailscale layer</p>
+            <div className="mt-0.5 flex items-center gap-3">
+              <h2 className="vapor-title text-2xl font-black tracking-tight text-white">Network</h2>
+              <StatusDot online={connected} pulse />
+            </div>
+            <p className="vapor-muted mt-0.5 text-[11px] text-violet-100/50">Private devices and tunnel health</p>
           </div>
           <div className="flex w-full items-center gap-3 sm:w-auto">
             <button type="button" onClick={fetchNetwork} disabled={loading} className="rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-cyan-100 transition-all hover:-translate-y-0.5 hover:bg-fuchsia-300/10 disabled:cursor-wait disabled:opacity-55">{loading ? "Scanning" : "Refresh"}</button>
