@@ -107,19 +107,16 @@ function NetworkContent() {
 
   return (
     <div className="vapor-page p-3 sm:p-4 lg:p-8">
-      <header className="vapor-header page-command-header relative mb-5 overflow-hidden rounded-2xl border border-cyan-300/20 bg-linear-to-br from-cyan-400/15 via-violet-500/10 to-fuchsia-400/10 px-5 py-4 shadow-[0_0_40px_rgba(34,211,238,0.1)] md:px-6 md:py-5">
-        <div className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full border border-cyan-300/10" />
-        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="mb-1 font-mono text-[9px] font-bold uppercase tracking-[0.28em] text-cyan-300/75">Mesh console // tailscale layer</p>
-            <h2 className="text-2xl font-black tracking-tight text-white md:text-3xl">Network</h2>
-            <p className="mt-1 text-xs text-violet-100/55">Private devices, tunnel health and mesh availability</p>
+      <header className="vapor-header relative mb-4 flex flex-col gap-3 rounded-xl border border-cyan-300/20 bg-cyan-400/[0.06] px-4 py-3 shadow-[0_0_24px_rgba(34,211,238,0.07)] sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <StatusDot online={connected} pulse />
+            <h2 className="text-lg font-black tracking-tight text-white">Network</h2>
+            <span className="hidden font-mono text-[9px] uppercase tracking-[0.2em] text-cyan-300/50 sm:inline">Tailscale mesh</span>
           </div>
           <div className="flex w-full items-center gap-3 sm:w-auto">
             <button type="button" onClick={fetchNetwork} disabled={loading} className="rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-cyan-100 transition-all hover:-translate-y-0.5 hover:bg-fuchsia-300/10 disabled:cursor-wait disabled:opacity-55">{loading ? "Scanning" : "Refresh"}</button>
             <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-violet-300/20 bg-violet-300/[0.08] px-4 py-2.5 font-mono text-[10px] text-violet-100/60 sm:flex-none"><StatusDot online={connected} pulse /><span className="truncate">{loading ? "Reading mesh" : dateTime(network.updatedAt)}</span></div>
           </div>
-        </div>
       </header>
 
       {network.status === "error" && <div className="mb-6 flex items-center gap-3 rounded-2xl border border-rose-400/25 bg-rose-400/10 px-4 py-3 text-sm text-rose-100"><StatusDot online={false} /><div><strong>Network data unavailable.</strong> <span className="text-rose-100/60">{network.message}</span></div></div>}
