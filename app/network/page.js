@@ -107,14 +107,14 @@ function NetworkContent() {
 
   return (
     <div className="vapor-page p-3 sm:p-4 lg:p-8">
-      <header className="vapor-header page-command-header network-header mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <header className="vapor-header page-command-header relative mb-6 flex flex-col gap-4 overflow-hidden rounded-3xl border border-cyan-300/20 bg-linear-to-br from-cyan-400/15 via-violet-500/10 to-fuchsia-400/10 px-5 py-6 shadow-[0_0_55px_rgba(34,211,238,0.12)] sm:flex-row sm:items-end sm:justify-between md:mb-8 md:px-7 md:py-8">
           <div>
-            <p className="vapor-kicker font-mono text-[9px] font-bold uppercase tracking-[0.26em] text-cyan-300/70">Mesh console // tailscale layer</p>
-            <div className="mt-0.5 flex items-center gap-3">
-              <h2 className="vapor-title text-3xl font-black tracking-tight text-white">Network</h2>
+            <p className="vapor-kicker mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-300/75">Mesh console // tailscale layer</p>
+            <div className="flex items-center gap-3">
+              <h2 className="vapor-title text-3xl font-black tracking-tight text-white md:text-5xl">Network</h2>
               <StatusDot online={connected} pulse />
             </div>
-            <p className="vapor-muted mt-0.5 text-[11px] text-violet-100/50">Private devices and tunnel health</p>
+            <p className="vapor-muted mt-2 text-sm text-violet-100/55">Private devices, tunnel health and mesh availability</p>
           </div>
           <div className="flex w-full items-center gap-3 sm:w-auto">
             <button type="button" onClick={fetchNetwork} disabled={loading} className="rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-cyan-100 transition-all hover:-translate-y-0.5 hover:bg-fuchsia-300/10 disabled:cursor-wait disabled:opacity-55">{loading ? "Scanning" : "Refresh"}</button>
