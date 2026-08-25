@@ -43,19 +43,16 @@ function parseTailscaleStatus(stdout) {
 }
 
 function parseTailscalePing(stdout) {
-  const str = stdout;
-  const ping = str.split("\n");
+  const ping = stdout.split("\n").filter(Boolean);
+  const lastPing = ping.at(-1);
+  const pong = lastPing.split(" ");
   
-  const pong = ping.split(" ");
-
-
 
   return {
-    peerName: obj.peerName,
-    peerIp: obj.peerIp,
-    connectionType: obj.connectionType,
-    latencyMs: obj.latencyMs,
-    relayRegion: obj.relayRegion
+    peerName: pong[2],
+    peerIp: pong[3],
+    path: pong[5],
+    latencyMs: pong[7]
   };
 }
 
