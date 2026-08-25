@@ -42,15 +42,35 @@ function parseTailscaleStatus(stdout) {
 
 }
 
+function parseTailscalePing(stdout) {
+  const str = stdout;
+  const ping = str.split("\n");
+  
+  const pong = ping.split(" ");
 
+
+
+  return {
+    peerName: obj.peerName,
+    peerIp: obj.peerIp,
+    connectionType: obj.connectionType,
+    latencyMs: obj.latencyMs,
+    relayRegion: obj.relayRegion
+  };
+}
 
 
 export async function GET() {
     try {
         const tailscaleResult = await runCommand("tailscale", ["status", "--json"], 5000);
-
+        
         if(!tailscaleResult.ok) {
             throw new Error(tailscaleResult.error);
+        }
+
+        const pingResult = await runCommand("tailscale", ["ping", "iphone181"], 5000);
+        if(!pingResult.ok) {
+          throw new Error(pingResult.error);
         }
 
         const tailscaleStatus = parseTailscaleStatus(tailscaleResult.stdout); 
@@ -62,12 +82,25 @@ export async function GET() {
             networkStatus = "disconnected";
         } 
 
+        const tailscalePing = parseTailscalePing(pingResult.stdout);
+        let pingInformation = "unknown";
+
+          if(tailscalePing.connectionType === "DERP") {
+            pingInformation = "DERP";
+          } else if (tailscalePing.connectionType === "peer-relay") {
+            pingInformation = "peer-relay";
+          } else (pingInformation = "direct");
+          
+
+
         return Response.json({
-        status: "ok", 
-        networkStatus,
-        tailscale: tailscaleStatus,
-        updatedAt: new Date().toISOString(),
-      });
+            status: "ok", 
+            networkStatus,
+            tailscale: tailscaleStatus,
+            ping: tailscalePing
+        }
+        
+      );
     } catch (error) {
     console.error("Failed to load network status:", error);
 
