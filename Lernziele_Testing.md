@@ -1,10 +1,12 @@
 # Testing des Server Dashboard
 
+
+
 ## Testumgebung
 
 Getestet wird mein selbst entwickeltes Server Dashboard, die Applikation wurde mit Next.js entwickelt und läuft auf einem Ubuntu Server, als Laufzeitumgebung wird Node.js verwendet und die Daten werden aus einer PostgreSQL Datenbank sowie über verschiedene API Routen abgerufen.
 
-Auf meinem Windows PC ist das Dashboard als PWA installiert, die Benutzeroberfläche wird deshalb hauptsächlich über die installierte Desktop App getestet und da diese auf der Browser Technologie von Chrome basiert, werden ausgewählte Tests zusätzlich direkt im Webbrowser durchgeführt.
+Auf meinem Windows PC wird das Dashboard mit Google Chrome geöffnet und getestet.
 
 Der Zugriff auf das Dashboard erfolgt über Tailscale. Die Darstellung wird auf dem Windows PC und auf meinem Handy getestet, wodurch sowohl die Ansicht auf dem Desktop als auch die mobile Ansicht überprüft werden.
 Für die Funktionstests werden Testeinträge verwendet, zum Beispiel Notizen und Aufgaben, dadurch können Daten erstellt, bearbeitet und gelöscht werden, ohne wichtige Daten zu gefährden.
@@ -14,12 +16,14 @@ Für die Funktionstests werden Testeinträge verwendet, zum Beispiel Notizen und
 Für die Tests des Server Dashboard werden folgende Testmittel verwendet:
 
 - **Google Chrome:** zum Testen der Benutzeroberfläche und der Funktionen auf dem Windows PC
-- **Installierte Desktop PWA:** zum Testen des Dashboards als eigenständige Anwendung unter Windows
 - **Smartphone mit Safari:** zum Installieren der PWA über die Funktion Zum Home Bildschirm sowie zum Testen der mobilen Darstellung und Bedienung
 - **Kommandozeile des Ubuntu Servers:** zum Überprüfen der Serverausgaben und Fehlermeldungen
+- **Node.js Test Runner:** zum automatischen Prüfen der Antwort der Statistik API
 - **Vorbereitete Testdaten:** zum Erstellen, Bearbeiten und Löschen von Einträgen, ohne wichtige Daten zu gefährden
 
-Diese Testmittel werden für Tests der Funktionen, der Benutzeroberfläche, der Verbindungen zwischen den Komponenten und der responsiven Darstellung eingesetzt.
+<br>
+
+Diese Testmittel werden für manuelle und automatische Tests der Funktionen, der Benutzeroberfläche, der Verbindungen zwischen den Komponenten und der responsiven Darstellung eingesetzt.
 
 
 ## Testfälle
@@ -49,6 +53,8 @@ Der Admin Bereich muss anzeigen, ob ein vom Server geprüftes Tool beziehungswei
 4. Das ausgewählte Tool auf dem Ubuntu Server stoppen
 5. Den Admin Bereich erneut aktualisieren
 6. Den angezeigten Status unter Service Health erneut kontrollieren
+
+<br>
 
 **Erwartetes Resultat:**
 
@@ -81,13 +87,42 @@ Die auf dem Smartphone installierte PWA muss zum festgelegten Erinnerungszeitpun
 6. Kontrollieren, ob auf dem Smartphone eine Benachrichtigung erscheint
 7. Kontrollieren, ob der Titel der Benachrichtigung zur erstellten Aufgabe gehört
 
+<br>
+
 **Erwartetes Resultat:**
 
 Die Benachrichtigung erscheint spätestens ungefähr eine Minute nach dem festgelegten Erinnerungszeitpunkt auf dem Smartphone und enthält den Titel der zuvor erstellten Aufgabe.
 
 ---
 
-### TC-03: Statistiken des Servers werden korrekt angezeigt
+### TC-03A: Antwort der Statistik API automatisch prüfen
+
+**Anforderung:**
+
+Die Statistik API muss die Werte für CPU, Arbeitsspeicher, Speicherplatz und Uptime vollständig und in einem gültigen Zahlenformat zurückgeben.
+
+**Vorbereitung:**
+
+- Das Dashboard läuft auf dem Ubuntu Server
+- Node.js ist auf dem Ubuntu Server installiert
+- Die Testdatei `tests/stats-api.test.mjs` ist vorhanden
+
+**Testschritte:**
+
+1. Die Kommandozeile im Projektordner öffnen
+2. Den Befehl `npm run test:stats` ausführen
+3. Der automatische Test ruft die Route `/api/stats` auf
+4. Der Test prüft den HTTP Statuscode und die zurückgegebenen Werte
+
+<br>
+
+**Erwartetes Resultat:**
+
+Die Route gibt den HTTP Statuscode `200` und eine JSON Antwort zurück, der CPU Wert liegt zwischen 0 und 100, die Werte für Arbeitsspeicher und Speicherplatz sind gültig und die Uptime ist grösser als 0.
+
+---
+
+### TC-03B: Statistiken des Servers manuell vergleichen
 
 **Anforderung:**
 
@@ -107,6 +142,8 @@ Das Dashboard muss die aktuellen Statistiken des Servers wie normalisierte CPU A
 4. Für den Vergleich der CPU Werte den Lastdurchschnitt der letzten Minute durch die Anzahl der Prozessorkerne teilen und in Prozent umrechnen
 5. Die Werte aus dem Dashboard mit den Werten aus der Kommandozeile vergleichen
 6. Das Dashboard aktualisieren und kontrollieren, ob die Statistiken weiterhin angezeigt werden
+
+<br>
 
 **Erwartetes Resultat:**
 
@@ -134,6 +171,8 @@ Das Formular auf der Seite Tasks darf keine Aufgabe ohne gültigen Titel absende
 4. Versuchen, das Formular mit der Eingabetaste abzusenden
 5. Kontrollieren, ob in der Aufgabenliste ein neuer Eintrag erstellt wurde
 
+<br>
+
 **Erwartetes Resultat:**
 
 Die Schaltfläche zum Erstellen der Aufgabe bleibt deaktiviert, das Formular kann nicht abgesendet werden und in der Aufgabenliste wird kein neuer Eintrag erstellt.
@@ -160,6 +199,9 @@ Das Dashboard muss eine auf dem Whiteboard erstellte Zeichnung automatisch speic
 4. Nach der letzten Änderung mindestens zwei Sekunden warten, damit die Zeichnung gespeichert werden kann
 5. Die Seite aktualisieren oder die PWA schliessen und erneut öffnen
 6. Das Whiteboard wieder öffnen und die geladene Zeichnung mit der zuvor erstellten Testzeichnung vergleichen
+
+<br>
+
 
 **Erwartetes Resultat:**
 
@@ -189,6 +231,8 @@ Das Server Dashboard muss als installierte PWA auf dem Smartphone übersichtlich
 6. Prüfen, ob Schaltflächen, Formulare und andere Bedienelemente erreichbar und bedienbar sind
 7. Kontrollieren, ob das Navigationsmenü nach der Auswahl einer Seite geschlossen wird und erneut geöffnet werden kann
 
+<br>
+
 **Erwartetes Resultat:**
 
 Die PWA startet im Standalone Modus auf dem Smartphone und alle aufgeführten Seiten können über das mobile Navigationsmenü geöffnet werden, der jeweils ausgewählte Inhalt wird korrekt dargestellt, Texte, Schaltflächen und Formulare überlappen sich nicht, werden nicht abgeschnitten und können bedient werden und das Navigationsmenü lässt sich zuverlässig öffnen und schliessen.
@@ -202,8 +246,39 @@ Für die Durchführung der definierten Testfälle wurde die benötigte Testumgeb
 - Die benötigten PostgreSQL Datenbanken und API Routen sind erreichbar
 - Der Admin Bereich kann den Status der ausgewählten Dienste des Servers überprüfen
 - Der Worker für die Aufgabenerinnerungen läuft und die Push Benachrichtigungen sind auf dem Smartphone eingerichtet
-- Die PWA ist auf dem Windows PC und dem Smartphone installiert
+- Die PWA ist auf dem Smartphone installiert
 - Google Chrome und der Zugriff auf die Kommandozeile des Servers stehen zur Verfügung
 - Die Tabelle `whiteboard_state` mit dem benötigten Datensatz ist vorhanden
 - Testdaten für Aufgaben und das Whiteboard wurden vorbereitet
 - Für den Test des erreichbaren und nicht erreichbaren Zustands wurde ein nicht kritischer Dienst auf dem Server ausgewählt
+
+<br>
+
+**Checkliste der Testumgebung:**
+
+| Nr | Überprüfung | Ergebnis |
+| --- | --- | --- |
+| 1 | Dashboard über Tailscale geöffnet | Erreichbar |
+| 2 | PWA auf dem Smartphone installiert | Installiert |
+| 3 | Dashboard und Worker auf dem Ubuntu Server gestartet | Aktiv |
+| 4 | PostgreSQL Datenbanken und benötigte Tabellen vorhanden | Vorhanden |
+| 5 | Benachrichtigungen auf dem Smartphone erlaubt | Aktiviert |
+
+
+## Implementierung der automatisierbaren Testfälle
+
+Der automatisch prüfbare Teil von TC 03 wurde als TC 03A umgesetzt, dafür wird der in Node.js enthaltene Test Runner verwendet und es werden keine zusätzlichen Pakete benötigt.
+
+Die automatische Prüfung befindet sich in der Datei `tests/stats-api.test.mjs` und kann im Projektordner mit folgendem Befehl gestartet werden:
+
+`npm run test:stats`
+
+Der automatische Test kontrolliert:
+
+- Ob die Route `/api/stats` erreichbar ist
+- Ob der HTTP Statuscode `200` zurückgegeben wird
+- Ob die Antwort im JSON Format vorliegt
+- Ob CPU, Arbeitsspeicher, Speicherplatz und Uptime vorhanden sind
+- Ob die Werte Zahlen sind und in gültigen Bereichen liegen
+
+Die vollständige Durchführung des Tests erfolgt bei Lernziel 6.6 und die Auswertung des Resultats bei Lernziel 6.7.
