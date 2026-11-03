@@ -43,9 +43,9 @@ npm_run_build() {
 }
 
 pm2_restart() {
-  log "Restarting PM2 process..."
-  pm2 restart server-dashboard
-  log "PM2 process restarted."
+  log "Restarting all PM2 processes..."
+  pm2 restart all
+  log "All PM2 processes restarted."
 }
 
 main() {
