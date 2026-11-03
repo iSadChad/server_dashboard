@@ -1246,6 +1246,21 @@ html {
     inset 0 1px rgba(255, 255, 255, 0.04);
 }
 
+.cyber-root select,
+select.vapor-input {
+  color-scheme: dark;
+  background-color: #0f042a !important;
+}
+
+/* Native option menus cannot inherit the select's gradient reliably. */
+.cyber-root select option,
+select.vapor-input option,
+.cyber-root select optgroup,
+select.vapor-input optgroup {
+  color: #fff8ff;
+  background-color: #0f042a;
+}
+
 .cyber-root input::placeholder,
 .cyber-root textarea::placeholder {
   color: rgba(181, 163, 225, 0.44);
