@@ -1,6 +1,8 @@
 const { loadEnvConfig } = require("@next/env");
 const pg = require("pg");
 const webpush = require("web-push");
+const { ensureSchema } = require("../lib/schedule-store.cjs");
+const { scanScheduleReminders } = require("../lib/schedule-worker.cjs");
 
 loadEnvConfig(process.cwd());
 
@@ -75,6 +77,7 @@ function formatDueDate(value) {
 }
 
 async function ensureDatabaseStructure() {
+  await ensureSchema(pool);
   await pool.query(`
     ALTER TABLE tasks
     ADD COLUMN IF NOT EXISTS reminder_sent_at TIMESTAMPTZ NULL;
@@ -213,6 +216,8 @@ async function scanForReminders() {
       log("Another reminder worker is already processing tasks.");
       return;
     }
+
+    await scanScheduleReminders(pool, sendPush);
 
     const subscriptionsResult = await client.query(`
       SELECT endpoint, p256dh, auth
