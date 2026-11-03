@@ -3,6 +3,7 @@
 import { cloneElement, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import PageLayout from "../../components/PageLayout";
 import TaskNotifications from "../../components/TaskNotifications";
+import ScheduleCalendar from "../../components/ScheduleCalendar";
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const kinds = { once: "One-time", interval: "Interval", daily: "Daily", weekly: "Weekly" };
@@ -211,6 +212,14 @@ function ScheduleContent() {
       </div>
       {error && <div role="alert" className="mb-4 rounded-xl border border-amber-300/40 bg-amber-500/10 p-4 text-sm text-amber-200">{error}</div>}
       <p role="status" className="mb-3 text-sm text-cyan-200">{notice}</p>
+
+      {browserZone && <ScheduleCalendar entries={entries} timeZone={browserZone} pending={pending} onEdit={edit} onCreate={(day) => {
+        setEditingId(null);
+        setForm({ ...newForm(browserZone), startsAt: `${day}T09:00` });
+        setFormError("");
+        formSection.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        formSection.current?.querySelector("input")?.focus({ preventScroll: true });
+      }} />}
 
       <div className="grid min-w-0 grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(300px,0.8fr)_minmax(0,1.4fr)]">
         <section ref={formSection} aria-labelledby="schedule-form-title" className="vapor-panel min-w-0 rounded-3xl border p-4 sm:p-6">

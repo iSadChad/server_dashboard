@@ -8,6 +8,8 @@ Open **Schedule** in the sidebar to create one-time, interval, daily, or weekly 
 
 The selected timezone controls weekdays and active hours. Daily/weekly entries keep their local clock time across daylight-saving changes. A nonexistent spring-forward time is skipped; a repeated fall-back time runs once. The start-date input uses your device's local timezone; the agenda displays each entry in its saved timezone.
 
+The calendar offers **Month** and **Week** views, previous/next navigation, and a Today button. Select a month date to see its occurrences and add a reminder; click an occurrence to edit the underlying reminder series. Weekly columns show times in chronological order and scroll horizontally on small screens. The agenda remains below for managing paused reminders. Calendar times use your device timezone. Recurring dates are projections of current rules, not delivery history; paused entries are hidden, month cells preview up to three occurrences, and day lists show up to 200.
+
 ### Storage and notifications
 
 - Schedule uses the existing `TASKS_DATABASE_URL`. Its `schedule_entries` table is created automatically by the API or reminder worker; no separate database is needed.
