@@ -4,6 +4,9 @@ import { cloneElement, useCallback, useEffect, useId, useMemo, useRef, useState 
 import PageLayout from "../../components/PageLayout";
 import TaskNotifications from "../../components/TaskNotifications";
 import ScheduleCalendar from "../../components/ScheduleCalendar";
+import schedule from "../../lib/schedule.cjs";
+
+const { parseDuration, formatDuration } = schedule;
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const kinds = { once: "One-time", interval: "Interval", daily: "Daily", weekly: "Weekly" };
@@ -11,7 +14,7 @@ const inputStyle = "vapor-input block min-w-0 w-full rounded-xl border border-fu
 const buttonStyle = "vapor-button min-h-11 rounded-xl border border-cyan-300/25 px-3 py-2 text-xs font-bold text-cyan-100 transition-colors disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-cyan-200";
 
 function newForm(timeZone = "") {
-  return { title: "", notes: "", kind: "once", startsAt: "", timeZone, intervalMinutes: "60", weekdays: [], activeStart: "", activeEnd: "", notifications: true, enabled: true };
+  return { title: "", notes: "", kind: "once", startsAt: "", timeZone, duration: "", intervalMinutes: "60", weekdays: [], activeStart: "", activeEnd: "", notifications: true, enabled: true };
 }
 
 function localInput(value) {
@@ -37,7 +40,7 @@ function buildPayload(form, creating) {
   if (interval && form.activeStart && form.activeStart >= form.activeEnd) throw new Error("The active window must end after it starts. Overnight windows are not supported.");
   return {
     title: form.title.trim(), notes: form.notes.trim(), kind: form.kind,
-    startsAt: start.toISOString(), timeZone, intervalMinutes,
+    startsAt: start.toISOString(), timeZone, intervalMinutes, durationMinutes: parseDuration(form.duration),
     weekdays: interval || form.kind === "weekly" ? [...form.weekdays].sort((a, b) => a - b) : [],
     activeStart: interval && form.activeStart ? form.activeStart : null,
     activeEnd: interval && form.activeEnd ? form.activeEnd : null,
@@ -133,7 +136,7 @@ function ScheduleContent() {
 
   function edit(entry) {
     setEditingId(entry.id);
-    setForm({ ...entry, startsAt: localInput(entry.startsAt), intervalMinutes: String(entry.intervalMinutes ?? 60), activeStart: entry.activeStart || "", activeEnd: entry.activeEnd || "" });
+    setForm({ ...entry, startsAt: localInput(entry.startsAt), duration: formatDuration(entry.durationMinutes), intervalMinutes: String(entry.intervalMinutes ?? 60), activeStart: entry.activeStart || "", activeEnd: entry.activeEnd || "" });
     setFormError("");
     setNotice("");
     formSection.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -231,6 +234,8 @@ function ScheduleContent() {
               <Field label="Notes"><textarea rows={3} maxLength={5000} value={form.notes} onChange={set("notes")} placeholder="Optional details…" className={inputStyle} /></Field>
               <Field label="Repeat"><select value={form.kind} onChange={set("kind")} className={inputStyle}>{Object.entries(kinds).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></Field>
               <Field label={form.kind === "once" ? "Reminder date and time" : "First occurrence / start anchor"}><input required type="datetime-local" step="60" value={form.startsAt} onChange={set("startsAt")} className={inputStyle} /></Field>
+              <Field label="Duration (optional)"><input value={form.duration} onChange={set("duration")} placeholder="e.g. 1h, 1h 30m, or 45m" maxLength={30} className={inputStyle} /></Field>
+              <p className="vapor-muted text-xs">Leave empty for a reminder without a duration. Applies to each occurrence; notifications still arrive at the start.</p>
               <p className="vapor-muted text-xs leading-relaxed">Start time uses your device&apos;s local time{browserZone ? ` (${browserZone})` : ""} and is saved as an ISO instant. {form.kind === "interval" ? "Intervals are anchored to this first occurrence." : form.kind === "once" ? "This reminder runs once." : "Daily and weekly repeats use this instant’s clock time in the schedule time zone."}</p>
               <Field label="Schedule time zone (IANA)"><input required value={form.timeZone} onChange={set("timeZone")} placeholder="Europe/Zurich" className={inputStyle} spellCheck={false} /></Field>
               <p className="vapor-muted text-xs">Recurrence weekdays and active windows use this time zone.</p>
@@ -259,6 +264,7 @@ function ScheduleContent() {
               <h4 className="mt-3 text-base font-semibold wrap-break-word text-fuchsia-50">{entry.title}</h4>
               {entry.notes && <p className="vapor-muted mt-2 whitespace-pre-wrap text-xs leading-relaxed wrap-break-word">{entry.notes}</p>}
               <p className="mt-3 text-xs leading-relaxed wrap-break-word text-cyan-100">{recurrence(entry)}</p>
+              {entry.durationMinutes && <p className="mt-2 text-xs text-cyan-100">Duration: {formatDuration(entry.durationMinutes)}</p>}
               <p className="mt-2 text-sm leading-relaxed wrap-break-word text-fuchsia-100"><span className="font-semibold">Next run: </span>{!entry.enabled ? `Paused · ${entry.timeZone}` : formatInstant(entry.nextRunAt, entry.timeZone)}</p>
               <p className="vapor-muted mt-2 text-xs leading-relaxed wrap-break-word">Starts: {formatInstant(entry.startsAt, entry.timeZone)}</p>
               <div className="mt-4 flex flex-wrap gap-2"><button type="button" disabled={pending} onClick={() => edit(entry)} className={buttonStyle} aria-label={`Edit ${entry.title}`}>Edit</button><button type="button" disabled={pending} onClick={() => mutate(entry.id, "PATCH", { enabled: !entry.enabled }, () => setNotice(entry.enabled ? "Reminder paused." : "Reminder resumed."))} className={buttonStyle} aria-label={`${entry.enabled ? "Pause" : "Resume"} ${entry.title}`}>{entry.enabled ? "Pause" : "Resume"}</button><button type="button" disabled={pending} onClick={() => remove(entry)} className={`${buttonStyle} text-pink-200`} aria-label={`Delete ${entry.title}`}>Delete</button></div>

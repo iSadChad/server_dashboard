@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import calendar from "../lib/schedule-calendar.cjs";
+import schedule from "../lib/schedule.cjs";
 
 const { calendarDays, occurrencesForDay } = calendar;
+const { formatDuration } = schedule;
 const button = "min-h-10 rounded-xl border border-cyan-300/25 px-3 py-2 text-xs text-cyan-100 hover:bg-cyan-300/10 disabled:opacity-40";
 const names = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -23,6 +25,12 @@ export default function ScheduleCalendar({ entries, timeZone, pending, onEdit, o
   const week = useMemo(() => view === "week" ? dates.map(day => occurrencesForDay(entries, day, timeZone)) : [], [dates, entries, timeZone, view]);
   const title = view === "month" ? new Date(`${anchor}T12:00Z`).toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" }) : `${dates[0]} – ${dates[6]}`;
   const clock = at => new Date(at).toLocaleTimeString("en-GB", { timeZone, hour: "2-digit", minute: "2-digit" });
+  const timeRange = (entry, at) => {
+    if (!entry.durationMinutes) return clock(at);
+    const end = new Date(Date.parse(at) + entry.durationMinutes * 60_000);
+    const date = value => new Date(value).toLocaleDateString("en-GB", { timeZone, day: "2-digit", month: "short" });
+    return `${clock(at)}–${clock(end)}${date(at) === date(end) ? "" : ` (${date(end)})`}`;
+  };
 
   function move(direction) {
     const date = new Date(`${anchor}T12:00Z`);
@@ -33,7 +41,7 @@ export default function ScheduleCalendar({ entries, timeZone, pending, onEdit, o
   }
 
   function occurrenceList(items) {
-    return items.length ? items.map(({ entry, at }) => <button key={`${entry.id}-${at}`} type="button" disabled={pending} onClick={() => onEdit(entry)} aria-label={`Edit ${entry.title} at ${clock(at)}`} className="block w-full rounded-lg border border-fuchsia-300/25 bg-fuchsia-400/10 p-2 text-left text-xs text-fuchsia-100 hover:bg-cyan-300/15 disabled:opacity-40"><time dateTime={at} className="font-mono text-cyan-200">{clock(at)}</time><span className="ml-2 wrap-break-word">{entry.title}</span></button>) : <p className="p-2 text-xs text-violet-200/55">No reminders</p>;
+    return items.length ? items.map(({ entry, at }) => <button key={`${entry.id}-${at}`} type="button" disabled={pending} onClick={() => onEdit(entry)} aria-label={`Edit ${entry.title} at ${timeRange(entry, at)}`} className="block w-full rounded-lg border border-fuchsia-300/25 bg-fuchsia-400/10 p-2 text-left text-xs text-fuchsia-100 hover:bg-cyan-300/15 disabled:opacity-40"><time dateTime={at} className="font-mono text-cyan-200">{timeRange(entry, at)}</time><span className="ml-2 wrap-break-word">{entry.title}</span>{entry.durationMinutes && <span className="mt-1 block text-violet-200/75">{formatDuration(entry.durationMinutes)}</span>}</button>) : <p className="p-2 text-xs text-violet-200/55">No reminders</p>;
   }
 
   return <section aria-label="Schedule calendar" className="vapor-panel mb-6 min-w-0 rounded-3xl border border-fuchsia-300/20 p-3 sm:p-6">

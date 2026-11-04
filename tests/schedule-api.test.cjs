@@ -39,6 +39,27 @@ test("real PostgreSQL store persists normalized CRUD and ISO timestamps", async 
 
 const errorStatus = (status) => (error) => error.status === status && typeof error.message === "string";
 
+test("appointment durations persist, edit and clear without restarting reminders", async () => {
+  const { createScheduleStore } = require("../lib/schedule-store.cjs");
+  const store = createScheduleStore(db);
+  const entry = await store.create(body({ title: "Therapy", durationMinutes: 60 }));
+  assert.equal(entry.durationMinutes, 60);
+  assert.equal((await store.list()).find(row => row.id === entry.id).durationMinutes, 60);
+  await db.query("UPDATE schedule_entries SET next_run_at = NULL, last_run_at = NOW() WHERE id = $1", [entry.id]);
+  const edited = await store.update(entry.id, { durationMinutes: 90 });
+  assert.equal(edited.durationMinutes, 90);
+  assert.equal(edited.nextRunAt, null);
+  assert.ok(edited.lastRunAt);
+  for (const durationMinutes of [0, -1, 1.5, "60", 10081]) await assert.rejects(store.update(entry.id, { durationMinutes }), errorStatus(400));
+  assert.equal((await store.update(entry.id, { durationMinutes: null })).durationMinutes, null);
+  await store.remove(entry.id);
+  const legacy = await store.create(body());
+  await db.query("UPDATE schedule_entries SET definition = definition - 'durationMinutes' WHERE id = $1", [legacy.id]);
+  assert.equal((await store.list()).find(row => row.id === legacy.id).durationMinutes, null);
+  assert.equal((await store.update(legacy.id, { notes: "Legacy reminder" })).durationMinutes, null);
+  await store.remove(legacy.id);
+});
+
 test("store rejects invalid input, unknown fields, unsafe identifiers and missing rows", async () => {
   const { createScheduleStore } = require("../lib/schedule-store.cjs");
   const store = createScheduleStore(db);
@@ -144,15 +165,18 @@ test("Next route handlers execute CRUD against real PGlite and sanitize failures
   const req = (method, input) => new Request("http://localhost/api/schedule", { method, body: JSON.stringify(input), headers: { "content-type": "application/json" } });
   const ctx = (id) => ({ params: Promise.resolve({ id: String(id) }) });
   try {
-    let response = await collection.POST(req("POST", body()));
+    let response = await collection.POST(req("POST", body({ durationMinutes: 60 })));
     assert.equal(response.status, 201);
     const { entry } = await response.json();
+    assert.equal(entry.durationMinutes, 60);
     response = await collection.GET();
     assert.equal(response.status, 200);
     assert.ok((await response.json()).entries.some((row) => row.id === entry.id));
-    response = await item.PATCH(req("PATCH", { enabled: false }), ctx(entry.id));
+    response = await item.PATCH(req("PATCH", { enabled: false, durationMinutes: 90 }), ctx(entry.id));
     assert.equal(response.status, 200);
-    assert.equal((await response.json()).entry.nextRunAt, null);
+    const updated = (await response.json()).entry;
+    assert.equal(updated.nextRunAt, null);
+    assert.equal(updated.durationMinutes, 90);
     response = await item.DELETE(req("DELETE", {}), ctx(entry.id));
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), { status: "ok" });

@@ -1,6 +1,34 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
+test("optional appointment durations accept hours and minutes and format compactly", () => {
+  const { parseDuration, formatDuration, validateSchedule } = require("../lib/schedule.cjs");
+  for (const [input, minutes, label] of [["", null, ""], ["1h", 60, "1h"], ["1h 30m", 90, "1h 30m"], ["45m", 45, "45m"], ["90", 90, "1h 30m"], ["1.5h", 90, "1h 30m"]]) {
+    assert.equal(parseDuration(input), minutes);
+    assert.equal(formatDuration(minutes), label);
+  }
+  for (const input of ["0", "-1h", "1.2m", "hello", "1h junk", "10081", "Infinity"]) assert.throws(() => parseDuration(input), /Duration/);
+  const base = { title: "Therapy", kind: "once", startsAt: "2099-01-01T10:00Z", timeZone: "UTC" };
+  assert.equal(validateSchedule(base).durationMinutes, null);
+  assert.equal(validateSchedule({ ...base, durationMinutes: 60 }).durationMinutes, 60);
+  assert.equal(validateSchedule({ ...base, durationMinutes: null }).durationMinutes, null);
+  for (const durationMinutes of [0, -1, 1.5, "60", true, 10081]) assert.throws(() => validateSchedule({ ...base, durationMinutes }), /Duration/);
+});
+
+for (const [input, minutes] of [["2.05h", 123], ["4.1h", 246], ["8.2h", 492]]) {
+  test(`decimal-hour duration ${input} accepts whole minutes without floating-point errors`, () => {
+    const { parseDuration } = require("../lib/schedule.cjs");
+    assert.equal(parseDuration(input), minutes);
+  });
+}
+
+test("decimal-hour durations reject fractional minutes", () => {
+  const { parseDuration } = require("../lib/schedule.cjs");
+  for (const input of ["1.001h", "2.051h", "1.001h 30m"]) {
+    assert.throws(() => parseDuration(input), /Duration/, input);
+  }
+});
+
 test("interval schedules advance past missed occurrences without drifting", () => {
   const { nextOccurrence } = require("../lib/schedule.cjs");
   const entry = { kind: "interval", startsAt: "2026-11-02T08:00:00Z", timeZone: "Europe/Zurich", intervalMinutes: 60, weekdays: [] };
