@@ -11,7 +11,7 @@
     "test:schedule": "node --test tests/schedule*.test.cjs"
   },
   "dependencies": {
-    "@excalidraw/excalidraw": "^0.18.1",
+    "@excalidraw/excalidraw": "^0.17.6",
     "@next/env": "^16.2.10",
     "next": "^16.2.12",
     "pg": "^8.22.0",
@@ -23,8 +23,8 @@
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.14",
     "@tailwindcss/postcss": "^4",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.9",
+    "eslint": "^4.0.0",
+    "eslint-config-next": "^0.2.4",
     "tailwindcss": "^4",
     "typescript": "~5.9.3"
   }
