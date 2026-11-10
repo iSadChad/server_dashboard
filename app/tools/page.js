@@ -1,6 +1,7 @@
 "use client";
 
 import PageLayout from "../../components/PageLayout";
+import Link from "next/link";
 
 function cleanUrl(url) {
   return url.replace(/\/+$/, "");
@@ -105,6 +106,10 @@ export default function ToolsPage() {
           </div>
         </header>
 
+        <Link href="/work-time" className="vapor-panel mb-6 flex min-h-24 items-center justify-between gap-4 rounded-3xl border border-cyan-300/30 bg-cyan-400/10 p-5 text-cyan-100 transition-colors hover:bg-cyan-400/15">
+          <div><h3 className="text-xl font-black">Work timer</h3><p className="mt-1 text-sm text-violet-100/60">Clock in, track your hours, and keep your work / school balance.</p></div>
+          <span aria-hidden="true">→</span>
+        </Link>
         <section className="tool-launch-stage lg:grid lg:grid-cols-[minmax(210px,0.38fr)_minmax(0,1fr)] lg:items-start lg:gap-6 xl:gap-9">
           <aside className="tool-launch-manifest vapor-panel mb-5 rounded-3xl border border-cyan-300/15 bg-violet-950/35 p-5 shadow-[0_22px_60px_rgba(20,0,60,0.28)] backdrop-blur-xl lg:sticky lg:top-6 lg:mb-0 lg:p-6">
             <p className="vapor-kicker font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/60">

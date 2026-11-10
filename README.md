@@ -25,6 +25,19 @@ Task API routes and the reminder worker initialize the same task schema, includi
 
 Each `/api/chart` request records a server metric sample before returning the historical charts. The dashboard polls this endpoint once a minute while open; this is not a background collector, so no samples are recorded while no clients are polling it.
 
+## Work timer
+
+Open **Work timer** in the sidebar or Tools. Clock in to start; clock out with a reason (lunch/break, doctor, therapy, other absence, finished, or sick). Clocking back in closes the absence. Sessions keep their server timestamps across reloads and devices. This is one shared personal tracker, using its own PostgreSQL connection, `WORK_TIME_DATABASE_URL`. Create a dedicated database and configure that server-side environment variable before using the timer; its `work_time_state` table is created automatically. It does not fall back to the tasks database. No extra worker or service is required.
+
+- Monday–Wednesday are workdays, with a target of 8h 24m. Thursday/Friday require school attendance confirmation for the daily credit. School-holiday ranges turn those days into workdays. Weekends have no target.
+- Lunch defaults to one uninterrupted 30-minute **lunch/break** session; shorter breaks are not combined. All break time is unpaid. Longer lunch moves the finish estimate later. Doctor/therapy absences are not counted as lunch. The check warns rather than blocking clock-in.
+- Doctor absences credit up to one hour per appointment; therapy credits the whole recorded absence. Other absences have no credit. Credit is never added in advance of elapsed time.
+- Mark full sick days with a day entry, or clock out as sick to excuse the remainder. School, sickness, personal leave and public-holiday day credits fill the remaining daily target, not generate artificial overtime.
+- Weekly, monthly and all-time summaries separate actual work, credits, overtime and missing time. Today shows remaining hours rather than settled missing time. Future dates never create deficits. Tracking begins on the configured start date (initially today); set an opening balance in signed minutes to bring older balances forward.
+- Annual leave is 30 weekdays (six five-day weeks). Enter only approved holidays, as ranges or individual days. Public holidays are entered manually and do not consume leave; no regional calendar is assumed. The yearly consecutive-leave check looks for two full workweeks covered by approved leave/public holidays. School holidays do not consume personal leave.
+- Use recorded sessions/day entries to delete mistakes, and **Correct a forgotten session** to enter replacement past sessions. Manual datetime inputs use your device timezone; reports use the configured tracker timezone (initially Europe/Zurich).
+- Forgot today's clock-in? **Set arrival time** starts a running session from the time you arrived, or changes the current work session's start. It accepts today's past times only and rejects overlaps with saved sessions. End an active absence first; lunch still needs its own recorded break.
+
 ## Verification
 
 `npm run test:schedule` runs recurrence, validation, PostgreSQL-backed CRUD, and worker tests using an isolated in-memory PGlite database. It does not connect to your server or send real notifications.
