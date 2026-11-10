@@ -345,9 +345,11 @@ Nach jedem Testfall wird das beobachtete Resultat festgehalten. Die Bewertung un
 
 **Datum/Uhrzeit der Durchführung:** 19.10.2026, 08:30 Uhr
 
-**Tatsächliches Resultat:** Nach dem erneuten Öffnen des Whiteboards waren die erstellten Zeichnungen und Texte nicht mehr vorhanden.
+**Tatsächliches Resultat beim ersten Durchlauf:** Nach dem erneuten Öffnen des Whiteboards waren die erstellten Zeichnungen und Texte nicht mehr vorhanden.
 
 **Beobachtungen/Nachweis:** Die Testzeichnung und die Textelemente wurden nach dem erneuten Öffnen nicht angezeigt.
+
+**Wiederholungsprüfung nach der Korrektur (10.11.2026, Uhrzeit nicht angegeben):** Der Whiteboard-Test wurde auf dem Ubuntu-Server erneut durchgeführt. Die Zeichnungen und Texte blieben nach dem erneuten Öffnen erhalten.
 
 ---
 
@@ -371,7 +373,7 @@ Bei jedem durchgeführten Testfall wird das tatsächliche mit dem erwarteten Res
 | TC-03A | Ja, alle Prüfungen waren erfolgreich (`pass 1`, `fail 0`) | ☒ Bestanden　☐ Nicht bestanden | Keine Abweichung festgestellt. |
 | TC-03B | Ja, die vier Statistiken stimmten ungefähr mit den Ubuntu-Werten überein und waren nach der Aktualisierung weiterhin sichtbar | ☒ Bestanden　☐ Nicht bestanden | Nur geringe zeitliche und Rundungsabweichungen festgestellt. |
 | TC-04 | Ja, bei leerem Titel oder ausschliesslich Leerzeichen konnte keine Aufgabe abgesendet werden | ☒ Bestanden　☐ Nicht bestanden | Keine Abweichung festgestellt. |
-| TC-05 | Nein, Zeichnungen und Texte wurden nach dem erneuten Öffnen nicht angezeigt | ☐ Bestanden　☒ Nicht bestanden | Ursache und Codekorrektur sind im Abschnitt „Korrekturmassnahmen“ festgehalten. Wiederholungstest nach dem Deployment steht noch aus. |
+| TC-05 | Ja, nach der Korrektur blieben Zeichnungen und Texte beim erneuten Öffnen erhalten | ☒ Bestanden　☐ Nicht bestanden | Der erste Test schlug fehl. Nach der Codekorrektur war der Wiederholungstest erfolgreich. |
 | TC-06 | Ja, die installierte PWA und ihre Seiten wurden korrekt angezeigt und funktionierten | ☒ Bestanden　☐ Nicht bestanden | Keine Darstellungs- oder Bedienungsprobleme festgestellt. |
 
 
@@ -383,4 +385,4 @@ Bei jedem durchgeführten Testfall wird das tatsächliche mit dem erwarteten Res
 
 **Korrektur:** Der Aufruf von `serializeAsJSON` wurde an die installierte Excalidraw-API angepasst. Der Editor wird erst nach erfolgreichem Laden der gespeicherten Daten angezeigt. Bei einem Ladefehler erscheint stattdessen eine Fehlermeldung mit einer erneuten Ladeoption.
 
-**Status:** Die Codekorrektur wurde umgesetzt. Der Wiederholungstest muss nach dem Deployment auf dem Ubuntu-Server durchgeführt werden.
+**Status:** Die Codekorrektur wurde umgesetzt und auf dem Ubuntu-Server erneut getestet. Zeichnungen und Texte blieben nach dem erneuten Öffnen erhalten.
