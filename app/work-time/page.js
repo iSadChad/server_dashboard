@@ -158,7 +158,7 @@ function WorkTimeContent() {
     } catch { setError("Enter valid start and end times."); }
   }
 
-  return <div className="vapor-page mx-auto max-w-7xl space-y-6 px-3 py-5 sm:px-5 lg:px-8 lg:py-9">
+  return <div className="vapor-page work-time-page mx-auto max-w-7xl space-y-6 px-3 py-5 sm:px-5 lg:px-8 lg:py-9">
     <header className="vapor-header rounded-3xl border border-fuchsia-300/25 bg-linear-to-br from-fuchsia-500/15 to-cyan-500/10 p-6">
       <p className="font-mono text-xs uppercase tracking-[0.25em] text-cyan-200/70">Work / school / balance</p>
       <h2 className="mt-2 text-3xl font-black text-white sm:text-4xl">Work timer</h2>

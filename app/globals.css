@@ -1513,6 +1513,74 @@ select.vapor-input optgroup {
   min-height: 22px;
 }
 
+/* Work-time layout groups are not panels. The global section skin otherwise
+   clips their child cards and draws rectangular borders through the content. */
+.cyber-root .work-time-page section:not(.vapor-panel) {
+  overflow: visible;
+  border: 0 !important;
+  border-radius: 0;
+  background: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.cyber-root .work-time-page section:not(.vapor-panel)::before {
+  content: none !important;
+  display: none;
+}
+
+.cyber-root .work-time-page .vapor-panel,
+.cyber-root .work-time-page details,
+.cyber-root .work-time-page section {
+  min-width: 0;
+  transform: none !important;
+}
+
+.work-time-page input,
+.work-time-page select {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.work-time-page label {
+  min-width: 0;
+}
+
+.work-time-page details > summary {
+  background: transparent;
+  overflow-wrap: anywhere;
+}
+
+.work-time-page input[type="date"],
+.work-time-page input[type="datetime-local"] {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-inline-size: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.work-time-page input::-webkit-date-and-time-value {
+  min-width: 0;
+  text-align: left;
+}
+
+@media (max-width: 639px) {
+  .work-time-page form .grid-cols-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .work-time-page input,
+  .work-time-page select {
+    font-size: 16px;
+  }
+
+  .work-time-page li {
+    flex-wrap: wrap;
+  }
+}
+
 /* These are layout rails, not cards. Keep the generic section skin from
    drawing a giant border around the whole dashboard/tool composition. */
 .cyber-root .dashboard-metric-deck,
