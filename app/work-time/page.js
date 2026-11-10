@@ -217,6 +217,16 @@ function WorkTimeContent() {
         </div>
         <details className="vapor-panel rounded-2xl border border-violet-300/20 p-4"><summary className="cursor-pointer text-sm font-bold text-cyan-100">Daily breakdown</summary><div className="mt-4 max-h-96 overflow-auto"><table className="w-full whitespace-nowrap text-left text-xs"><thead className="text-violet-100/60"><tr>{["Date", "Day", "Worked", "Credits", "Balance"].map((label) => <th key={label} className="p-2">{label}</th>)}</tr></thead><tbody>{recentDays.map((day) => <tr key={day.date} className="border-t border-violet-300/10"><td className="p-2">{day.date}</td><td className="p-2">{labels[day.type]}</td><td className="p-2">{duration(day.workedMinutes)}</td><td className="p-2">{duration(day.creditMinutes)}</td><td className="p-2">{day.date === report.today && day.balanceMinutes < 0 ? `${duration(day.remainingMinutes)} remaining` : duration(day.balanceMinutes, true)}</td></tr>)}</tbody></table></div></details>
       </section>
+      <section aria-label="Monthly attendance" className="space-y-4">
+        <h3 className="text-xl font-bold text-white">Monthly attendance · {report.attendance.month}</h3>
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <Card label="Attendance to date" value={report.attendance.percentToDate === null ? "—" : `${report.attendance.percentToDate.toFixed(1)}%`} detail="Actual work + confirmed school, compared with weekdays through today. Today is included in full." />
+          <Card label="Full-month progress" value={report.attendance.percentOfMonth === null ? "—" : `${report.attendance.percentOfMonth.toFixed(1)}%`} detail={report.attendance.targetMet ? "Monthly 90% target reached" : "Target: at least 90% by month-end"} />
+          <Card label="Attendance recorded" value={duration(report.attendance.attendedMinutes)} detail={`90% target: ${duration(report.attendance.targetMinutes)}`} />
+          <Card label="Still needed for 90%" value={duration(Math.ceil(report.attendance.remainingMinutes))} detail="Includes the attendance still needed during the rest of this month." />
+        </div>
+        <p className="text-xs leading-relaxed text-violet-100/60">Workplace time and confirmed school count; extra work can make up attendance. Therapy, doctor visits, sickness, leave and public holidays do not add attendance or reduce the weekday target. This is separate from your credited work balance. Calculated from {report.attendance.startDate}; dates before your tracking start are excluded. Percentages can exceed 100%.</p>
+      </section>
       <section aria-label="Holiday allowance" className="vapor-panel rounded-3xl border border-fuchsia-300/20 p-5">
         <h3 className="text-xl font-bold text-white">Holidays · {report.leave.year}</h3>
         <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4"><Card label="Annual allowance" value={`${report.leave.allowanceDays} days`} detail="6 weeks on a five-day week" /><Card label="Taken" value={`${report.leave.usedDays} days`} /><Card label="Approved upcoming" value={`${report.leave.plannedDays} days`} /><Card label="Remaining to book" value={`${report.leave.remainingDays} days`} /></div>
