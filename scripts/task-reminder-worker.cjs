@@ -3,6 +3,7 @@ const pg = require("pg");
 const webpush = require("web-push");
 const { ensureSchema } = require("../lib/schedule-store.cjs");
 const { scanScheduleReminders } = require("../lib/schedule-worker.cjs");
+const { ensureTasksTable } = require("../lib/tasks-schema.cjs");
 
 loadEnvConfig(process.cwd());
 
@@ -78,10 +79,7 @@ function formatDueDate(value) {
 
 async function ensureDatabaseStructure() {
   await ensureSchema(pool);
-  await pool.query(`
-    ALTER TABLE tasks
-    ADD COLUMN IF NOT EXISTS reminder_sent_at TIMESTAMPTZ NULL;
-  `);
+  await ensureTasksTable(pool);
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS push_subscriptions (

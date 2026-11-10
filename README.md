@@ -19,8 +19,16 @@ The calendar offers **Month** and **Week** views, previous/next navigation, and 
 - Recurring occurrences over five minutes old are skipped and advanced to avoid catch-up spam after downtime. One-time reminders are retried until a device accepts delivery. Failed recurring delivery is retried within that five-minute window. Push acceptance does not guarantee the device displayed the notification.
 - Entries with push disabled still advance in the agenda when the worker runs. Paused entries do not run. This is a reminder scheduler, not an automatic five-minute break timer.
 
+## Task storage and metric history
+
+Task API routes and the reminder worker initialize the same task schema, including due timestamps and reminder fields. Existing tables receive missing columns without deleting tasks or legacy date values. The task list sorts by the current due timestamp.
+
+Each `/api/chart` request records a server metric sample before returning the historical charts. The dashboard polls this endpoint once a minute while open; this is not a background collector, so no samples are recorded while no clients are polling it.
+
 ## Verification
 
 `npm run test:schedule` runs recurrence, validation, PostgreSQL-backed CRUD, and worker tests using an isolated in-memory PGlite database. It does not connect to your server or send real notifications.
+
+`npm run test:dashboard` tests task CRUD on fresh and legacy databases, due-time ordering, and chart sample persistence using isolated PGlite databases. These tests use Node.js 24's module hooks to execute the chart route's Next.js-style imports.
 
 `npm run lint` checks code style; `npm run build` verifies the production build. The existing `npm run test:stats` requires a running dashboard (optionally set `STATS_API_URL`).

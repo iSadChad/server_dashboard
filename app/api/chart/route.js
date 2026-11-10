@@ -233,6 +233,7 @@ async function getMonthlyNetworkData() {
 export async function GET() {
   try {
     await ensureMetricsTable();
+    await insertCurrentMetric();
 
     const week = await getWeeklyData();
     const month = await getMonthlyNetworkData();

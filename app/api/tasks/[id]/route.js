@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 import pg from "pg";
+import { ensureTasksTable } from "../../../../lib/tasks-schema.cjs";
 
 const { Pool } = pg;
 
@@ -64,6 +65,7 @@ export async function PATCH(request, context) {
 
     const body = await request.json();
 
+    await ensureTasksTable(getPool());
     const current = await getPool().query("SELECT * FROM tasks WHERE id = $1", [
       id,
     ]);
@@ -229,6 +231,7 @@ export async function DELETE(request, context) {
       );
     }
 
+    await ensureTasksTable(getPool());
     const result = await getPool().query(
       "DELETE FROM tasks WHERE id = $1 RETURNING id",
       [id]

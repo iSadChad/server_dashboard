@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 import pg from "pg";
+import { ensureTasksTable } from "../../../lib/tasks-schema.cjs";
 
 const { Pool } = pg;
 
@@ -21,30 +22,6 @@ function getPool() {
   return globalForTasks.tasksPool;
 }
 
-let tableReadyPromise = null;
-
-async function ensureTasksTable() {
-  if (!tableReadyPromise) {
-    tableReadyPromise = getPool().query(`
-      CREATE TABLE IF NOT EXISTS tasks (
-        id BIGSERIAL PRIMARY KEY,
-        title TEXT NOT NULL,
-        notes TEXT NOT NULL DEFAULT '',
-        category TEXT NOT NULL DEFAULT 'General',
-        priority TEXT NOT NULL DEFAULT 'normal',
-        due_date DATE NULL,
-        status TEXT NOT NULL DEFAULT 'todo',
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        completed_at TIMESTAMPTZ NULL,
-        CONSTRAINT tasks_priority_check CHECK (priority IN ('low', 'normal', 'high')),
-        CONSTRAINT tasks_status_check CHECK (status IN ('todo', 'done'))
-      );
-    `);
-  }
-
-  await tableReadyPromise;
-}
 
 function normalizeTask(row) {
   return {
@@ -64,15 +41,15 @@ function normalizeTask(row) {
 
 export async function GET() {
   try {
-    await ensureTasksTable();
+    await ensureTasksTable(getPool());
 
     const result = await getPool().query(`
       SELECT *
       FROM tasks
       ORDER BY
         CASE WHEN status = 'todo' THEN 0 ELSE 1 END,
-        CASE WHEN due_date IS NULL THEN 1 ELSE 0 END,
-        due_date ASC,
+        CASE WHEN due_at IS NULL THEN 1 ELSE 0 END,
+        due_at ASC,
         created_at DESC;
     `);
 
@@ -97,7 +74,7 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    await ensureTasksTable();
+    await ensureTasksTable(getPool());
 
     const body = await request.json();
 
