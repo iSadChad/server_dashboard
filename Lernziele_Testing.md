@@ -284,12 +284,12 @@ Der automatische Test kontrolliert:
 - Ob CPU, Arbeitsspeicher, Speicherplatz und Uptime vorhanden sind
 - Ob die Werte Zahlen sind und in gültigen Bereichen liegen
 
-Die Durchführung der Testfälle erfolgt bei Lernziel 6.6. Die Auswertung und Protokollierung der Resultate erfolgt bei Lernziel 6.7.
+Die Testfälle werden im folgenden Abschnitt durchgeführt und die Resultate anschliessend separat ausgewertet und protokolliert.
 
 
 ## Testfälle durchführen
 
-Nach jedem Testfall wird das beobachtete Resultat festgehalten. Die Bewertung und Auswertung erfolgt separat unter Lernziel 6.7.
+Nach jedem Testfall wird das beobachtete Resultat festgehalten. Die Bewertung und Auswertung erfolgt im folgenden Abschnitt.
 
 ### TC-01: Status eines Dienstes im Admin-Bereich korrekt anzeigen
 
@@ -362,7 +362,7 @@ Nach jedem Testfall wird das beobachtete Resultat festgehalten. Die Bewertung un
 
 ## Testlauf auswerten und Ergebnisse protokollieren
 
-Bei jedem durchgeführten Testfall wird das tatsächliche mit dem erwarteten Resultat verglichen und als bestanden oder nicht bestanden bewertet. Bei nicht bestandenen Tests werden die Abweichung und eine mögliche Korrekturmassnahme festgehalten. Die Bewertung basiert auf den Ergebnissen aus Lernziel 6.6.
+Bei jedem durchgeführten Testfall wird das tatsächliche mit dem erwarteten Resultat verglichen und als bestanden oder nicht bestanden bewertet. Bei nicht bestandenen Tests werden die Abweichung und eine mögliche Korrekturmassnahme festgehalten. Die Bewertung basiert auf den zuvor festgehaltenen Testergebnissen.
 
 | Testfall | Erwartetes Resultat erfüllt? | Bewertung | Abweichung oder Korrekturmassnahme |
 | --- | --- | --- | --- |
@@ -371,5 +371,16 @@ Bei jedem durchgeführten Testfall wird das tatsächliche mit dem erwarteten Res
 | TC-03A | Ja, alle Prüfungen waren erfolgreich (`pass 1`, `fail 0`) | ☒ Bestanden　☐ Nicht bestanden | Keine Abweichung festgestellt. |
 | TC-03B | Ja, die vier Statistiken stimmten ungefähr mit den Ubuntu-Werten überein und waren nach der Aktualisierung weiterhin sichtbar | ☒ Bestanden　☐ Nicht bestanden | Nur geringe zeitliche und Rundungsabweichungen festgestellt. |
 | TC-04 | Ja, bei leerem Titel oder ausschliesslich Leerzeichen konnte keine Aufgabe abgesendet werden | ☒ Bestanden　☐ Nicht bestanden | Keine Abweichung festgestellt. |
-| TC-05 | Nein, Zeichnungen und Texte wurden nach dem erneuten Öffnen nicht angezeigt | ☐ Bestanden　☒ Nicht bestanden | Abweichung: Whiteboard-Inhalt wurde nicht gespeichert oder geladen. Ursache und Korrekturmassnahme sind noch zu bestimmen. |
+| TC-05 | Nein, Zeichnungen und Texte wurden nach dem erneuten Öffnen nicht angezeigt | ☐ Bestanden　☒ Nicht bestanden | Ursache und Codekorrektur sind im Abschnitt „Korrekturmassnahmen“ festgehalten. Wiederholungstest nach dem Deployment steht noch aus. |
 | TC-06 | Ja, die installierte PWA und ihre Seiten wurden korrekt angezeigt und funktionierten | ☒ Bestanden　☐ Nicht bestanden | Keine Darstellungs- oder Bedienungsprobleme festgestellt. |
+
+
+## Sie definieren Korrekturmassnahmen und führen diese durch
+
+### TC-05: Whiteboard speichern und laden
+
+**Ursache:** Die Funktion `serializeAsJSON` wurde mit einem Objekt statt mit den erwarteten einzelnen Parametern aufgerufen. Dadurch schlug die Serialisierung fehl, bevor der Speichervorgang gestartet wurde. Zusätzlich wurde der Editor bereits vor Abschluss des Ladevorgangs als bereit markiert.
+
+**Korrektur:** Der Aufruf von `serializeAsJSON` wurde an die installierte Excalidraw-API angepasst. Der Editor wird erst nach erfolgreichem Laden der gespeicherten Daten angezeigt. Bei einem Ladefehler erscheint stattdessen eine Fehlermeldung mit einer erneuten Ladeoption.
+
+**Status:** Die Codekorrektur wurde umgesetzt. Der Wiederholungstest muss nach dem Deployment auf dem Ubuntu-Server durchgeführt werden.
