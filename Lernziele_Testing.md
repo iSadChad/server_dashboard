@@ -297,7 +297,7 @@ Nach jedem Testfall wird das beobachtete Resultat festgehalten. Die Bewertung un
 
 **Tatsächliches Resultat:** Stirling PDF wurde im Bereich „Service Health“ zunächst als online angezeigt. Nach Ausführung von `docker compose stop` im Ordner `~/docker/stirling-pdf` und Aktualisierung des Admin-Bereichs wurde der Dienst als offline angezeigt.
 
-**Beobachtungen/Nachweis:** Der Container `stirling-pdf` wurde laut Terminalausgabe gestoppt. Der Status im Admin-Bereich wurde anschliessend aktualisiert.
+**Beobachtungen/Nachweis:** Der Container `stirling-pdf` wurde laut Terminalausgabe gestoppt. Der Status im Admin-Bereich wurde anschliessend aktualisiert. Nach dem Test wurde Stirling PDF wieder gestartet.
 
 ---
 
@@ -368,7 +368,7 @@ Bei jedem durchgeführten Testfall wird das tatsächliche mit dem erwarteten Res
 
 | Testfall | Erwartetes Resultat erfüllt? | Bewertung | Abweichung oder Korrekturmassnahme |
 | --- | --- | --- | --- |
-| TC-01 | Ja, der erwartete Statuswechsel von online zu offline wurde angezeigt | ☒ Bestanden　☐ Nicht bestanden | Der Container muss nach dem Test wieder gestartet werden; ein erfolgreicher Neustart ist nicht dokumentiert. |
+| TC-01 | Ja, der erwartete Statuswechsel von online zu offline wurde angezeigt | ☒ Bestanden　☐ Nicht bestanden | Stirling PDF wurde nach dem Test wieder gestartet. |
 | TC-02 | Ja, die Smartphone-Benachrichtigung erschien mit dem Aufgabentitel | ☒ Bestanden　☐ Nicht bestanden | Keine Abweichung festgestellt. |
 | TC-03A | Ja, alle Prüfungen waren erfolgreich (`pass 1`, `fail 0`) | ☒ Bestanden　☐ Nicht bestanden | Keine Abweichung festgestellt. |
 | TC-03B | Ja, die vier Statistiken stimmten ungefähr mit den Ubuntu-Werten überein und waren nach der Aktualisierung weiterhin sichtbar | ☒ Bestanden　☐ Nicht bestanden | Nur geringe zeitliche und Rundungsabweichungen festgestellt. |
@@ -377,7 +377,7 @@ Bei jedem durchgeführten Testfall wird das tatsächliche mit dem erwarteten Res
 | TC-06 | Ja, die installierte PWA und ihre Seiten wurden korrekt angezeigt und funktionierten | ☒ Bestanden　☐ Nicht bestanden | Keine Darstellungs- oder Bedienungsprobleme festgestellt. |
 
 
-## Sie definieren Korrekturmassnahmen und führen diese durch
+## 6.8: Sie definieren Korrekturmassnahmen und führen diese durch
 
 ### TC-05: Whiteboard speichern und laden
 
@@ -386,3 +386,77 @@ Bei jedem durchgeführten Testfall wird das tatsächliche mit dem erwarteten Res
 **Korrektur:** Der Aufruf von `serializeAsJSON` wurde an die installierte Excalidraw-API angepasst. Der Editor wird erst nach erfolgreichem Laden der gespeicherten Daten angezeigt. Bei einem Ladefehler erscheint stattdessen eine Fehlermeldung mit einer erneuten Ladeoption.
 
 **Status:** Die Codekorrektur wurde umgesetzt und auf dem Ubuntu-Server erneut getestet. Zeichnungen und Texte blieben nach dem erneuten Öffnen erhalten.
+
+
+## 6.9: Sie überprüfen die Implementierung gemäss dem definierten Sicherheitskonzept und treffen geeignete Korrekturmassnahmen
+
+### Grundlage und Umfang
+
+Als Grundlage dient das englischsprachige [Sicherheitskonzept in Security_Concept.md](Security_Concept.md). Dieses wurde für die bestehende Anwendung nachträglich definiert. Es wird nicht behauptet, dass es bereits bei der ursprünglichen Entwicklung vorlag.
+
+Die folgende Prüfung betrifft den Netzwerkzugriff auf das Dashboard gemäss SEC-01, SEC-02 und SEC-03 sowie eine ergänzende Prüfung der Prozessberechtigungen gemäss SEC-08. Das Dashboard ist ausschliesslich für den persönlichen Gebrauch vorgesehen. Der vorgesehene Zugriff erfolgt über Tailscale und HTTPS; ein direkter Zugriff über das lokale Netzwerk auf den Anwendungsport ist nicht vorgesehen.
+
+**Nachweisgrundlage:** Die Serverbefehle wurden durch den Betreiber auf dem Ubuntu-Server ausgeführt. Die nachfolgenden Feststellungen beruhen auf den bereitgestellten Terminalausgaben und seinen ausdrücklichen Bestätigungen. Ein unabhängiger Fernzugriff auf den Server fand nicht statt. Private Serveradressen und Hostnamen werden hier nicht wiedergegeben.
+
+### Prüfung des ursprünglichen Zustands
+
+Folgende Ausgaben wurden überprüft:
+
+- `sudo ufw status verbose`: Die Firewall war aktiv und blockierte eingehende Verbindungen standardmässig. Für `3000/tcp` bestand jedoch eine ausdrückliche Freigabe von beliebigen Quellen, sowohl für IPv4 als auch für IPv6.
+- `ss -lnt`: Das Dashboard lauschte auf `0.0.0.0:3000` und damit auf allen IPv4-Netzwerkschnittstellen.
+- `tailscale serve status` und `tailscale funnel status`: Der HTTPS-Zugang auf Port `8443` leitete an `http://127.0.0.1:3000` weiter. Die Ausgabe bezeichnete diesen Zugang als „tailnet only“; eine öffentliche Funnel-Freigabe war nicht ausgewiesen.
+- Die gezielt ausgelesenen PM2-Startparameter des Prozesses `server-dashboard` lauteten `start -- -H 0.0.0.0 -p 3000`.
+- Der Betreiber bestätigte, dass seine übliche Desktop-Verknüpfung die HTTPS-Adresse mit Port `8443` verwendet.
+
+**Festgestellte Abweichung:** Obwohl ein privater HTTPS-Zugang über Tailscale eingerichtet war, liessen die Bindung an alle IPv4-Schnittstellen und die breite Firewall-Freigabe einen zusätzlichen direkten Zugangsweg auf Port `3000` zu. Diese Konfiguration entsprach nicht dem vorgesehenen ausschliesslichen Zugriff über Tailscale Serve. Eine tatsächliche Erreichbarkeit aus dem Internet wurde damit nicht nachgewiesen; diese hängt zusätzlich von Router, vorgeschalteten Filtern und Netzwerkanbindung ab.
+
+### Durchgeführte Korrekturmassnahmen
+
+Nach Zustimmung des Betreibers wurden folgende Änderungen vorgenommen:
+
+1. Nur der Dashboard-Prozess wurde mit geänderter Bindung neu gestartet:
+
+   `pm2 restart server-dashboard -- start -- -H 127.0.0.1 -p 3000`
+
+   Dadurch nimmt die Anwendung Verbindungen nur noch über die lokale Loopback-Adresse des Servers an. Tailscale Serve kann sie weiterhin über sein bestehendes lokales Weiterleitungsziel erreichen.
+
+2. Nach erfolgreicher Funktionskontrolle wurde die PM2-Konfiguration mit `pm2 save` gespeichert. Der Betreiber bestätigte den erfolgreichen Abschluss.
+
+3. Die nicht mehr benötigte breite Firewall-Freigabe wurde mit `sudo ufw delete allow 3000/tcp` entfernt.
+
+Die Korrektur betraf die Startkonfiguration des Dashboards und dessen Firewall-Freigabe. Änderungen am Anwendungscode, an den gespeicherten Nutzdaten oder an anderen Diensten waren dafür nicht erforderlich.
+
+### Wiederholungsprüfung und Resultat
+
+| Überprüfung | Nachweis / tatsächliches Resultat | Bewertung |
+| --- | --- | --- |
+| Bindung des Dashboards kontrollieren | `ss -lnt 'sport = :3000'` zeigte ausschliesslich `127.0.0.1:3000` als lauschende Adresse. | Die Bindung an alle IPv4-Schnittstellen wurde aufgehoben. |
+| Vorgesehenen HTTPS-Zugang nach dem Neustart prüfen | Der Betreiber öffnete seine bestehende HTTPS-Verknüpfung auf Port `8443` erneut und bestätigte, dass das Dashboard nach dem Aktualisieren weiterhin geladen wurde. | Der vorgesehene Zugang funktionierte nach der Änderung weiterhin. |
+| Firewall-Freigaben erneut kontrollieren | Die anschliessend bereitgestellte Ausgabe von `sudo ufw status verbose` enthielt keine Freigabe für Port `3000`, weder für IPv4 noch für IPv6. Die Firewall blieb aktiv. | Die breite Portfreigabe wurde entfernt. |
+| Geänderte PM2-Konfiguration speichern | Der Betreiber bestätigte, dass `pm2 save` erfolgreich abgeschlossen wurde. | Speicherung bestätigt; ein Neustart des gesamten Servers wurde nicht getestet. |
+
+**Ergebnis dieser Korrektur:** Der direkte, über die Server-Netzwerkschnittstellen angebotene Zugang auf Port `3000` wurde durch die Loopback-Bindung geschlossen und die zugehörige breite Firewall-Freigabe entfernt. Der bestehende Tailscale-HTTPS-Zugang blieb funktionsfähig. Dies wurde durch die bereitgestellten Konfigurationsausgaben und die Funktionsbestätigung des Betreibers belegt, nicht durch einen separaten Verbindungsversuch von einem unberechtigten Gerät.
+
+### Ergänzende Überprüfung von Zugriff und Berechtigungen
+
+| Anforderung | Prüfung und tatsächliches Resultat | Bewertung |
+| --- | --- | --- |
+| SEC-01 / SEC-02: Zugriff auf den vorgesehenen Benutzer beschränken | Der Betreiber bestätigte, dass er der einzige Benutzer seines Tailnets ist und den Server nie mit anderen Personen geteilt hat. | Die Angaben entsprechen dem vorgesehenen persönlichen Gebrauch. Eine technische Einsicht in die Tailscale-Zugriffsrichtlinien erfolgte nicht. |
+| SEC-08: Anwendung nicht als root betreiben | `id -u` ergab `1000`. Die Ausgabe von `ps -o user=,uid=,comm= -p "$(pm2 pid server-dashboard)"` zeigte ebenfalls UID `1000` für den PM2-verwalteten npm-Startprozess. | Der geprüfte Startprozess läuft nicht als root. Die vollständige Prozesskette wurde nicht separat kontrolliert. |
+| SEC-08: Keine breiten passwortlosen Administratorrechte | `sudo -l` zeigte für das Benutzerkonto die Regel `(ALL : ALL) ALL`, ohne `NOPASSWD`-Zusatz. | In der bereitgestellten Regel war keine passwortlose sudo-Freigabe ausgewiesen. Die vorhandene normale Administrationsberechtigung wurde nicht verändert. |
+
+Für diese ergänzenden Prüfungen ergab sich aus den vorliegenden Nachweisen keine zusätzliche Korrekturmassnahme.
+
+### Fazit zu den Lernzielen 6.8 und 6.9
+
+Für **6.8** wurde anhand des Whiteboards eine Fehlerursache beschrieben, eine Korrektur umgesetzt und die Funktion durch einen erfolgreichen Wiederholungstest überprüft.
+
+Für **6.9** wurde die vorhandene Zugriffskonfiguration mit den Anforderungen des Sicherheitskonzepts verglichen. Dabei wurde der zusätzliche direkte Zugang auf Port `3000` als Abweichung erkannt. Die Bindung wurde auf Loopback beschränkt, die breite Firewall-Freigabe entfernt und die geänderte PM2-Konfiguration gespeichert. Die anschliessende Kontrolle der lauschenden Adresse und der Firewall-Regeln sowie der weiterhin funktionierende HTTPS-Zugang belegen die Korrektur im beschriebenen Prüfumfang. Ergänzend wurden die Angaben zum Benutzerkreis und die Prozessberechtigungen überprüft.
+
+### Abgrenzung und verbleibende Sicherheitsarbeiten
+
+Die dokumentierte Abweichung ist korrigiert; dieser Prüf- und Korrekturdurchlauf ist abgeschlossen. Die vollständige Erfüllung aller Anforderungen des Sicherheitskonzepts wird damit nicht behauptet. Insbesondere Tailscale-Zugriffsrichtlinien, die Ablehnung von Zugriffen unberechtigter Geräte und weitere mögliche Weiterleitungswege wurden nicht technisch überprüft. Die Angaben zum Benutzerkreis und zu fehlenden Gerätefreigaben beruhen auf der Bestätigung des Betreibers. Die HTTPS-Nutzung wurde ebenfalls bestätigt; eine gesonderte Zertifikatsprüfung fand nicht statt.
+
+Ein direkter LAN-Verbindungstest auf Port `3000` wurde nicht durchgeführt, da sich der Betreiber während der Prüfung nicht im Heimnetz befand. Auch ein Serverneustart zur Prüfung der Wiederherstellung der gespeicherten PM2-Konfiguration wurde nicht durchgeführt. Diese ergänzenden Tests bleiben offen und werden nicht als bestanden gewertet.
+
+Weitere Anforderungen des Sicherheitskonzepts sowie die übrigen bei der lokalen Codeprüfung festgestellten Punkte sind nicht Gegenstand dieses Korrekturprotokolls und bleiben separat zu bearbeiten. Aus dieser einzelnen erfolgreichen Korrektur wird keine vollständige Sicherheit der Anwendung oder ein Abschluss der gesamten Sicherheitsprüfung abgeleitet.
