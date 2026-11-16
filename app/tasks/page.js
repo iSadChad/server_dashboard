@@ -64,6 +64,7 @@ function TasksContent() {
   const [filter, setFilter] = useState("open");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -227,15 +228,26 @@ const payload = {
       </div>
 
       <div className="task-board grid grid-cols-1 gap-4 xl:grid-cols-[380px_1fr] 2xl:grid-cols-[430px_1fr]">
-        <section className="vapor-panel h-fit rounded-3xl border border-fuchsia-300/20 bg-violet-950/35 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.28)] backdrop-blur-xl md:p-6 xl:sticky xl:top-6">
-          <h3 className="mb-1 text-sm font-bold uppercase tracking-wider text-fuchsia-100">
-            Add Task
-          </h3>
-          <p className="vapor-muted mb-5 text-[11px] text-violet-100/45">
+        <section className="task-create-panel vapor-panel min-w-0 h-fit rounded-3xl border border-fuchsia-300/20 bg-violet-950/35 p-5 shadow-[0_24px_70px_rgba(30,0,65,0.28)] backdrop-blur-xl md:p-6 xl:sticky xl:top-6">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-fuchsia-100">
+              Add Task
+            </h3>
+            <button
+              type="button"
+              aria-controls="task-create-form"
+              aria-expanded={createOpen}
+              onClick={() => setCreateOpen((current) => !current)}
+              className="vapor-button min-h-11 rounded-xl border border-fuchsia-300/25 px-4 text-xs font-bold text-fuchsia-100 md:hidden"
+            >
+              {createOpen ? "Close form" : "+ New task"}
+            </button>
+          </div>
+          <p className="vapor-muted mt-1 mb-5 hidden text-[11px] text-violet-100/45 md:block">
             Quick capture for school, server, work and life admin.
           </p>
 
-          <form onSubmit={createTask} className="vapor-form space-y-3">
+          <form id="task-create-form" onSubmit={createTask} className={`vapor-form mt-4 space-y-3 md:mt-0 ${createOpen ? "block" : "hidden"} md:block`}>
             <Field label="Title">
               <input
                 value={form.title}
@@ -298,7 +310,7 @@ const payload = {
               </Field>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="task-date-fields grid grid-cols-1 gap-3">
             <Field label="Due date and time">
               <input
                 type="datetime-local"
@@ -419,7 +431,7 @@ function StatCard({ label, value, warning = false }) {
 
 function Field({ label, children }) {
   return (
-    <label className="block">
+    <label className="block min-w-0">
       <span className="vapor-kicker mb-1.5 block text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200/50">
         {label}
       </span>
@@ -441,7 +453,7 @@ function TaskCard({ task, onToggle, onDelete }) {
       <div className="flex items-start gap-3">
         <button
           onClick={onToggle}
-          className={`mt-0.5 h-5 w-5 rounded-full border shrink-0 flex items-center justify-center transition-all ${
+          className={`task-complete mt-0.5 h-5 w-5 rounded-full border shrink-0 flex items-center justify-center transition-all ${
             task.status === "done"
               ? "bg-emerald-500/20 border-emerald-500/40"
               : "border-fuchsia-300/35 hover:border-cyan-300/70"
@@ -475,13 +487,13 @@ function TaskCard({ task, onToggle, onDelete }) {
 
             <button
               onClick={onDelete}
-              className="vapor-button self-start rounded-lg border border-pink-300/15 bg-pink-400/5 px-2.5 py-1.5 text-[11px] text-pink-200/65 transition-all hover:border-pink-300/35 hover:bg-pink-400/15"
+              className="task-delete vapor-button self-start rounded-lg border border-pink-300/15 bg-pink-400/5 px-2.5 py-1.5 text-[11px] text-pink-200/65 transition-all hover:border-pink-300/35 hover:bg-pink-400/15"
             >
               Delete
             </button>
           </div>
 
-          <div className="flex flex-wrap gap-2 mt-3">
+          <div className="task-metadata flex flex-wrap gap-2 mt-3">
             <span className="vapor-chip rounded-full border border-cyan-300/15 bg-cyan-400/5 px-2.5 py-1 text-[11px] text-cyan-100/55">
               {task.category}
             </span>
@@ -501,12 +513,12 @@ function TaskCard({ task, onToggle, onDelete }) {
             >
               {overdue ? "Overdue · " : ""}
               {formatDateTime(task.dueAt)}
-              {task.remindAt && (
+            </span>
+            {task.remindAt && (
               <span className="rounded-full border border-cyan-300/15 bg-cyan-400/5 px-2.5 py-1 text-[11px] text-cyan-100/55">
                 Reminder · {formatDateTime(task.remindAt)}
               </span>
             )}
-            </span>
           </div>
         </div>
       </div>

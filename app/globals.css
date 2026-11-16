@@ -1931,6 +1931,75 @@ details[open] > summary {
   }
 }
 
+/* Task controls must fit their panel, including native mobile date inputs. */
+.tasks-workbench .vapor-input {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.tasks-workbench input[type="datetime-local"] {
+  width: 100%;
+  min-inline-size: 0;
+}
+
+.task-metadata > span {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 640px) and (max-width: 1023px), (min-width: 1536px) {
+  .task-date-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .tasks-workbench .task-meter-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .tasks-workbench .task-meter-grid > div {
+    min-height: 80px;
+    padding: 12px 10px;
+    border-radius: 14px;
+  }
+
+  .tasks-workbench .task-meter-grid .vapor-kicker {
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  .tasks-workbench .task-meter-grid > div > p:last-child {
+    font-size: 26px;
+    line-height: 30px;
+  }
+
+  .tasks-workbench .task-board > section {
+    padding: 16px;
+  }
+
+  .tasks-workbench .vapor-list-row {
+    padding: 12px;
+  }
+
+  .tasks-workbench .task-complete {
+    width: 44px;
+    height: 44px;
+  }
+
+  .tasks-workbench .task-delete,
+  .tasks-workbench .vapor-tabs button {
+    min-height: 44px;
+  }
+
+  .tasks-workbench .vapor-tabs button {
+    flex: 1;
+  }
+}
+
 /* Phone dashboard polish lives last so it wins over the shared desktop skin. */
 @media (max-width: 767px) {
   .dashboard-network-chart .recharts-cartesian-axis-tick-value {
