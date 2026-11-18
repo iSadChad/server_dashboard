@@ -8,6 +8,7 @@ const { summarize, dayKey } = workTime;
 const inputStyle = "vapor-input min-h-11 w-full rounded-xl border border-fuchsia-300/25 bg-violet-950/60 px-3 py-2 text-sm text-white outline-none focus:border-cyan-200";
 const buttonStyle = "vapor-button min-h-11 rounded-xl border border-cyan-300/30 px-4 py-2 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-40";
 const labels = { work: "Work", break: "Lunch / break", doctor: "Doctor", therapy: "Therapy", other: "Other absence", finish: "Finished for today", sick: "Sick leave", school: "School attended", holiday: "Approved holiday", public_holiday: "Public holiday", school_holiday: "School holidays", off: "Weekend" };
+labels.therapy_finish = "Therapy — remaining day credited";
 
 function duration(minutes, signed = false) {
   const value = Math.round(Math.abs(minutes || 0));
@@ -139,6 +140,7 @@ function WorkTimeContent() {
   const zone = state?.settings.timeZone || "Europe/Zurich";
   const working = state?.active?.kind === "work";
   const absent = state?.active && !working;
+  const therapyFinishedToday = state?.events.some((entry) => entry.kind === "therapy_finish" && entry.startDate <= report?.today && report.today <= entry.endDate);
   const totals = report?.[period];
   const recentDays = report?.days.filter((day) => period === "month" ? day.date.slice(0, 7) === report.today.slice(0, 7) : period === "week" ? day.date >= workTime.addDays(report.today, -((new Date(`${report.today}T12:00:00Z`).getUTCDay() + 6) % 7)) : true).slice().reverse();
 
@@ -174,16 +176,16 @@ function WorkTimeContent() {
           <span className={`rounded-full border px-3 py-1 text-xs ${working ? "border-lime-300/40 text-lime-200" : "border-violet-300/30 text-violet-100/65"}`}>{working ? "Clocked in" : absent ? labels[state.active.kind] : "Clocked out"}</span>
         </div>
         <p className="mt-5 font-mono text-5xl font-black tabular-nums text-white sm:text-7xl" aria-label="Current session elapsed">{clockDuration(report.activeMinutes)}</p>
-        <p className="mt-2 text-sm text-violet-100/55">{state.active ? `${labels[state.active.kind]} started ${displayStamp(state.active.start, zone)}` : "Ready when you are. The timer keeps running even with this tab closed."}</p>
+        <p className="mt-2 text-sm text-violet-100/55">{state.active ? `${labels[state.active.kind]} started ${displayStamp(state.active.start, zone)}. The timer keeps running even with this tab closed.` : therapyFinishedToday ? "Finished for therapy. Your remaining daily target is credited; no timer is running." : "Clocked out. No timer is running. Ready when you are."}</p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-end">
           {working ? <>
-            <label className="block sm:max-w-xs sm:flex-1"><span className="mb-2 block text-xs text-violet-100/65">Clock-out reason</span><select aria-label="Clock-out reason" className={inputStyle} value={reason} onChange={(e) => setReason(e.target.value)}>{["break", "doctor", "therapy", "other", "finish", "sick"].map((kind) => <option key={kind} value={kind}>{labels[kind]}</option>)}</select></label>
-            <button className={`${buttonStyle} bg-fuchsia-500/20`} disabled={pending} onClick={() => mutate("clock_out", { reason }, "Clocked out.")}>{pending ? "Saving…" : "Clock out"}</button>
+            <label className="block sm:max-w-xs sm:flex-1"><span className="mb-2 block text-xs text-violet-100/65">Clock-out reason</span><select aria-label="Clock-out reason" className={inputStyle} value={reason} onChange={(e) => setReason(e.target.value)}>{["break", "doctor", "therapy", "other", "finish", "sick"].map((kind) => <option key={kind} value={kind}>{kind === "therapy" ? "Therapy — finish day with credit" : labels[kind]}</option>)}</select></label>
+            <button className={`${buttonStyle} bg-fuchsia-500/20`} disabled={pending} onClick={() => mutate("clock_out", { reason }, reason === "therapy" ? "Clocked out for therapy. Your remaining daily target is credited; no timer is running." : "Clocked out.")}>{pending ? "Saving…" : "Clock out"}</button>
           </> : <button className={`${buttonStyle} bg-cyan-400/15 sm:min-w-48`} disabled={pending} onClick={() => mutate("clock_in", {}, "Clocked in.")}>{pending ? "Saving…" : "Clock in"}</button>}
           {absent && <button className={buttonStyle} disabled={pending} onClick={() => mutate("end_absence", {}, "Absence ended. You are still clocked out.")}>End absence without clocking in</button>}
           {today?.type === "school" && <button className={buttonStyle} disabled={pending || today.creditMinutes >= 504} onClick={() => mutate("add_event", { event: { kind: "school", startDate: report.today, endDate: report.today, note: "" } }, "School attendance recorded.")}>Mark school attended</button>}
         </div>
-        <p className="mt-4 text-xs leading-relaxed text-violet-100/50">Doctor: up to 1 hour credited per absence. Therapy: all time credited. Other absences: no credit. Choose “Finished for today” to stop without starting a break.</p>
+        <p className="mt-4 text-xs leading-relaxed text-violet-100/50">Doctor: elapsed absence time credited up to 1 hour. Therapy: finishes your day and credits the remaining daily target immediately, without a running timer or extra overtime. Other absences: no credit. Choose “Finished for today” to stop without additional credit.</p>
         <details className="mt-5 rounded-xl border border-cyan-300/20 p-4">
           <summary className="cursor-pointer text-sm font-bold text-cyan-100">Forgot to clock in? Set arrival time</summary>
           <form className="mt-4 space-y-3" onSubmit={async (e) => {
